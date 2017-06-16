@@ -685,9 +685,10 @@ for(Map.Entry<Long,StringBuilder> remoteSubgraphMessage: getSubgraph().getSubgra
 						        "Received a result message for which current subgraph does not have a result entry. Root vertex ID:"
 						                + entry.getKey() + "; Current Subgraph ID:" + sgid);
 					}
-
+					System.out.println("Got Remote Results back");  
 					for(DataReader reader:entry.getValue() ){
 					// copy all triples from remote results message to local resultset
+					  
 					    currResults.addAll(getPathsFromBytes(reader.getBytes()));
 					}
 				}
@@ -757,6 +758,7 @@ for(Map.Entry<Long,StringBuilder> remoteSubgraphMessage: getSubgraph().getSubgra
 		// TODO: We're keeping multiple copies in Map and in message. If we're
 		// bloating memory, we may need to move from Map to message.
 		for (Entry<Long, ResultsWriter> entry : remoteResultsMap.entrySet()) {
+		        System.out.println("Sending Results Back:" + entry.getValue().toString());
 			sendMessage(new LongWritable(entry.getKey()), new ReachMessage(entry.getValue()));
 		}
 
