@@ -712,6 +712,7 @@ for(Map.Entry<Long,StringBuilder> remoteSubgraphMessage: getSubgraph().getSubgra
 					}
 
 					// add traversal message to local queue
+					System.out.println("Adding Remote Traversal to Queue:" + stepResult.path.toString());
 					queue.add(stepResult);
 				} // end iteration over traversal steps
 			} // done with traversal message
