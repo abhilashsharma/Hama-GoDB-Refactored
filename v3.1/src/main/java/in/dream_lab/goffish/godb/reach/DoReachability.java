@@ -518,8 +518,8 @@ for(Map.Entry<Long,StringBuilder> remoteSubgraphMessage: getSubgraph().getSubgra
 //                          step.path.addEV(edge.getEdgeId().get(), otherVID);
                           Path modifiedPath = step.path.getCopy();
                           modifiedPath.addEV(edge.getEdgeId().get(), otherVID);
-//                          System.out.println("ACTUALPATH:" +step.path.toString());
-//                          System.out.println("MODIFIEDPATH:" + modifiedPath.toString());
+                          System.out.println("ACTUALPATH:" +step.path.toString());
+                          System.out.println("MODIFIEDPATH:" + modifiedPath.toString());
                           
                           // if endvertex is found then send results to rootSubgraph and send stop message to all partitions
                           // to reduce depth of reachability query
@@ -758,7 +758,7 @@ for(Map.Entry<Long,StringBuilder> remoteSubgraphMessage: getSubgraph().getSubgra
 		// TODO: We're keeping multiple copies in Map and in message. If we're
 		// bloating memory, we may need to move from Map to message.
 		for (Entry<Long, ResultsWriter> entry : remoteResultsMap.entrySet()) {
-//		        System.out.println("Sending Results Back:" + entry.getValue().toString());
+		        System.out.println("Sending Results Back:" + entry.getValue().toString());
 			sendMessage(new LongWritable(entry.getKey()), new ReachMessage(entry.getValue()));
 		}
 
@@ -774,16 +774,19 @@ for(Map.Entry<Long,StringBuilder> remoteSubgraphMessage: getSubgraph().getSubgra
 
 	private ArrayList<Path> getPathsFromBytes(byte[] pathBytes) {
     // TODO Auto-generated method stub
+	  System.out.println("GETTING PATH:");
 	  DataReader reader = DataReader.newInstance(pathBytes);
 	  ArrayList<Path> pathList=new ArrayList<>();
 	  boolean eof = false;
 	  while (!eof) {
 	      try {
 	           int pathSize=reader.readInt();
+	           System.out.println("Path Size:" + pathSize);
 	           Path p = new Path(reader.readLong());
-	           for(int i=1;i<pathSize;i++){
+	           for(int i=1;i<pathSize;i+=2){
 	             p.addEV(reader.readLong(), reader.readLong());
 	           }
+	           System.out.println(p.toString());
 	           pathList.add(p);
 	          // read and use data
 	      } catch (IOException e) {
