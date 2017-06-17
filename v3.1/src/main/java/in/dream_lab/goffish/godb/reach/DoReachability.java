@@ -419,14 +419,14 @@ for(Map.Entry<Long,StringBuilder> remoteSubgraphMessage: getSubgraph().getSubgra
 //	                          step.path.addEV(edge.getEdgeId().get(), otherVID);
 	                          Path modifiedPath = step.path.getCopy();
 	                          modifiedPath.addEV(edgeMap.getValue().getEdgeId(), otherVID);
-	                          System.out.println("ACTUALPATH:" +step.path.toString());
-	                          System.out.println("MODIFIEDPATH:" + modifiedPath.toString());
+//	                          System.out.println("ACTUALPATH:" +step.path.toString());
+//	                          System.out.println("MODIFIEDPATH:" + modifiedPath.toString());
 	                          
 	                          // if endvertex is found then send results to rootSubgraph and send stop message to all partitions
 	                          // to reduce depth of reachability query
 	                          if(!edgeMap.getValue().isRemote()){
 	                            vertexValue= otherVertex.getValue().get(propertyName).toString();
-	                            System.out.println("Comparing Vertex Value:" + vertexValue + " with Property Value:" + propertyValue);
+//	                            System.out.println("Comparing Vertex Value:" + vertexValue + " with Property Value:" + propertyValue);
 	                            if (propertyValue.equals(vertexValue)) {
 //	                              System.out.println("MATCH FOUND");
 	                              // Root vertex is local. Add Resultant Path from the traversal step to results.
@@ -518,15 +518,15 @@ for(Map.Entry<Long,StringBuilder> remoteSubgraphMessage: getSubgraph().getSubgra
 //                          step.path.addEV(edge.getEdgeId().get(), otherVID);
                           Path modifiedPath = step.path.getCopy();
                           modifiedPath.addEV(edge.getEdgeId().get(), otherVID);
-                          System.out.println("ACTUALPATH:" +step.path.toString());
-                          System.out.println("MODIFIEDPATH:" + modifiedPath.toString());
+//                          System.out.println("ACTUALPATH:" +step.path.toString());
+//                          System.out.println("MODIFIEDPATH:" + modifiedPath.toString());
                           
                           // if endvertex is found then send results to rootSubgraph and send stop message to all partitions
                           // to reduce depth of reachability query
                           if(!otherVertex.isRemote()){
                             vertexValue= otherVertex.getValue().get(propertyName).toString();
                             if (propertyValue.toString().equals(vertexValue)) {
-                              System.out.println("MATCH FOUND");
+//                              System.out.println("MATCH FOUND");
                               // Root vertex is local. Add Resultant Path from the traversal step to results.
                                  if (step.rootSubgraph == sgid) {
                                    ArrayList<Path> results = state.results.get(step.rootVertex);
@@ -685,7 +685,7 @@ for(Map.Entry<Long,StringBuilder> remoteSubgraphMessage: getSubgraph().getSubgra
 						        "Received a result message for which current subgraph does not have a result entry. Root vertex ID:"
 						                + entry.getKey() + "; Current Subgraph ID:" + sgid);
 					}
-					System.out.println("Got Remote Results back");  
+//					System.out.println("Got Remote Results back");  
 					for(DataReader reader:entry.getValue() ){
 					// copy all triples from remote results message to local resultset
 					  
@@ -713,7 +713,7 @@ for(Map.Entry<Long,StringBuilder> remoteSubgraphMessage: getSubgraph().getSubgra
 					}
 
 					// add traversal message to local queue
-					System.out.println("Adding Remote Traversal to Queue:" + stepResult.path.toString());
+//					System.out.println("Adding Remote Traversal to Queue:" + stepResult.path.toString());
 					queue.add(stepResult);
 				} // end iteration over traversal steps
 			} // done with traversal message
@@ -758,7 +758,7 @@ for(Map.Entry<Long,StringBuilder> remoteSubgraphMessage: getSubgraph().getSubgra
 		// TODO: We're keeping multiple copies in Map and in message. If we're
 		// bloating memory, we may need to move from Map to message.
 		for (Entry<Long, ResultsWriter> entry : remoteResultsMap.entrySet()) {
-		        System.out.println("Sending Results Back:" + entry.getValue().toString());
+//		        System.out.println("Sending Results Back:" + entry.getValue().toString());
 			sendMessage(new LongWritable(entry.getKey()), new ReachMessage(entry.getValue()));
 		}
 
