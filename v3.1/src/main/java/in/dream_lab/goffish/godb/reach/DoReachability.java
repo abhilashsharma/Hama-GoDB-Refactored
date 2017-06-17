@@ -689,7 +689,7 @@ for(Map.Entry<Long,StringBuilder> remoteSubgraphMessage: getSubgraph().getSubgra
 					for(DataReader reader:entry.getValue() ){
 					// copy all triples from remote results message to local resultset
 					  
-					    currResults.addAll(getPathsFromBytes(reader.getBytes()));
+					    currResults.add(getPathsFromBytes(reader.getBytes()));
 					}
 				}
 
@@ -772,11 +772,11 @@ for(Map.Entry<Long,StringBuilder> remoteSubgraphMessage: getSubgraph().getSubgra
 	}
 
 
-	private ArrayList<Path> getPathsFromBytes(byte[] pathBytes) throws IOException {
+	private Path getPathsFromBytes(byte[] pathBytes) throws IOException {
     // TODO Auto-generated method stub
 	  System.out.println("GETTING PATH:");
 	  DataReader reader = DataReader.newInstance(pathBytes);
-	  ArrayList<Path> pathList=new ArrayList<>();
+//	  ArrayList<Path> pathList=new ArrayList<>();
 	  boolean eof = false;
 	  Path p = new Path(reader.readLong());
 	  while (!eof) {
@@ -788,15 +788,13 @@ for(Map.Entry<Long,StringBuilder> remoteSubgraphMessage: getSubgraph().getSubgra
 
 	             p.addEV(reader.readLong(), reader.readLong());
 	           
-	           System.out.println(p.toString());
-	           pathList.add(p);
 	          // read and use data
 	      } catch (IOException e) {
 	          eof = true;
 	      }
 	  }
 	  
-    return pathList;
+    return p;
   }
 
 
