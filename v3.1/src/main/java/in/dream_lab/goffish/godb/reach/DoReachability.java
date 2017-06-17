@@ -772,20 +772,22 @@ for(Map.Entry<Long,StringBuilder> remoteSubgraphMessage: getSubgraph().getSubgra
 	}
 
 
-	private ArrayList<Path> getPathsFromBytes(byte[] pathBytes) {
+	private ArrayList<Path> getPathsFromBytes(byte[] pathBytes) throws IOException {
     // TODO Auto-generated method stub
 	  System.out.println("GETTING PATH:");
 	  DataReader reader = DataReader.newInstance(pathBytes);
 	  ArrayList<Path> pathList=new ArrayList<>();
 	  boolean eof = false;
+	  Path p = new Path(reader.readLong());
 	  while (!eof) {
 	      try {
-	           int pathSize=reader.readInt();
-	           System.out.println("Path Size:" + pathSize);
-	           Path p = new Path(reader.readLong());
-	           for(int i=1;i<pathSize;i+=2){
+//	           int pathSize=reader.readInt();
+//	           pathSize=reader.readInt();
+//	           System.out.println("Path Size:" + pathSize);
+	           
+
 	             p.addEV(reader.readLong(), reader.readLong());
-	           }
+	           
 	           System.out.println(p.toString());
 	           pathList.add(p);
 	          // read and use data

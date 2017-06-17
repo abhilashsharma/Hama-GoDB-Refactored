@@ -518,9 +518,7 @@ public class ReachMessage implements Writable {
 
 			for (int i = 0; i < vertexCount; i++) {
 				long vertexId = in.readLong();
-//				int tripleCount = in.readInt();
-//				count += tripleCount;
-//				System.out.println("Triple Count Read:"+vertexId+"," + tripleCount);
+				
 				int pathSize=in.readInt();
 				byte[] pathBytes = new byte[8*pathSize];
 //				in.readFully(tripleBytes);
