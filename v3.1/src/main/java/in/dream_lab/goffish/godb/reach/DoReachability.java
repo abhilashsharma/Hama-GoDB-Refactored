@@ -258,7 +258,7 @@ for(Map.Entry<Long,StringBuilder> remoteSubgraphMessage: getSubgraph().getSubgra
 		ReachState state = subgraph.getSubgraphValue();
 		
 		int startPoint=new ReachabilityHeuristicsOptimizer(heuristics, networkCoeff).Optimize(state.query);
-		startPoint=1;//for debugging
+		startPoint=0;//for debugging
 		if(startPoint==1){
 		  state.forwardQueue=false;
 		}
@@ -518,8 +518,8 @@ for(Map.Entry<Long,StringBuilder> remoteSubgraphMessage: getSubgraph().getSubgra
 //                          step.path.addEV(edge.getEdgeId().get(), otherVID);
                           Path modifiedPath = step.path.getCopy();
                           modifiedPath.addEV(edge.getEdgeId().get(), otherVID);
-                          System.out.println("ACTUALPATH:" +step.path.toString());
-                          System.out.println("MODIFIEDPATH:" + modifiedPath.toString());
+//                          System.out.println("ACTUALPATH:" +step.path.toString());
+//                          System.out.println("MODIFIEDPATH:" + modifiedPath.toString());
                           
                           // if endvertex is found then send results to rootSubgraph and send stop message to all partitions
                           // to reduce depth of reachability query
@@ -568,7 +568,7 @@ for(Map.Entry<Long,StringBuilder> remoteSubgraphMessage: getSubgraph().getSubgra
                                           
                                   }
                                   else {
-                                          System.out.println("REMOTE:" + modifiedPath.toString());
+//                                          System.out.println("REMOTE:" + modifiedPath.toString());
                                           // add it to a remote list, to be sent to remote partition where it continues execution
                                           @SuppressWarnings("unchecked")
                                           long remoteSGID =
