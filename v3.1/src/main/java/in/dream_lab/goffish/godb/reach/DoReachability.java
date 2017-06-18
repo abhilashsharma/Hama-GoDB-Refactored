@@ -450,6 +450,7 @@ for(Map.Entry<Long,StringBuilder> remoteSubgraphMessage: getSubgraph().getSubgra
 	                                 
 	                                 if(step.depth < state.query.getDepth())
 	                                     state.query.setDepth(step.depth);
+	                                     LOG.info("Sending STOP Message");
 	                                     sendStopMessage(step.depth);
 	                                     continue;
 	                               }
@@ -759,7 +760,7 @@ for(Map.Entry<Long,StringBuilder> remoteSubgraphMessage: getSubgraph().getSubgra
 		// TODO: We're keeping multiple copies in Map and in message. If we're
 		// bloating memory, we may need to move from Map to message.
 		for (Entry<Long, ResultsWriter> entry : remoteResultsMap.entrySet()) {
-		        System.out.println("Sending Results Back:" + entry.getValue().toString());
+		        LOG.info("Sending Results Back:" + entry.getValue().toString());
 			sendMessage(new LongWritable(entry.getKey()), new ReachMessage(entry.getValue()));
 		}
 
