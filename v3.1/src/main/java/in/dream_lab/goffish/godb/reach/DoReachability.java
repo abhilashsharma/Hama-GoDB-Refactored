@@ -419,8 +419,8 @@ for(Map.Entry<Long,StringBuilder> remoteSubgraphMessage: getSubgraph().getSubgra
 //	                          step.path.addEV(edge.getEdgeId().get(), otherVID);
 	                          Path modifiedPath = step.path.getCopy();
 	                          modifiedPath.addEV(edgeMap.getValue().getEdgeId(), otherVID);
-	                          System.out.println("ACTUALPATH:" +step.path.toString());
-	                          System.out.println("MODIFIEDPATH:" + modifiedPath.toString());
+	                          LOG.info("ACTUALPATH:" +step.path.toString());
+	                          LOG.info("MODIFIEDPATH:" + modifiedPath.toString());
 	                          
 	                          // if endvertex is found then send results to rootSubgraph and send stop message to all partitions
 	                          // to reduce depth of reachability query
@@ -428,7 +428,7 @@ for(Map.Entry<Long,StringBuilder> remoteSubgraphMessage: getSubgraph().getSubgra
 	                            vertexValue= otherVertex.getValue().get(propertyName).toString();
 //	                            System.out.println("Comparing Vertex Value:" + vertexValue + " with Property Value:" + propertyValue);
 	                            if (propertyValue.equals(vertexValue)) {
-	                              System.out.println("MATCH FOUND");
+	                              LOG.info("MATCH FOUND");
 	                              // Root vertex is local. Add Resultant Path from the traversal step to results.
 	                                 if (step.rootSubgraph == sgid) {
 	                                   ArrayList<Path> results = state.results.get(step.rootVertex);
@@ -444,7 +444,7 @@ for(Map.Entry<Long,StringBuilder> remoteSubgraphMessage: getSubgraph().getSubgra
 	                                                 remoteResults = new ResultsWriter();
 	                                                 remoteResultsMap.put(step.rootSubgraph, remoteResults);
 	                                         }
-	                                         System.out.println("REMOTERESULT PATH:" + modifiedPath.toString());
+	                                         LOG.info("REMOTERESULT PATH:" + modifiedPath.toString());
 	                                         remoteResults.addResult(step.rootVertex, step.targetVertex, edgeMap.getValue().getEdgeId(), otherVID,modifiedPath);
 	                                 }
 	                                 
@@ -471,8 +471,7 @@ for(Map.Entry<Long,StringBuilder> remoteSubgraphMessage: getSubgraph().getSubgra
 	                                  }
 	                                  else {
 	                                          // add it to a remote list, to be sent to remote partition where it continues execution
-	                                          System.out
-                                                      .println("REMOTETRAVERSAL PATH:" + modifiedPath.toString());
+	                                          LOG.info("REMOTETRAVERSAL PATH:" + modifiedPath.toString());
 	                                          @SuppressWarnings("unchecked")
 	                                          long remoteSGID = edgeMap.getValue().getSinkSubgraphId();
 	                                          RevisitTraversalWriter traversalMessage = remoteTraversalMap.get(remoteSGID);
@@ -520,8 +519,8 @@ for(Map.Entry<Long,StringBuilder> remoteSubgraphMessage: getSubgraph().getSubgra
 //                          step.path.addEV(edge.getEdgeId().get(), otherVID);
                           Path modifiedPath = step.path.getCopy();
                           modifiedPath.addEV(edge.getEdgeId().get(), otherVID);
-//                          System.out.println("ACTUALPATH:" +step.path.toString());
-//                          System.out.println("MODIFIEDPATH:" + modifiedPath.toString());
+//                          LOG.info("ACTUALPATH:" +step.path.toString());
+//                          LOG.info("MODIFIEDPATH:" + modifiedPath.toString());
                           
                           // if endvertex is found then send results to rootSubgraph and send stop message to all partitions
                           // to reduce depth of reachability query
