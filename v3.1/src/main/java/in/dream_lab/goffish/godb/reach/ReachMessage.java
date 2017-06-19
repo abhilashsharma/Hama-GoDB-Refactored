@@ -11,6 +11,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.apache.hadoop.io.Writable;
 
 import in.dream_lab.goffish.godb.reach.TraversalStep.TraversalWithPath;
@@ -26,6 +28,7 @@ import in.dream_lab.goffish.godb.util.DataWriter;
  */
 public class ReachMessage implements Writable {
 
+        public static final Log LOG = LogFactory.getLog(ReachMessage.class);
 	// Use LSB+1 and LSB+2 bits for type of message
 	private static final byte TRAVERSAL = 0b0010;
 	private static final byte RESULTS = 0b0000;

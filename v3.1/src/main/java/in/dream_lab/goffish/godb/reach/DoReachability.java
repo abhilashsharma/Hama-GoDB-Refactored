@@ -258,7 +258,7 @@ for(Map.Entry<Long,StringBuilder> remoteSubgraphMessage: getSubgraph().getSubgra
 		ReachState state = subgraph.getSubgraphValue();
 		
 		int startPoint=new ReachabilityHeuristicsOptimizer(heuristics, networkCoeff).Optimize(state.query);
-		startPoint=1;//for debugging
+//		startPoint=1;//for debugging
 		if(startPoint==1){
 		  state.forwardQueue=false;
 		}
@@ -419,16 +419,15 @@ for(Map.Entry<Long,StringBuilder> remoteSubgraphMessage: getSubgraph().getSubgra
 //	                          step.path.addEV(edge.getEdgeId().get(), otherVID);
 	                          Path modifiedPath = step.path.getCopy();
 	                          modifiedPath.addEV(edgeMap.getValue().getEdgeId(), otherVID);
-	                          LOG.info("ACTUALPATH:" +step.path.toString());
-	                          LOG.info("MODIFIEDPATH:" + modifiedPath.toString());
+//	                          LOG.info("ACTUALPATH:" +step.path.toString());
+//	                          LOG.info("MODIFIEDPATH:" + modifiedPath.toString());
 	                          
 	                          // if endvertex is found then send results to rootSubgraph and send stop message to all partitions
 	                          // to reduce depth of reachability query
 	                          if(!edgeMap.getValue().isRemote()){
 	                            vertexValue= otherVertex.getValue().get(propertyName).toString();
-//	                            System.out.println("Comparing Vertex Value:" + vertexValue + " with Property Value:" + propertyValue);
 	                            if (propertyValue.equals(vertexValue)) {
-	                              LOG.info("MATCH FOUND");
+//	                              LOG.info("MATCH FOUND");
 	                              // Root vertex is local. Add Resultant Path from the traversal step to results.
 	                                 if (step.rootSubgraph == sgid) {
 	                                   ArrayList<Path> results = state.results.get(step.rootVertex);
@@ -444,13 +443,13 @@ for(Map.Entry<Long,StringBuilder> remoteSubgraphMessage: getSubgraph().getSubgra
 	                                                 remoteResults = new ResultsWriter();
 	                                                 remoteResultsMap.put(step.rootSubgraph, remoteResults);
 	                                         }
-	                                         LOG.info("REMOTERESULT PATH:" + modifiedPath.toString());
+//	                                         LOG.info("REMOTERESULT PATH:" + modifiedPath.toString());
 	                                         remoteResults.addResult(step.rootVertex, step.targetVertex, edgeMap.getValue().getEdgeId(), otherVID,modifiedPath);
 	                                 }
 	                                 
 	                                 if(step.depth < state.query.getDepth())
 	                                     state.query.setDepth(step.depth);
-	                                     LOG.info("Sending STOP Message");
+//	                                     LOG.info("Sending STOP Message");
 	                                     sendStopMessage(step.depth);
 	                                     continue;
 	                               }
@@ -472,7 +471,7 @@ for(Map.Entry<Long,StringBuilder> remoteSubgraphMessage: getSubgraph().getSubgra
 	                                  }
 	                                  else {
 	                                          // add it to a remote list, to be sent to remote partition where it continues execution
-	                                          LOG.info("REMOTETRAVERSAL PATH:" + modifiedPath.toString());
+//	                                          LOG.info("REMOTETRAVERSAL PATH:" + modifiedPath.toString());
 	                                          @SuppressWarnings("unchecked")
 	                                          long remoteSGID = edgeMap.getValue().getSinkSubgraphId();
 	                                          RevisitTraversalWriter traversalMessage = remoteTraversalMap.get(remoteSGID);
