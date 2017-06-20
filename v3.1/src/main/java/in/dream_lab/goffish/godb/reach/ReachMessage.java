@@ -519,6 +519,7 @@ public class ReachMessage implements Writable {
 
 		public void readFields(DataInput in) throws IOException {
 			// (int)vertexCount, [(long)vertex id, (int)triplecount, bytes]+
+		  try{
 			int vertexCount = in.readInt();
 
 			for (int i = 0; i < vertexCount; i++) {
@@ -544,6 +545,10 @@ public class ReachMessage implements Writable {
 		                }
 				vertexResultsReader.get(vertexId).add( DataReader.newInstance(pathBytes));
 			}
+		  }
+		  catch(Exception e){
+		    e.printStackTrace();
+		  }
 		}
 	}
 
