@@ -656,10 +656,15 @@ public class ReachMessage implements Writable {
                         return w;
                 }
 
-                public void readFields(DataInput in) throws IOException {
+                public void readFields(DataInput in){
                         // (int)vertexCount, [(long)vertex id, (int)triplecount, bytes]+
                         LOG.info("StopReader");
-                        newDepth = in.readInt();
+                        try {
+                          newDepth = in.readInt();
+                        } catch (IOException e) {
+                          // TODO Auto-generated catch block
+                          e.printStackTrace();
+                        }
                 }
         }        
         
