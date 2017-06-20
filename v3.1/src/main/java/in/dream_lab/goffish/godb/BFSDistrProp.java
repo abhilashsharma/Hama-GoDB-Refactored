@@ -409,7 +409,7 @@ AbstractSubgraphComputation<BFSDistrPropSubgraphState, MapValue, MapValue, Text,
 								Document doc = indexSearcher.doc(hits[i].doc);
 								if ( Long.valueOf(doc.get("subgraphid")) == getSubgraph().getSubgraphId().get() ){
 									Long _vertexId = Long.valueOf(doc.get("id"));
-									String _message = "V:"+getSubgraph().getVertexById(new LongWritable(_vertexId)).getValue().get("country").toString();
+									String _message = "V:";//+getSubgraph().getVertexById(new LongWritable(_vertexId)).getValue().get("country").toString();
 //									System.out.println("Test Index:" + _message);
 									getSubgraph().getSubgraphValue().forwardLocalVertexList.add( new VertexMessageSteps(_vertexId,_message, getSubgraph().getSubgraphValue().startPos, _vertexId, getSubgraph().getSubgraphId().get(), 0) );//TODO: remove storing of partition id
 										
