@@ -484,7 +484,10 @@ AbstractSubgraphComputation<BFSDistrPropSubgraphState, MapValue, MapValue, Text,
 				/* if last step,end that iteration*/
 				//System.out.println("Reached:" + vertexMessageStep.vertexId +" BFS: "+vertexMessageStep.message+ "  Path Size:" + vertexMessageStep.stepsTraversed + "/" + Depth);
 				if ( vertexMessageStep.stepsTraversed == getSubgraph().getSubgraphValue().Depth ){
-					
+				  IVertex<MapValue,MapValue,LongWritable,LongWritable> currentVertex = getSubgraph().getVertexById(new LongWritable(vertexMessageStep.vertexId));
+				  StringBuilder _modifiedMsg = new StringBuilder("");
+                                  _modifiedMsg .append(vertexMessageStep.message).append(currentVertex.getValue().get("country"));
+                                  System.out.println("MODIFIEDMSG:" + _modifiedMsg.toString());
 					if (vertexMessageStep.startSubgraphId == getSubgraph().getSubgraphId().get()) {
 						if ( !getSubgraph().getSubgraphValue().resultsMap.containsKey(vertexMessageStep.startVertexId) )
 							getSubgraph().getSubgraphValue().resultsMap.put(vertexMessageStep.startVertexId, new ResultSet());
