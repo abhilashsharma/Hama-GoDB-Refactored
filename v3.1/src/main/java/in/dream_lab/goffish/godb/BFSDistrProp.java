@@ -502,6 +502,12 @@ AbstractSubgraphComputation<BFSDistrPropSubgraphState, MapValue, MapValue, Text,
 				//Step nextStep = path.get(vertexMessageStep.stepsTraversed+1);
 				
 				IVertex<MapValue,MapValue,LongWritable,LongWritable> currentVertex = getSubgraph().getVertexById(new LongWritable(vertexMessageStep.vertexId));
+				Iterable<IEdge<MapValue, LongWritable, LongWritable>> it=currentVertex.getOutEdges();
+				StringBuilder _modifiedMsg = new StringBuilder("");
+				if(!it.iterator().hasNext()){
+				  _modifiedMsg.append(vertexMessageStep.message).append(currentVertex.getValue().get("country"));
+				  vertexMessageStep = new VertexMessageSteps(vertexMessageStep.vertexId, _modifiedMsg.toString(), vertexMessageStep.stepsTraversed, vertexMessageStep.startVertexId, vertexMessageStep.startSubgraphId, vertexMessageStep.startPartitionId);
+				}
 				
 				
 							long count=0;
