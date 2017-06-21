@@ -47,6 +47,7 @@ public class ReachabilityHeuristicsOptimizer implements IQueryOptimizer {
                                     
                                     Double avgDeg = null;
                                     Double avgRemoteDeg = null;
+                                    System.out.println("Hue:"+ heuristics + " propertyName:" + propertyName + " propertyValue:" + propertyValue.toString());
                                     avgDeg = heuristics.vertexPredicateMap.get(propertyName).get(propertyValue.toString()).avgOutDegree; 
                                     avgRemoteDeg = heuristics.vertexPredicateMap.get(propertyName).get(propertyValue.toString()).avgRemoteOutDegree;
                                     if (totalCost!=-1)
