@@ -527,6 +527,7 @@ AbstractSubgraphComputation<BFSDistrPropSubgraphState, MapValue, MapValue, Text,
 							if(count==0){
 							 
 				                                _modifiedMsg.append(vertexMessageStep.message).append(currentVertex.getValue().get("country"));
+				                                System.out.println("MODIFIEDMSG:" + _modifiedMsg.toString());
 				                                vertexMessageStep = new VertexMessageSteps(vertexMessageStep.vertexId, _modifiedMsg.toString(), vertexMessageStep.stepsTraversed, vertexMessageStep.startVertexId, vertexMessageStep.startSubgraphId, vertexMessageStep.startPartitionId);
 				                                
 								if(vertexMessageStep.startSubgraphId!=getSubgraph().getSubgraphId().get()){
