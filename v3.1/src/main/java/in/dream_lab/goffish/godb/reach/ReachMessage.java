@@ -289,7 +289,7 @@ public class ReachMessage implements Writable {
 		public void readFields(DataInput in) throws IOException {
 			// <(int)count> [(long)rootSGID, (long)rootVID, (long)sourceVID,
 			// (long)edgeID, (long)sink/targetVID, (int)depth]>+
-		        LOG.info("TraversalReader");
+//		        LOG.info("TraversalReader");
 			count = in.readInt();
 			steps = new ArrayList<>(count);
 			for (int i = 0; i < count; i++) {
@@ -375,7 +375,7 @@ public class ReachMessage implements Writable {
 		public void readFields(DataInput in) throws IOException {
 			// <(int)count> [(long)rootSGID, (long)rootVID, (long)sink/targetVID,
 			// (int)depth,pathSize,vertex,edge,...,vertex]>+
-		        LOG.info("RevisitTraversalReader");
+//		        LOG.info("RevisitTraversalReader");
 			count = in.readInt();
 			steps = new ArrayList<>(count);
 			for (int i = 0; i < count; i++) {
@@ -524,7 +524,7 @@ public class ReachMessage implements Writable {
 
 			for (int i = 0; i < vertexCount; i++) {
 				long vertexId = in.readLong();
-				LOG.info("ResultReader");
+//				LOG.info("ResultReader");
 				int pathSize=in.readInt();
 				byte[] pathBytes = new byte[8*pathSize];
 //				in.readFully(tripleBytes);
@@ -663,7 +663,7 @@ public class ReachMessage implements Writable {
 
                 public void readFields(DataInput in){
                         // (int)vertexCount, [(long)vertex id, (int)triplecount, bytes]+
-                        LOG.info("StopReader");
+//                        LOG.info("StopReader");
                         try {
                           newDepth = in.readInt();
                         } catch (IOException e) {

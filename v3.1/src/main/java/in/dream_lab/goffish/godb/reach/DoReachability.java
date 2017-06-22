@@ -258,7 +258,8 @@ for(Map.Entry<Long,StringBuilder> remoteSubgraphMessage: getSubgraph().getSubgra
 		ReachState state = subgraph.getSubgraphValue();
 		
 		int startPoint=new ReachabilityHeuristicsOptimizer(heuristics, networkCoeff).Optimize(state.query);
-		startPoint=1;//for debugging
+//		startPoint=1;//for debugging
+		LOG.info("StartPoint:" + startPoint);
 		if(startPoint==1){
 		  state.forwardQueue=false;
 		}
