@@ -40,7 +40,7 @@ public class DoBFSJob {
 		  job.setGraphMessageClass(BFSMessage.class);
 		  job.setInputPath(new Path(args[0]));
 		  job.setOutputPath(new Path(args[1]));
-		  job.setInitialInput(args[2]);
+		  job.setInitialInput(readArgsFromFile(args[2]));
 		  job.setSubgraphValueClass(BFSState.class);
 		  /* Reader configuration */
 		    job.setInputFormat(NonSplitTextInputFormat.class);
@@ -51,9 +51,9 @@ public class DoBFSJob {
 	  }
 	 
 	 
-	 static String  readArgsFromFile() throws IOException{
+	 static String  readArgsFromFile(String fileName) throws IOException{
 	   String Args="";
-	   String fileName="/home/abhilash/abhilash/multipleArguments.txt";
+//	   String fileName="/home/abhilash/abhilash/multipleArguments.txt";
 	   FileReader fr = new FileReader(fileName);
            BufferedReader br = new BufferedReader(fr);
 
