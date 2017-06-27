@@ -283,6 +283,9 @@ public class DoBFS extends
 
 					// Is other vertex visited?
 					BitSet otherVisited = state.visited.get(otherVID);
+					if(otherVisited==null)
+					  state.visited.put(otherVID, new BitSet());
+					
 					if (otherVisited.get(rootBit)) // already visited for this root
 						continue;
 					else
