@@ -188,7 +188,7 @@ public class DoBFS extends
 		////////////////////////////////////////////
 		// SUPERSTEP 1: QUERY FOR ROOT VERTICES
 		////////////////////////////////////////////
-
+		LOG.info("Starting Query Execution");
 		// Local BFS queue
 		Queue<TraversalStep> queue;
 		// Map from remote SGID to list of steps for it
@@ -462,6 +462,7 @@ public class DoBFS extends
 
 	@Override
 	public void wrapup() throws IOException {
+	  LOG.info("Ending Query Execution");
 		// Writing results
 		BFSState state = getSubgraph().getSubgraphValue();
 		LOG.info("BFS TIME,messageReceiveTimeMillis," + state.messageReceiveTimeMillis + ",messageSendTimeMillis,"
