@@ -21,7 +21,6 @@ import in.dream_lab.goffish.godb.path.DoPath.OutputPathKey;
 import in.dream_lab.goffish.godb.path.DoPath.Pair;
 import in.dream_lab.goffish.godb.path.DoPath.RecursivePathKey;
 import in.dream_lab.goffish.godb.path.DoPath.RecursivePathMaintained;
-import in.dream_lab.goffish.godb.path.TraversalStep.TraversalWithPath;
 import in.dream_lab.goffish.godb.path.TraversalStep.TraversalWithState;
 
 public class PathState implements Writable {
