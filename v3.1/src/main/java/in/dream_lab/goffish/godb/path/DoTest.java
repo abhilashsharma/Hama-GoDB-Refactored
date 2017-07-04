@@ -1659,6 +1659,7 @@ for(Map.Entry<Long,StringBuilder> remoteSubgraphMessage: getSubgraph().getSubgra
                           }
           }
   LOG.info("Cumulative Result Collection:" +  state.resultCollectionTime);        
+          clear();
 	}
 
 
