@@ -1020,7 +1020,7 @@ for(Map.Entry<Long,StringBuilder> remoteSubgraphMessage: getSubgraph().getSubgra
                                                         }
                                                 }
                                                 
-//                                      System.out.println("Starting Position:" + state.startPos +"  Query min Cost:" + minCost + "   Path Size:" + state.path.size()); 
+                                      System.out.println("Starting Position:" + state.startPos +"  Query min Cost:" + minCost + "   Path Size:" + state.path.size()); 
 //                                      System.out.println("*******Querying done********:"+hits.length);
                                         
                                                 if(hits.length>0){
