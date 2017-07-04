@@ -6,8 +6,10 @@ import java.io.IOException;
 import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.ListIterator;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.regex.Pattern;
@@ -19,6 +21,7 @@ import org.apache.hadoop.io.LongWritable;
 import org.apache.hadoop.io.Text;
 import org.apache.lucene.analysis.Analyzer;
 import org.apache.lucene.analysis.standard.StandardAnalyzer;
+import org.apache.lucene.document.Document;
 import org.apache.lucene.index.DirectoryReader;
 import org.apache.lucene.index.IndexReader;
 import org.apache.lucene.index.Term;
@@ -59,7 +62,10 @@ import in.dream_lab.goffish.godb.path.DoPath.Pair;
 import in.dream_lab.goffish.godb.path.DoPath.RecursivePathKey;
 import in.dream_lab.goffish.godb.path.DoPath.RecursivePathMaintained;
 import in.dream_lab.goffish.godb.path.PathMessage.InEdgesWriter;
+import in.dream_lab.goffish.godb.path.PathMessage.ResultsReader;
 import in.dream_lab.goffish.godb.path.PathMessage.ResultsWriter;
+import in.dream_lab.goffish.godb.path.PathMessage.RevisitTraversalReader;
+import in.dream_lab.goffish.godb.path.PathMessage.RevisitTraversalWriter;
 import in.dream_lab.goffish.godb.path.PathMessage.ResultsReader.OutputReader;
 import in.dream_lab.goffish.godb.path.PathMessage.RevisitTraversalReader.TraversalMsg;
 import in.dream_lab.goffish.godb.path.TraversalStep.TraversalWithState;
@@ -186,7 +192,7 @@ public class DoTest extends
 	// FIXME: We're copying this to the subgraph state in sstep 0. Is that fine?
 	String queryParam;
 	Double networkCoeff=49.57;
-	Hueristics heuristics=null;
+	Hueristics hueristics=null;
 	/**
 	 * Initialize BFS query with query string
 	 * 
@@ -366,7 +372,7 @@ public class DoTest extends
                 }catch(Exception e){e.printStackTrace();}
 		
 		//Load Heuristics
-		heuristics=HueristicsLoad.getInstance();
+		hueristics=HueristicsLoad.getInstance();
 		
 		//create InEdges
 		if(state.InEdges==null){
@@ -784,6 +790,839 @@ for(Map.Entry<Long,StringBuilder> remoteSubgraphMessage: getSubgraph().getSubgra
 		        return;
 		}
 		
+		
+	              // RUNTIME FUNCTIONALITITES 
+                {
+                  
+                        // COMPUTE-LOAD-INIT
+                        if(getSuperstep()==2){
+                                if(!queryStart){
+                                queryStart=true;  
+                                LOG.info("Starting Query Execution");
+                                 queryEnd=false;
+                                }
+                                // COMPUTE HUERISTIC BASED QUERY COST
+                                {
+                                        // TODO: implementation for calc cost from middle of query ( for each position calc cost forward and backward cost and add them)
+                                        
+                                        for (int pos = 0;pos < state.path.size() ; pos+=2 ){
+                                                Double joinCost = new Double(0);
+                                                //forward cost
+                                                {       
+                                                        Double totalCost = new Double(0);
+                                                        Double prevScanCost = hueristics.numVertices;
+                                                        Double resultSetNumber = hueristics.numVertices;
+                                                        ListIterator<Step> It = state.path.listIterator(pos);
+                                                        //Iterator<Step> It = path.iterator();
+                                                        Step currentStep = It.next();
+                                                        
+                                                        while(It.hasNext()){
+                                                                //cost calc
+                                                                // TODO: make cost not count in probability when no predicate on edge/vertex
+                                                                {
+                                                                        Double probability = null;
+                                                                        
+                                                                        if ( currentStep.property == null )
+                                                                                probability = new Double(1);
+                                                                        else {
+                                                                                if ( hueristics.vertexPredicateMap.get(currentStep.property).containsKey(currentStep.value.toString()) ){
+                                                                                        probability = hueristics.vertexPredicateMap.get(currentStep.property).get(currentStep.value.toString()).probability;
+                                                                                        //System.out.println("Vertex Probability:" + probability);
+                                                                                }       
+                                                                                else {
+                                                                                        totalCost = new Double(-1);
+                                                                                        break;
+                                                                                }
+                                                                        }
+                                                                        resultSetNumber *= probability;
+                                                                        Double avgDeg = new Double(0);
+                                                                        Double avgRemoteDeg = new Double(0);
+                                                                        Step nextStep = It.next();
+                                                                        if(nextStep.direction == Direction.OUT){
+                                                                                if ( currentStep.property == null) {
+                                                                                        avgDeg = hueristics.numEdges/hueristics.numVertices;
+                                                                                        avgRemoteDeg = hueristics.numRemoteVertices/(hueristics.numVertices+hueristics.numRemoteVertices) * avgDeg;
+                                                                                        //System.out.println("AVGDEG:" +avgDeg + "REMOTEAVGDEG:" + avgRemoteDeg);
+                                                                                }       
+                                                                                else { 
+                                                                                        avgDeg = hueristics.vertexPredicateMap.get(currentStep.property).get(currentStep.value.toString()).avgOutDegree; 
+                                                                                        avgRemoteDeg = hueristics.vertexPredicateMap.get(currentStep.property).get(currentStep.value.toString()).avgRemoteOutDegree;
+                                                                                        //System.out.println("AVGDEG:" +avgDeg + "REMOTEAVGDEG:" + avgRemoteDeg);
+                                                                                }       
+                                                                        }else if(nextStep.direction == Direction.IN){
+                                                                                if ( currentStep.property == null) {
+                                                                                        avgDeg = hueristics.numEdges/hueristics.numVertices;
+                                                                                        avgRemoteDeg = hueristics.numRemoteVertices/(hueristics.numVertices+hueristics.numRemoteVertices) * avgDeg;
+                                                                                        //System.out.println("AVGDEG:" +avgDeg + "REMOTEAVGDEG:" + avgRemoteDeg);
+                                                                                }       
+                                                                                else { 
+                                                                                        avgDeg = hueristics.vertexPredicateMap.get(currentStep.property).get(currentStep.value.toString()).avgInDegree;
+                                                                                        avgRemoteDeg = hueristics.vertexPredicateMap.get(currentStep.property).get(currentStep.value.toString()).avgRemoteInDegree;
+                                                                                        //System.out.println("AVGDEG:" +avgDeg + "REMOTEAVGDEG:" + avgRemoteDeg);
+                                                                                }               
+                                                                        }
+                                                                        resultSetNumber *= (avgDeg+avgRemoteDeg); 
+                                                                        Double eScanCost = prevScanCost * probability * avgDeg;
+                                                                        Double networkCost = new Double(0);
+                                                                        Double vScanCost = new Double(0);
+                                                                        if(nextStep.property == null)
+                                                                                vScanCost = eScanCost;
+                                                                        else {
+                                                                                //output(partition.getId(), subgraph.getId(),nextStep.property);
+                                                                                //output(partition.getId(), subgraph.getId(),nextStep.value.toString());
+                                                                                //output(partition.getId(), subgraph.getId(),String.valueOf(hueristics.edgePredicateMap.size()));
+                                                                                //output(partition.getId(), subgraph.getId(),String.valueOf(pos));
+                                                                                //output(partition.getId(), subgraph.getId(),hueristics.edgePredicateMap.get(nextStep.property).get(nextStep.value.toString()).probability.toString());
+                                                                                //System.out.println(nextStep.property+":"+nextStep.value);
+                                                                                if ( hueristics.edgePredicateMap.get(nextStep.property).containsKey(nextStep.value.toString()) ) {
+                                                                                        vScanCost = eScanCost * hueristics.edgePredicateMap.get(nextStep.property).get(nextStep.value.toString()).probability;
+                                                                                        networkCost = state.networkCoeff * prevScanCost * probability * avgRemoteDeg * hueristics.edgePredicateMap.get(nextStep.property).get(nextStep.value.toString()).probability;
+                                                                                        resultSetNumber *= hueristics.edgePredicateMap.get(nextStep.property).get(nextStep.value.toString()).probability;
+                                                                                        //System.out.println("Edge:" + hueristics.edgePredicateMap.get(nextStep.property).get(nextStep.value.toString()).probability);
+                                                                                }
+                                                                                else {
+                                                                                        totalCost = new Double(-1);
+                                                                                        break;
+                                                                                }
+                                                                        }
+                                                                        totalCost += (eScanCost+vScanCost+networkCost);
+                                                                        prevScanCost = vScanCost;
+                                                                        currentStep = It.next();
+                                                                }       
+                                                                                                
+                                                        }
+                                                        joinCost += resultSetNumber;
+                                                        state.queryCostHolder[pos] = totalCost;
+                                                        
+//                                                      System.out.println(pos+":"+"for:"+String.valueOf(totalCost));
+                                                }
+                                                //reverse cost
+                                                {
+                                                        Double totalCost = new Double(0);
+                                                        Double prevScanCost = hueristics.numVertices;
+                                                        Double resultSetNumber = hueristics.numVertices;
+
+                                                        ListIterator<Step> revIt = state.path.listIterator(pos+1);
+                                                        Step currentStep = revIt.previous();
+                                                        while(revIt.hasPrevious()){
+                                                                // TODO: make cost not count in probability when no predicate on edge/vertex
+                                                                {
+                                                                        Double probability = null;
+                                                                        if ( currentStep.property == null )
+                                                                                probability = new Double(1);
+                                                                        else {
+                                                                                if ( hueristics.vertexPredicateMap.get(currentStep.property).containsKey(currentStep.value.toString()) )
+                                                                                        probability = hueristics.vertexPredicateMap.get(currentStep.property).get(currentStep.value.toString()).probability;
+                                                                                else {
+                                                                                        totalCost = new Double(-1);
+                                                                                        break;
+                                                                                }
+                                                                        }
+                                                                        resultSetNumber *= probability;
+                                                                        Double avgDeg = new Double(0);
+                                                                        Double avgRemoteDeg = new Double(0);
+                                                                        Step nextStep = revIt.previous();
+                                                                        if(nextStep.direction == Direction.OUT){
+                                                                                if ( currentStep.property == null) {
+                                                                                        avgDeg = hueristics.numEdges/hueristics.numVertices;
+                                                                                        avgRemoteDeg = hueristics.numRemoteVertices/(hueristics.numVertices+hueristics.numRemoteVertices) * avgDeg;
+                                                                                }
+                                                                                else {
+                                                                                        avgDeg = hueristics.vertexPredicateMap.get(currentStep.property).get(currentStep.value.toString()).avgInDegree; 
+                                                                                        avgRemoteDeg = hueristics.vertexPredicateMap.get(currentStep.property).get(currentStep.value.toString()).avgRemoteInDegree;
+                                                                                }       
+                                                                        }else if(nextStep.direction == Direction.IN){
+                                                                                if ( currentStep.property == null) {
+                                                                                        avgDeg = hueristics.numEdges/hueristics.numVertices;
+                                                                                        avgRemoteDeg = hueristics.numRemoteVertices/(hueristics.numVertices+hueristics.numRemoteVertices) * avgDeg;
+                                                                                }
+                                                                                else { 
+                                                                                        avgDeg = hueristics.vertexPredicateMap.get(currentStep.property).get(currentStep.value.toString()).avgOutDegree;
+                                                                                        avgRemoteDeg = hueristics.vertexPredicateMap.get(currentStep.property).get(currentStep.value.toString()).avgRemoteOutDegree;
+                                                                                }       
+                                                                        }
+                                                                        resultSetNumber *= (avgDeg+avgRemoteDeg);
+                                                                        Double eScanCost = prevScanCost * probability * avgDeg;
+                                                                        Double vScanCost = new Double(0);
+                                                                        Double networkCost = new Double(0);
+                                                                        if(nextStep.property == null)
+                                                                                vScanCost = eScanCost;
+                                                                        else {
+                                                                                if ( hueristics.edgePredicateMap.get(nextStep.property).containsKey(nextStep.value.toString()) ) {
+                                                                                        vScanCost = eScanCost * hueristics.edgePredicateMap.get(nextStep.property).get(nextStep.value.toString()).probability;
+                                                                                        networkCost = state.networkCoeff * prevScanCost * probability * avgRemoteDeg * hueristics.edgePredicateMap.get(nextStep.property).get(nextStep.value.toString()).probability;
+                                                                                        resultSetNumber *= hueristics.edgePredicateMap.get(nextStep.property).get(nextStep.value.toString()).probability;
+                                                                                }
+                                                                                else {
+                                                                                        totalCost = new Double(-1);
+                                                                                        break;
+                                                                                }
+                                                                        }
+                                                                        totalCost += (eScanCost+vScanCost);
+                                                                        prevScanCost = vScanCost;
+                                                                        currentStep = revIt.previous();
+                                                                }
+                                                        }
+                                                        joinCost *= resultSetNumber;
+                                                        if ( state.queryCostHolder[pos] != -1 && totalCost != -1) {
+                                                                state.queryCostHolder[pos] += totalCost;
+                                                                if (pos!=0 && pos!= state.path.size()-1)
+                                                                        state.queryCostHolder[pos] += joinCost;
+                                                        }
+                                                        else
+                                                                state.queryCostHolder[pos] = new Double(-1);
+                                                        
+                                                }
+                                                /* add that extra cost of initial scan*/
+                                                //TODO: Add 1 when indexed
+                                                if ( state.queryCostHolder[pos] != -1 )
+                                                {
+                                                        if(!initDone)
+                                                                state.queryCostHolder[pos] += hueristics.numVertices;
+                                                        else
+                                                                state.queryCostHolder[pos] +=1;
+                                                                
+                                                }
+//                                              System.out.println(pos+":Total:"+String.valueOf(state.queryCostHolder[pos]));
+                                        }
+                                         
+                                }
+                                
+                                
+                                
+                                
+                                // LOAD START VERTICES
+                                {
+                                       
+                                        Double minCost = state.queryCostHolder[state.startPos];
+                                        boolean queryPossible = true;
+                                        for (int i = 0; i < state.queryCostHolder.length ; i++) {
+                                                if ( state.queryCostHolder[i]!=0 && state.queryCostHolder[i]!=-1 && state.queryCostHolder[i] < minCost ){
+                                                        minCost=state.queryCostHolder[i];
+                                                        state.startPos = i;
+                                                }
+                                                if( state.queryCostHolder[i]==-1 )
+                                                        queryPossible = false;
+                                        }
+                                        
+                                        String currentProperty = null;
+                                        Object currentValue = null;
+//                                      startPos=0;//used for debugging
+                                        currentProperty = state.path.get(state.startPos).property; 
+                                        currentValue = state.path.get(state.startPos).value;
+                                        
+                                        // TODO: check if the property is indexed** uncomment this if using indexes
+                                        long QueryId=getQueryId();
+                                        try{
+                                                synchronized(queryLock){
+                                                        if(!queryMade){
+                                                                makeQuery(currentProperty,currentValue);
+                                                        }
+                                                }
+                                                
+//                                      System.out.println("Starting Position:" + state.startPos +"  Query min Cost:" + minCost + "   Path Size:" + state.path.size()); 
+//                                      System.out.println("*******Querying done********:"+hits.length);
+                                        
+                                                if(hits.length>0){
+                                                        for (int i=0;i<hits.length;i++){
+                                                                Document doc = indexSearcher.doc(hits[i].doc);
+                                                                if ( Long.valueOf(doc.get("subgraphid")) == getSubgraph().getSubgraphId().get() ){
+                                                                        Long _vertexId = Long.valueOf(doc.get("id"));
+                                                                        String _message = "V:"+String.valueOf(_vertexId);
+//                                                                      System.out.println("STARTING VERTEX:" + _message);
+                                                                        //(long sg_, long r_, long t_,long pg_,int sd_,long sv_,  int d_, Path p_)
+                                                                        PathWithDir p = new PathWithDir(_vertexId);
+                                                                        long qid=getQueryId();
+                                                                        if ( state.startPos == 0)
+                                                                          state.forwardLocalVertexList.add( new TraversalWithState(qid,getSubgraph().getSubgraphId().get(),_vertexId,_vertexId, getSubgraph().getSubgraphId().get(), state.startPos,_vertexId, state.startPos, p) );
+                                                                        else
+                                                                        if( state.startPos == (state.path.size()-1))
+                                                                          state.revLocalVertexList.add( new TraversalWithState(qid,getSubgraph().getSubgraphId().get(),_vertexId,_vertexId, getSubgraph().getSubgraphId().get(), state.startPos,_vertexId, state.startPos, p) );
+                                                                        else{
+                                                                          state.forwardLocalVertexList.add( new TraversalWithState(qid,getSubgraph().getSubgraphId().get(),_vertexId,_vertexId, getSubgraph().getSubgraphId().get(), state.startPos,_vertexId, state.startPos, p) );
+                                                                          state.revLocalVertexList.add( new TraversalWithState(qid,getSubgraph().getSubgraphId().get(),_vertexId,_vertexId, getSubgraph().getSubgraphId().get(), state.startPos,_vertexId, state.startPos, p) );
+                                                                        }
+                                                                                
+//                                                                      state.forwardLocalVertexList.add( new TraversalWithState(_vertexId,_message,0) );
+                                                                }
+                                                        }
+                                                }
+                                                
+                                        }catch(Exception e){e.printStackTrace();}
+                                        
+                
+                                        // TODO : else iteratively check for satisfying vertices
+//                                      if ( queryPossible == true )
+//                                      for(IVertex<MapWritable, MapWritable, LongWritable, LongWritable> vertex: getSubgraph().getLocalVertices()) {
+//                                              if ( vertex.isRemote() ) continue;
+//                                              
+//                                              if ( compareValuesUtil(vertex.getValue().get(new Text(currentProperty)).toString(), currentValue.toString()) ) {
+//                                                      String _message = "V:"+String.valueOf(vertex.getVertexId().get());
+//                                                      System.out.println("Vertex id:" + vertex.getVertexId().get() + "Property:"+currentProperty +" Value:" + vertex.getValue().get(new Text(currentProperty)).toString());
+//                                                      if ( state.startPos == 0)
+//                                                              state.forwardLocalVertexList.add( new TraversalWithState(QueryId,vertex.getVertexId().get(),_message, state.startPos, vertex.getVertexId().get(),state.startPos, getSubgraph().getSubgraphId().get(), 0) );
+//                                                      else
+//                                                      if( state.startPos == (state.path.size()-1))
+//                                                              state.revLocalVertexList.add( new TraversalWithState(QueryId,vertex.getVertexId().get(),_message, state.startPos , vertex.getVertexId().get(),state.startPos, getSubgraph().getSubgraphId().get(), 0) );
+//                                                      else{
+//                                                              state.forwardLocalVertexList.add( new TraversalWithState(QueryId,vertex.getVertexId().get(),_message, state.startPos, vertex.getVertexId().get(),state.startPos, getSubgraph().getSubgraphId().get(), 0) );
+//                                                              state.revLocalVertexList.add( new TraversalWithState(QueryId,vertex.getVertexId().get(),_message, state.startPos , vertex.getVertexId().get(),state.startPos, getSubgraph().getSubgraphId().get(), 0) );
+//                                                      }
+//                                                      //output(partition.getId(), subgraph.getId(), subgraphProperties.getValue(currentProperty).toString());
+//                                              }
+//                                      }
+                                        
+                                        
+                                        Iterator msgIter=messages.iterator();
+                                        while(msgIter.hasNext()){
+                                          msgIter.remove();
+                                        }
+                                }
+                                
+                        }
+                        
+                        
+                        // CHECK MSSG-PROCESS FORWARD-PROCESS BACKWARD
+                        if(getSuperstep()>=2) {
+                        
+                                // CHECK INCOMING MESSAGE, ADD VERTEX TO APPRT LIST
+                                // this is for the partially executed paths, which have been 
+                                // forwarded from a different machine
+                                
+                                        for (IMessage<LongWritable, PathMessage> message: messages){
+                                          PathMessage msg = message.getMessage();
+                                          if (msg.getMessageType() == PathMessage.RESULTS_READER) {
+                                            ResultsReader resultsReader = msg.getResultsReader();
+                                            Map<Long, ArrayList<OutputReader>> newResults = resultsReader.getResults();
+                                            
+                                            for (Entry<Long, ArrayList<OutputReader>> entry : newResults.entrySet()) {
+                                              
+                                              for(OutputReader o: entry.getValue()){
+                                                  //joining each path
+                                                  join(entry.getKey(),o);
+                                              }
+                                            }
+                                            
+                                          }
+                                          else if (msg.getMessageType() == PathMessage.REVISIT_TRAVERSAL_READER) {
+                                                RevisitTraversalReader resultsReader = msg.getRevisitTraversalReader();
+                                                List<TraversalMsg> stepList = resultsReader.getRevisitTraversals();
+                                                
+                                                for(TraversalMsg traversal:stepList){
+                                                  TraversalWithState v=processMessage(traversal) ;
+                                                  if(v!=null){
+                                                          if(!traversal.dir)
+                                                                  state.revLocalVertexList.add( v );
+                                                          else
+                                                                  state.forwardLocalVertexList.add( v ); 
+                                                  }
+                                                }
+                                            
+                                          }
+                                                
+                                                
+                                        }
+        
+                                
+                        
+                        //output(partition.getId(), subgraph.getId(), getSuperstep()+":"+forwardLocalVertexList.size()+":"+revLocalVertexList.size());
+                        // PROCESS FORWARD LIST
+                        //System.out.println("FORWARD LIST:"+forwardLocalVertexList.isEmpty() +" REV LIST:"+revLocalVertexList.isEmpty() + "SGID:" + subgraph.getId() + " PID:" + partition.getId());
+                        while(!state.forwardLocalVertexList.isEmpty()) {
+                                TraversalWithState vertexMessageStep = state.forwardLocalVertexList.poll();
+                                //output(partition.getId(), subgraph.getId(), "FORWARD-LIST");
+                                /* if last step,end that iteration*/
+                                //System.out.println("Reached:" + vertexMessageStep.startVertexId + " Path Size:" + vertexMessageStep.stepsTraversed + "/" + (path.size()-1));
+                                if ( vertexMessageStep.depth == state.path.size()-1 ){
+                                        // TODO :gather instead of output 
+                                        //output(partition.getId(), subgraph.getId(), vertexMessageStep.message);
+                                        // send this as a reduceMessage
+                                        //if (vertexMessageStep.previousSubgraphId == subgraph.getId()) {
+                                        //      if ( !resultsMap.containsKey(vertexMessageStep.startVertexId) )
+                                        //              resultsMap.put(vertexMessageStep.startVertexId, new ResultSet());
+                                        //      resultsMap.get(vertexMessageStep.startVertexId).forwardResultSet.add(vertexMessageStep.message);
+                                        //      
+                                        //}     
+//                                      else {
+//                                              forwardOutputToSubgraph(1,vertexMessageStep);
+//                                              output(partition.getId(), subgraph.getId(), "output();for();"+vertexMessageStep.message);
+//                                      }
+                                        
+//                                      if (!recursivePaths.containsKey(vertexMessageStep.vertexId))
+//                                      {
+//                                              ArrayList<RecursivePathMaintained> tempList = new ArrayList<RecursivePathMaintained>();
+//                                              tempList.add(new RecursivePathMaintained(vertexMessageStep.startVertexId, vertexMessageStep.message,0));
+//                                              recursivePaths.put( vertexMessageStep.vertexId, tempList);
+//                                      }
+//                                      else{
+//                                              recursivePaths.get(vertexMessageStep.vertexId).add(new RecursivePathMaintained(vertexMessageStep.startVertexId, vertexMessageStep.message,0));
+//                                      }
+//                                      System.out.println("Querying Output Path:" + vertexMessageStep.queryId+","+vertexMessageStep.startStep+","+true+","+vertexMessageStep.startVertexId );
+                                        if(state.outputPathMaintainance.containsKey(new OutputPathKey(vertexMessageStep.queryId,vertexMessageStep.depth,true,vertexMessageStep.startVertex))){
+                                                forwardOutputToSubgraph(1,vertexMessageStep);
+                                        }
+                                        else{
+                                            time=System.currentTimeMillis();
+                                                if ( !state.resultsMap.containsKey(vertexMessageStep.startVertex) )
+                                                        state.resultsMap.put(vertexMessageStep.startVertex, new ResultSet());
+                                                //System.out.println("MESSAGE ADDED TO FORWARDRESULTSET:" + vertexMessageStep.message);
+                                                state.resultsMap.get(vertexMessageStep.startVertex).forwardResultSet.add(vertexMessageStep.path.toString());
+                                                state.resultCollectionTime+=(System.currentTimeMillis()-time);
+                                        }
+                                                
+                                        continue;
+                                }
+                                
+                                Step nextStep = state.path.get(vertexMessageStep.depth+1);
+                                
+                                
+                                IVertex<MapValue, MapValue, LongWritable, LongWritable> currentVertex = getSubgraph().getVertexById(new LongWritable(vertexMessageStep.targetVertex));
+                                
+                                if( nextStep.type == Type.EDGE ) {
+                                        
+                                        if ( nextStep.direction == Direction.OUT ) {
+                                                /* null predicate handling*/
+                                                //int count=0;
+                                                boolean flag=false;
+                                                boolean addFlag=false;
+                                                if ( nextStep.property == null && nextStep.value == null ) {
+                                                        for( IEdge<MapValue, LongWritable, LongWritable> edge: currentVertex.getOutEdges()) {
+                                                                //count++;
+//                                                              System.out.println("Traversing edges");
+                                                                IVertex<MapValue, MapValue, LongWritable, LongWritable> otherVertex = getSubgraph().getVertexById(edge.getSinkVertexId());
+                                                                long currentVertexId=otherVertex.getVertexId().get();
+                                                                long currentEdgeId=edge.getEdgeId().get();
+                                                                PathWithDir modifiedPath = vertexMessageStep.path.getCopy();
+                                                                 modifiedPath.addEV(currentEdgeId, currentVertexId,true);
+                                                                if ( !otherVertex.isRemote() ) {
+//                                                                      System.out.println("Path Till Now:" + _modifiedMessage.toString());
+//                                                                      state.forwardLocalVertexList.add(new TraversalWithState(vertexMessageStep.queryId,otherVertex.getVertexId().get(),_modifiedMessage.toString(),vertexMessageStep.stepsTraversed+1, vertexMessageStep.startVertexId,vertexMessageStep.startStep, vertexMessageStep.previousSubgraphId, vertexMessageStep.previousPartitionId));
+                                                                        state.forwardLocalVertexList.add(new TraversalWithState(vertexMessageStep.queryId,vertexMessageStep.rootSubgraph,vertexMessageStep.rootVertex,currentVertexId,vertexMessageStep.previousSubgraph,vertexMessageStep.startDepth,vertexMessageStep.startVertex,vertexMessageStep.depth+1,modifiedPath));
+                                                                }
+                                                                else {
+                                                                        
+                                                                        
+                                                                        if(!flag){
+                                                                        addFlag=StoreRecursive(vertexMessageStep,modifiedPath,true);    
+                                                                        
+                                                                        flag=true;
+                                                                        }
+                                                                        
+                                                                        if(addFlag){
+//                                                                              state.forwardRemoteVertexList.add(new TraversalWithState(vertexMessageStep.queryId,otherVertex.getVertexId().get(),_modifiedMessage.toString(),vertexMessageStep.stepsTraversed+1,vertexMessageStep.vertexId,vertexMessageStep.stepsTraversed+1, vertexMessageStep.previousSubgraphId,vertexMessageStep.previousPartitionId));
+                                                                          state.forwardRemoteVertexList.add(new TraversalWithState(vertexMessageStep.queryId,vertexMessageStep.rootSubgraph,vertexMessageStep.rootVertex,currentVertexId,vertexMessageStep.previousSubgraph,vertexMessageStep.depth+1,vertexMessageStep.targetVertex,vertexMessageStep.depth+1,modifiedPath));
+                                                                        }
+                                                                        
+                                                                }
+                                                                        
+                                                        }
+                                                }
+                                                /* filtered edge*/
+                                                else {
+                                                        for( IEdge<MapValue, LongWritable, LongWritable> edge: currentVertex.getOutEdges() ) {
+                                                                
+                                                                //System.out.println("COMPARING:" + subgraphProperties.getValue(nextStep.property));
+                                                                //output(partition.getId(), subgraph.getId(), currentVertex.getId()+":"+subgraphProperties.getValue("relation"));
+                                                                if ( compareValuesUtil(edge.getValue().get(nextStep.property.toString()).toString(), nextStep.value.toString()) ) {
+                                                                        IVertex<MapValue, MapValue, LongWritable, LongWritable> otherVertex = getSubgraph().getVertexById(edge.getSinkVertexId());
+                                                                        long currentVertexId=otherVertex.getVertexId().get();
+                                                                        long currentEdgeId=edge.getEdgeId().get();
+                                                                        PathWithDir modifiedPath = vertexMessageStep.path.getCopy();
+                                                                         modifiedPath.addEV(currentEdgeId, currentVertexId,true);
+                                                                        if ( !otherVertex.isRemote() ) {
+                                                                                /* TODO :add the correct value to list*/
+//                                                                              state.forwardLocalVertexList.add(new TraversalWithState(vertexMessageStep.queryId,otherVertex.getVertexId().get(),_modifiedMessage.toString(),vertexMessageStep.stepsTraversed+1, vertexMessageStep.startVertexId,vertexMessageStep.startStep, vertexMessageStep.previousSubgraphId, vertexMessageStep.previousPartitionId));
+                                                                          state.forwardLocalVertexList.add(new TraversalWithState(vertexMessageStep.queryId,vertexMessageStep.rootSubgraph,vertexMessageStep.rootVertex,currentVertexId,vertexMessageStep.previousSubgraph,vertexMessageStep.startDepth,vertexMessageStep.startVertex,vertexMessageStep.depth+1,modifiedPath));
+                                                                        }
+                                                                        else {
+                                                                                /* TODO :add vertex to forwardRemoteVertexList*/
+                                                                                
+                                                                                
+                                                                                if(!flag){
+                                                                                addFlag=StoreRecursive(vertexMessageStep,modifiedPath,true);    
+                                                                                
+                                                                                flag=true;
+                                                                                }
+                                                                                
+                                                                                if(addFlag){
+//                                                                                      state.forwardRemoteVertexList.add(new TraversalWithState(vertexMessageStep.queryId,otherVertex.getVertexId().get(),_modifiedMessage.toString(),vertexMessageStep.stepsTraversed+1,vertexMessageStep.vertexId,vertexMessageStep.stepsTraversed+1, vertexMessageStep.previousSubgraphId,vertexMessageStep.previousPartitionId));
+                                                                                        state.forwardRemoteVertexList.add(new TraversalWithState(vertexMessageStep.queryId,vertexMessageStep.rootSubgraph,vertexMessageStep.rootVertex,currentVertexId,vertexMessageStep.previousSubgraph,vertexMessageStep.depth+1,vertexMessageStep.targetVertex,vertexMessageStep.depth+1,modifiedPath));
+                                                                                }
+                                                                        }
+                                                                }
+                                                        }
+                                                }
+                                        }
+                                        else if ( nextStep.direction == Direction.IN ) {
+
+                                                /* null predicate handling*/
+                                                boolean flag=false;
+                                                boolean addFlag=false;
+                                                if ( nextStep.property == null && nextStep.value == null ) {
+                                                        if(state.InEdges.containsKey(currentVertex.getVertexId().get()))
+                                                        for(Map.Entry<Long, EdgeAttr> edgeMap: state.InEdges.get(currentVertex.getVertexId().get()).entrySet()) {
+                                                                long otherVertexId = edgeMap.getKey();
+                                                                PathWithDir modifiedPath = vertexMessageStep.path.getCopy();
+                                                                modifiedPath.addEV(edgeMap.getValue().getEdgeId(), otherVertexId,false);
+                                                                if ( !edgeMap.getValue().isRemote() ) {
+                                                                        /* TODO :add the correct value to list*/
+//                                                                      state.forwardLocalVertexList.add(new TraversalWithState(vertexMessageStep.queryId,otherVertexId,_modifiedMessage.toString(),vertexMessageStep.stepsTraversed+1, vertexMessageStep.startVertexId,vertexMessageStep.startStep, vertexMessageStep.previousSubgraphId, vertexMessageStep.previousPartitionId));
+                                                                  state.forwardLocalVertexList.add(new TraversalWithState(vertexMessageStep.queryId,vertexMessageStep.rootSubgraph,vertexMessageStep.rootVertex,otherVertexId,vertexMessageStep.previousSubgraph,vertexMessageStep.startDepth,vertexMessageStep.startVertex,vertexMessageStep.depth+1,modifiedPath));
+                                                                }
+                                                                else{
+                                                                /* TODO :add vertex to forwardRemoteVertexList*/
+                                                                        
+                                                                        if(!flag){
+                                                                        addFlag=StoreRecursive(vertexMessageStep,modifiedPath,true);    
+                                                                        
+                                                                        flag=true;
+                                                                        }
+                                                                        
+                                                                        if(addFlag){
+//                                                                              state.forwardRemoteVertexList.add(new TraversalWithState(vertexMessageStep.queryId,otherVertexId,_modifiedMessage.toString(),vertexMessageStep.stepsTraversed+1, vertexMessageStep.vertexId,vertexMessageStep.stepsTraversed+1, vertexMessageStep.previousSubgraphId, vertexMessageStep.previousPartitionId));
+                                                                          state.forwardRemoteVertexList.add(new TraversalWithState(vertexMessageStep.queryId,vertexMessageStep.rootSubgraph,vertexMessageStep.rootVertex,otherVertexId,vertexMessageStep.previousSubgraph,vertexMessageStep.depth+1,vertexMessageStep.targetVertex,vertexMessageStep.depth+1,modifiedPath));
+                                                                        }
+                                                                        
+                                                                }
+                                                        
+                                                        }
+                                                }
+                                                /* filtered edge*/
+                                                else {
+                                                        if(state.InEdges.containsKey(currentVertex.getVertexId().get()))
+                                                        for( Map.Entry<Long, EdgeAttr> edgeMap: state.InEdges.get(currentVertex.getVertexId().get()).entrySet() ) {
+                                                                //ISubgraphObjectProperties subgraphProperties = subgraphInstance.getPropertiesForEdge(edge.getId());
+                                                                //output(partition.getId(), subgraph.getId(), currentVertex.getId()+":"+subgraphProperties.getValue("relation"));
+                                                                if ( compareValuesUtil(edgeMap.getValue().getValue().toString(), nextStep.value.toString()) ) {
+                                                                        long otherVertexId = edgeMap.getKey();
+                                                                        PathWithDir modifiedPath = vertexMessageStep.path.getCopy();
+                                                                        modifiedPath.addEV(edgeMap.getValue().getEdgeId(), otherVertexId,false);
+                                                                        if ( !edgeMap.getValue().isRemote() ) {
+                                                                                /* TODO :add the correct value to list*/
+//                                                                              state.forwardLocalVertexList.add(new TraversalWithState(vertexMessageStep.queryId,otherVertexId,_modifiedMessage.toString(),vertexMessageStep.stepsTraversed+1, vertexMessageStep.startVertexId,vertexMessageStep.startStep, vertexMessageStep.previousSubgraphId, vertexMessageStep.previousPartitionId));
+                                                                          state.forwardLocalVertexList.add(new TraversalWithState(vertexMessageStep.queryId,vertexMessageStep.rootSubgraph,vertexMessageStep.rootVertex,otherVertexId,vertexMessageStep.previousSubgraph,vertexMessageStep.startDepth,vertexMessageStep.startVertex,vertexMessageStep.depth+1,modifiedPath));
+                                                                        }
+                                                                        else{
+                                                        
+                                                                                if(!flag){
+                                                                                addFlag=StoreRecursive(vertexMessageStep,modifiedPath,true);    
+                                                                                
+                                                                                flag=true;
+                                                                                }
+                                                                                
+                                                                                if(addFlag){
+//                                                                                      state.forwardRemoteVertexList.add(new TraversalWithState(vertexMessageStep.queryId,otherVertexId,_modifiedMessage.toString(),vertexMessageStep.stepsTraversed+1, vertexMessageStep.vertexId,vertexMessageStep.stepsTraversed+1, vertexMessageStep.previousSubgraphId, vertexMessageStep.previousPartitionId));
+                                                                                  state.forwardRemoteVertexList.add(new TraversalWithState(vertexMessageStep.queryId,vertexMessageStep.rootSubgraph,vertexMessageStep.rootVertex,otherVertexId,vertexMessageStep.previousSubgraph,vertexMessageStep.depth+1,vertexMessageStep.targetVertex,vertexMessageStep.depth+1,modifiedPath));
+                                                                                }
+                                                                        }
+                                                                        
+                                                                        
+                                                                }
+                                                        
+                                                        }
+                                                }
+                                        }
+                                        
+                                }
+                                else if ( nextStep.type == Type.VERTEX ) {
+                                        
+                                        /* null predicate*/
+                                        if( nextStep.property == null && nextStep.value == null ) {
+                                                /* add appropriate value later*/
+//                                              state.forwardLocalVertexList.add(new TraversalWithState(vertexMessageStep.queryId,vertexMessageStep.vertexId,vertexMessageStep.message,vertexMessageStep.stepsTraversed+1, vertexMessageStep.startVertexId,vertexMessageStep.startStep, vertexMessageStep.previousSubgraphId, vertexMessageStep.previousPartitionId));
+                                          state.forwardLocalVertexList.add(new TraversalWithState(vertexMessageStep.queryId,vertexMessageStep.rootSubgraph,vertexMessageStep.rootVertex,vertexMessageStep.targetVertex,vertexMessageStep.previousSubgraph,vertexMessageStep.startDepth,vertexMessageStep.startVertex,vertexMessageStep.depth+1,vertexMessageStep.path));
+                                                
+                                        }
+                                        /* filtered vertex*/
+                                        else {
+//                                              ISubgraphObjectProperties subgraphProperties = subgraphInstance.getPropertiesForVertex(currentVertex.getId());
+                                                if ( compareValuesUtil(currentVertex.getValue().get(nextStep.property).toString(), nextStep.value.toString()) ) {
+                                                        /* add appropriate value later*/
+//                                                      state.forwardLocalVertexList.add(new TraversalWithState(vertexMessageStep.queryId,vertexMessageStep.vertexId,vertexMessageStep.message,vertexMessageStep.stepsTraversed+1, vertexMessageStep.startVertexId,vertexMessageStep.startStep, vertexMessageStep.previousSubgraphId, vertexMessageStep.previousPartitionId));
+                                                  state.forwardLocalVertexList.add(new TraversalWithState(vertexMessageStep.queryId,vertexMessageStep.rootSubgraph,vertexMessageStep.rootVertex,vertexMessageStep.targetVertex,vertexMessageStep.previousSubgraph,vertexMessageStep.startDepth,vertexMessageStep.startVertex,vertexMessageStep.depth+1,vertexMessageStep.path));
+                                                
+                                                }
+                                        }
+                                        
+                                }
+                                
+                        }
+                        
+                        
+                        // PROCESS REVERSE LIST
+                        while(!state.revLocalVertexList.isEmpty()) {
+                                TraversalWithState vertexMessageStep = state.revLocalVertexList.poll();
+                                
+                                /* if last step,end that iteration, while traversing in reverse direction last step is first step which is zero */
+                                if ( vertexMessageStep.depth == 0 ){
+                                        //if current subgraph is not source subgraph then start recursive aggregation of partial results
+//                                      System.out.println("Querying Output Path:" + vertexMessageStep.queryId+","+vertexMessageStep.startStep+","+false+","+vertexMessageStep.startVertexId );
+                                        if(state.outputPathMaintainance.containsKey(new OutputPathKey(vertexMessageStep.queryId,vertexMessageStep.startDepth,false,vertexMessageStep.startVertex))){
+                                                forwardOutputToSubgraph(0,vertexMessageStep);
+                                        }
+                                        else{//else if current subgraph is source subgraph then store the results
+                                          time=System.currentTimeMillis();
+                                                if ( !state.resultsMap.containsKey(vertexMessageStep.startVertex) )
+                                                        state.resultsMap.put(vertexMessageStep.startVertex, new ResultSet());
+                                                
+                                                state.resultsMap.get(vertexMessageStep.startVertex).revResultSet.add(vertexMessageStep.path.toString());
+                                                state.resultCollectionTime+=(System.currentTimeMillis() - time);
+                                        }
+                                                                                
+                                        continue;
+                                }
+                                
+                                Step prevStep = state.path.get(vertexMessageStep.depth-1);
+                                IVertex<MapValue, MapValue, LongWritable, LongWritable> currentVertex = getSubgraph().getVertexById(new LongWritable(vertexMessageStep.targetVertex));
+                        
+                                
+                                
+                                if( prevStep.type == Type.EDGE ) {
+                                        
+                                        if ( prevStep.direction == Direction.OUT ) {
+                                                /* null predicate handling*/
+                                                boolean flag=false;
+                                                boolean addFlag=false;
+                                                if ( prevStep.property == null && prevStep.value == null ) {
+                                                        if(state.InEdges.containsKey(currentVertex.getVertexId().get()))
+                                                        for( Map.Entry<Long, EdgeAttr> edgeMap: state.InEdges.get(currentVertex.getVertexId().get()).entrySet()) {
+                                                                long otherVertexId = edgeMap.getKey();
+                                                                PathWithDir modifiedPath = vertexMessageStep.path.getCopy();
+                                                                modifiedPath.addEV(edgeMap.getValue().getEdgeId(), otherVertexId,false);
+                                                                if ( !edgeMap.getValue().isRemote() ) {
+                                                                        /* TODO :add the correct value to list*/
+//                                                                      state.revLocalVertexList.add(new TraversalWithState(vertexMessageStep.queryId,otherVertexId,_modifiedMessage.toString(),vertexMessageStep.stepsTraversed-1, vertexMessageStep.startVertexId,vertexMessageStep.startStep, vertexMessageStep.previousSubgraphId, vertexMessageStep.previousPartitionId));
+                                                                  state.revLocalVertexList.add(new TraversalWithState(vertexMessageStep.queryId,vertexMessageStep.rootSubgraph,vertexMessageStep.rootVertex,otherVertexId,vertexMessageStep.previousSubgraph,vertexMessageStep.startDepth,vertexMessageStep.startVertex,vertexMessageStep.depth-1,modifiedPath));
+                                                                }
+                                                                else{
+                                                                        
+                                                                        if(!flag){
+                                                                        addFlag=StoreRecursive(vertexMessageStep,modifiedPath,false);
+                                                                        
+                                                                        flag=true;
+                                                                        }
+                                                                        
+                                                                        if(addFlag){
+//                                                                              state.revRemoteVertexList.add(new TraversalWithState(vertexMessageStep.queryId,otherVertexId,_modifiedMessage.toString(),vertexMessageStep.stepsTraversed-1, vertexMessageStep.vertexId,vertexMessageStep.stepsTraversed-1, vertexMessageStep.previousSubgraphId, vertexMessageStep.previousPartitionId));
+                                                                          state.revRemoteVertexList.add(new TraversalWithState(vertexMessageStep.queryId,vertexMessageStep.rootSubgraph,vertexMessageStep.rootVertex,otherVertexId,vertexMessageStep.previousSubgraph,vertexMessageStep.depth-1,vertexMessageStep.targetVertex,vertexMessageStep.depth-1,modifiedPath));
+                                                                        }
+                                                                        
+                                                                }
+                                                        
+                                                        }
+                                                }
+                                                /* filtered edge*/
+                                                else {
+                                                        if(state.InEdges.containsKey(currentVertex.getVertexId().get()))
+                                                        for( Map.Entry<Long, EdgeAttr> edgeMap: state.InEdges.get(currentVertex.getVertexId().get()).entrySet() ) {
+                                                                //ISubgraphObjectProperties subgraphProperties = subgraphInstance.getPropertiesForEdge(edge.getId());
+                                                                //output(partition.getId(), subgraph.getId(), currentVertex.getId()+":"+subgraphProperties.getValue("relation"));
+                                                                if ( compareValuesUtil(edgeMap.getValue().getValue(), prevStep.value) ) {
+                                                                        long otherVertexId = edgeMap.getKey();
+                                                                        //output(partition.getId(), subgraph.getId(), String.valueOf(otherVertex.getId()));
+                                                                        PathWithDir modifiedPath = vertexMessageStep.path.getCopy();
+                                                                        modifiedPath.addEV(edgeMap.getValue().getEdgeId(), otherVertexId,false);
+                                                                        if ( !edgeMap.getValue().isRemote()) {
+                                                                                /* TODO :add the correct value to list*/
+//                                                                              state.revLocalVertexList.add(new TraversalWithState(vertexMessageStep.queryId,otherVertexId,_modifiedMessage.toString(),vertexMessageStep.stepsTraversed-1, vertexMessageStep.startVertexId,vertexMessageStep.startStep, vertexMessageStep.previousSubgraphId, vertexMessageStep.previousPartitionId));
+                                                                                state.revLocalVertexList.add(new TraversalWithState(vertexMessageStep.queryId,vertexMessageStep.rootSubgraph,vertexMessageStep.rootVertex,otherVertexId,vertexMessageStep.previousSubgraph,vertexMessageStep.startDepth,vertexMessageStep.startVertex,vertexMessageStep.depth-1,modifiedPath));
+                                                                                
+                                                                        }
+                                                                        else{
+                                                                                
+                                                                                
+                                                                                if(!flag){
+                                                                                addFlag=StoreRecursive(vertexMessageStep,modifiedPath,false);
+                                                                                
+                                                                                flag=true;
+                                                                                }
+                                                                                
+                                                                                if(addFlag){
+//                                                                                      state.revRemoteVertexList.add(new TraversalWithState(vertexMessageStep.queryId,otherVertexId,_modifiedMessage.toString(),vertexMessageStep.stepsTraversed-1, vertexMessageStep.vertexId,vertexMessageStep.stepsTraversed-1, vertexMessageStep.previousSubgraphId, vertexMessageStep.previousPartitionId));
+                                                                                        state.revRemoteVertexList.add(new TraversalWithState(vertexMessageStep.queryId,vertexMessageStep.rootSubgraph,vertexMessageStep.rootVertex,otherVertexId,vertexMessageStep.previousSubgraph,vertexMessageStep.depth-1,vertexMessageStep.targetVertex,vertexMessageStep.depth-1,modifiedPath));
+                                                                                }
+                                                                                
+                                                                        }
+                                                                        
+                                                                }
+                                                        
+                                                        }
+                                                }
+                                        }
+                                        else if ( prevStep.direction == Direction.IN ) {
+
+                                                /* null predicate handling*/
+                                                boolean flag=false;
+                                                boolean addFlag=false;
+                                                if ( prevStep.property == null && prevStep.value == null ) {
+                                                        for(IEdge<MapValue, LongWritable, LongWritable> edge: currentVertex.getOutEdges()) {
+                                                                IVertex<MapValue, MapValue, LongWritable, LongWritable> otherVertex = getSubgraph().getVertexById(edge.getSinkVertexId());
+                                                                long currentVertexId=otherVertex.getVertexId().get();
+                                                                long currentEdgeId=edge.getEdgeId().get();
+                                                                PathWithDir modifiedPath = vertexMessageStep.path.getCopy();
+                                                                 modifiedPath.addEV(currentEdgeId, currentVertexId,true);
+                                                                if ( !otherVertex.isRemote() ) {
+                                                                        /* add the correct value to list*/
+//                                                                      state.revLocalVertexList.add(new TraversalWithState(vertexMessageStep.queryId,otherVertex.getVertexId().get(),_modifiedMessage.toString(),vertexMessageStep.stepsTraversed-1, vertexMessageStep.startVertexId,vertexMessageStep.startStep, vertexMessageStep.previousSubgraphId, vertexMessageStep.previousPartitionId));
+                                                                  state.revLocalVertexList.add(new TraversalWithState(vertexMessageStep.queryId,vertexMessageStep.rootSubgraph,vertexMessageStep.rootVertex,currentVertexId,vertexMessageStep.previousSubgraph,vertexMessageStep.startDepth,vertexMessageStep.startVertex,vertexMessageStep.depth-1,modifiedPath));
+                                                                }
+                                                                /* TODO : clarify with Ravi about InEdge having remote source( not possible?)*/
+                                                                else {
+                                                                        /* TODO :add vertex to revRemoteVertexList*/
+                                                                        
+                                                                        if(!flag){
+                                                                        addFlag=StoreRecursive(vertexMessageStep,modifiedPath,false);
+                                                                        
+                                                                        flag=true;
+                                                                        }
+                                                                        
+                                                                        if(addFlag){
+//                                                                              state.revRemoteVertexList.add(new TraversalWithState(vertexMessageStep.queryId,otherVertex.getVertexId().get(),_modifiedMessage.toString(),vertexMessageStep.stepsTraversed-1, vertexMessageStep.vertexId, vertexMessageStep.stepsTraversed-1, vertexMessageStep.previousSubgraphId, vertexMessageStep.previousPartitionId));
+                                                                          state.revRemoteVertexList.add(new TraversalWithState(vertexMessageStep.queryId,vertexMessageStep.rootSubgraph,vertexMessageStep.rootVertex,currentVertexId,vertexMessageStep.previousSubgraph,vertexMessageStep.depth-1,vertexMessageStep.targetVertex,vertexMessageStep.depth-1,modifiedPath));
+                                                                        }
+                                                                        
+                                                                }
+                                                                        
+                                                        }
+                                                        
+                                                }
+                                                /* filtered edge*/
+                                                else {
+                                                        for( IEdge<MapValue, LongWritable, LongWritable> edge: currentVertex.getOutEdges() ) {
+//                                                              ISubgraphObjectProperties subgraphProperties = subgraphInstance.getPropertiesForEdge(edge.getId());
+//                                                              output(partition.getId(), subgraph.getId(), currentVertex.getId()+":"+subgraphProperties.getValue("relation"));
+                                                          //CHANGE it when moving to hashmaps
+                                                                if ( compareValuesUtil(edge.getValue().get(prevStep.property.toString()).toString(), prevStep.value.toString()) ) {
+                                                                        IVertex<MapValue, MapValue, LongWritable, LongWritable> otherVertex = getSubgraph().getVertexById(edge.getSinkVertexId());
+                                                                        long currentVertexId=otherVertex.getVertexId().get();
+                                                                        long currentEdgeId=edge.getEdgeId().get();
+                                                                        PathWithDir modifiedPath = vertexMessageStep.path.getCopy();
+                                                                         modifiedPath.addEV(currentEdgeId, currentVertexId,true);
+                                                                        if ( !otherVertex.isRemote() ) {
+                                                                                /* TODO :add the correct value to list*/
+//                                                                              state.revLocalVertexList.add(new TraversalWithState(vertexMessageStep.queryId,otherVertex.getVertexId().get(),_modifiedMessage.toString(),vertexMessageStep.stepsTraversed-1, vertexMessageStep.startVertexId,vertexMessageStep.startStep, vertexMessageStep.previousSubgraphId, vertexMessageStep.previousPartitionId));
+                                                                          state.revLocalVertexList.add(new TraversalWithState(vertexMessageStep.queryId,vertexMessageStep.rootSubgraph,vertexMessageStep.rootVertex,currentVertexId,vertexMessageStep.previousSubgraph,vertexMessageStep.startDepth,vertexMessageStep.startVertex,vertexMessageStep.depth-1,modifiedPath));
+                                                                        }
+                                                                        /* TODO : clarify with Ravi about InEdge having remote source( not possible?)*/
+                                                                        else {
+                                                                                /* TODO :add vertex to revRemoteVertexList*/
+                                                                                
+                                                                                if(!flag){
+                                                                                addFlag=StoreRecursive(vertexMessageStep,modifiedPath,false);
+                                                                                
+                                                                                flag=true;
+                                                                                }
+                                                                                
+                                                                                if(addFlag){
+//                                                                                      state.revRemoteVertexList.add(new TraversalWithState(vertexMessageStep.queryId,otherVertex.getVertexId().get(),_modifiedMessage.toString(),vertexMessageStep.stepsTraversed-1, vertexMessageStep.vertexId,vertexMessageStep.stepsTraversed-1, vertexMessageStep.previousSubgraphId, vertexMessageStep.previousPartitionId));
+                                                                                  state.revRemoteVertexList.add(new TraversalWithState(vertexMessageStep.queryId,vertexMessageStep.rootSubgraph,vertexMessageStep.rootVertex,currentVertexId,vertexMessageStep.previousSubgraph,vertexMessageStep.depth-1,vertexMessageStep.targetVertex,vertexMessageStep.depth-1,modifiedPath));
+                                                                                }
+                                                                                
+                                                                        }
+                                                                }
+                                                        }
+                                                }
+                                        }
+                                        
+                                }
+                                else if ( prevStep.type == Type.VERTEX ) {
+                                        
+                                        /* null predicate*/
+                                        if( prevStep.property == null && prevStep.value == null ) {
+                                                /* add appropriate value later*/
+//                                              state.revLocalVertexList.add(new TraversalWithState(vertexMessageStep.queryId,vertexMessageStep.vertexId,vertexMessageStep.message,vertexMessageStep.stepsTraversed-1, vertexMessageStep.startVertexId,vertexMessageStep.startStep, vertexMessageStep.previousSubgraphId, vertexMessageStep.previousPartitionId));
+                                          state.revLocalVertexList.add(new TraversalWithState(vertexMessageStep.queryId,vertexMessageStep.rootSubgraph,vertexMessageStep.rootVertex,vertexMessageStep.targetVertex,vertexMessageStep.previousSubgraph,vertexMessageStep.startDepth,vertexMessageStep.startVertex,vertexMessageStep.depth-1,vertexMessageStep.path));
+                                            
+                                        }
+                                        /* filtered vertex*/
+                                        else {
+//                                              LOG.info("PROP:"+prevStep.property.toString() + " VALUE:" + currentVertex.getValue().get(prevStep.property.toString()));
+                                                if ( compareValuesUtil(currentVertex.getValue().get(prevStep.property.toString()).toString(), prevStep.value.toString()) ) {
+                                                        /* add appropriate value later*/
+                                                  
+//                                                      state.revLocalVertexList.add(new TraversalWithState(vertexMessageStep.queryId,vertexMessageStep.vertexId,vertexMessageStep.message,vertexMessageStep.stepsTraversed-1, vertexMessageStep.startVertexId,vertexMessageStep.startStep,vertexMessageStep.previousSubgraphId, vertexMessageStep.previousPartitionId));
+                                                  state.revLocalVertexList.add(new TraversalWithState(vertexMessageStep.queryId,vertexMessageStep.rootSubgraph,vertexMessageStep.rootVertex,vertexMessageStep.targetVertex,vertexMessageStep.previousSubgraph,vertexMessageStep.startDepth,vertexMessageStep.startVertex,vertexMessageStep.depth-1,vertexMessageStep.path));
+                                                }
+                                        }
+                                        
+                                }
+                                
+                        }
+                        //MAP from remoteSGID to list of traversals
+                        Map<Long, RevisitTraversalWriter> remoteTraversalMap = new HashMap<>();
+                        // TODO: send the messages in Remote vertex list
+                        for(TraversalWithState stuff: state.forwardRemoteVertexList){
+                                // send message to all the remote vertices
+                                
+                                IRemoteVertex<MapValue,MapValue,LongWritable,LongWritable,LongWritable> remoteVertex = (IRemoteVertex<MapValue, MapValue, LongWritable, LongWritable, LongWritable>)getSubgraph().getVertexById(new LongWritable(stuff.targetVertex));
+                                PathMessage remoteMessage;
+                                //remoteMessage.append(String.valueOf(stuff.vertexId.longValue())).append(";").append(stuff.message).append(";").append(stuff.stepsTraversed) ;
+                                long remoteSGID;
+                                if(remoteVertex!=null){
+//                                              remoteMessage.append(String.valueOf(stuff.startVertexId)).append(";").append(String.valueOf(stuff.previousSubgraphId)).append(";").append(stuff.previousPartitionId).append(";").append(stuff.vertexId).append(";").append(stuff.stepsTraversed).append(";").append(remoteVertex.getSubgraphId().get());
+//                                              remoteMessage=new PathMessage(stuff.queryId,stuff.startVertex,stuff.previousSubgraph,stuff.targetVertex,stuff.depth,true);
+                                                remoteSGID=remoteVertex.getSubgraphId().get();
+                                        }
+                                        else{
+//                                              remoteMessage.append(String.valueOf(stuff.startVertexId)).append(";").append(String.valueOf(stuff.previousSubgraphId)).append(";").append(stuff.previousPartitionId).append(";").append(stuff.vertexId).append(";").append(stuff.stepsTraversed).append(";").append(state.InEdges.get(stuff.startVertexId).get(stuff.vertexId).getSinkSubgraphId());
+//                                        remoteMessage=new PathMessage(stuff.queryId,stuff.startVertex,stuff.previousSubgraph,stuff.targetVertex,stuff.depth,true);
+                                          remoteSGID=state.InEdges.get(stuff.startVertex).get(stuff.targetVertex).getSinkSubgraphId();
+                                        }
+//                              
+                                RevisitTraversalWriter traversalMessage = remoteTraversalMap.get(remoteSGID);
+                                if (traversalMessage == null) {
+                                        traversalMessage = new RevisitTraversalWriter();
+                                        remoteTraversalMap.put(remoteSGID, traversalMessage);
+                                }
+                                traversalMessage.addTraversal(stuff.queryId,stuff.rootSubgraph,stuff.rootVertex, stuff.previousSubgraph,stuff.startVertex,stuff.targetVertex,stuff.depth,true);
+                                
+                                        
+                        }
+                        state.forwardRemoteVertexList.clear();
+                        
+                        
+                        
+                        
+                        for(TraversalWithState stuff: state.revRemoteVertexList){
+                                // send message to all the remote vertices
+                                IRemoteVertex<MapValue,MapValue,LongWritable,LongWritable,LongWritable> remoteVertex = (IRemoteVertex<MapValue, MapValue, LongWritable, LongWritable, LongWritable>)getSubgraph().getVertexById(new LongWritable(stuff.targetVertex));
+                                PathMessage remoteMessage ;
+                                //remoteMessage.append(String.valueOf(stuff.vertexId.longValue())).append(";").append(stuff.message).append(";").append(stuff.stepsTraversed) ;
+                                long remoteSGID;
+                                if(remoteVertex!=null){
+//                                              remoteMessage.append(String.valueOf(stuff.startVertexId)).append(";").append(String.valueOf(stuff.previousSubgraphId)).append(";").append(stuff.previousPartitionId).append(";").append(stuff.vertexId).append(";").append(stuff.stepsTraversed).append(";").append(remoteVertex.getSubgraphId().get());
+                                                remoteSGID=remoteVertex.getSubgraphId().get();
+                                        }
+                                        else{
+//                                              remoteMessage.append(String.valueOf(stuff.startVertexId)).append(";").append(String.valueOf(stuff.previousSubgraphId)).append(";").append(stuff.previousPartitionId).append(";").append(stuff.vertexId).append(";").append(stuff.stepsTraversed).append(";").append(state.InEdges.get(stuff.startVertexId).get(stuff.vertexId).getSinkSubgraphId());
+                                          remoteSGID=state.InEdges.get(stuff.startVertex).get(stuff.targetVertex).getSinkSubgraphId();
+                                        }
+//                              
+                                RevisitTraversalWriter traversalMessage = remoteTraversalMap.get(remoteSGID);
+                                if (traversalMessage == null) {
+                                        traversalMessage = new RevisitTraversalWriter();
+                                        remoteTraversalMap.put(remoteSGID, traversalMessage);
+                                }
+                                traversalMessage.addTraversal(stuff.queryId,stuff.rootSubgraph,stuff.rootVertex, stuff.previousSubgraph,stuff.startVertex,stuff.targetVertex,stuff.depth,false);
+                                
+                        }
+                        state.revRemoteVertexList.clear();
+                        //Sending traversal, one per Remote subgraph
+                        for (Entry<Long, RevisitTraversalWriter> entry : remoteTraversalMap.entrySet()) {
+                                sendMessage(new LongWritable(entry.getKey()), new PathMessage(entry.getValue()));
+                        }
+                        
+                        
+        
+                        //sending partial results back
+                        for (Entry<Long, ResultsWriter> entry : remoteResultsMap.entrySet()) {
+//                            LOG.info("Sending Results Back:" + entry.getValue().toString());
+                                sendMessage(new LongWritable(entry.getKey()), new PathMessage(entry.getValue()));
+                        }
+                        remoteResultsMap.clear();
+                        
+                }
+                }
 
 		voteToHalt();
 
