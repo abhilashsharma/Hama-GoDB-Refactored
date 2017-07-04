@@ -1,5 +1,7 @@
 package in.dream_lab.goffish.godb.reach;
 
+import in.dream_lab.goffish.godb.Path;
+
 public class TraversalStep {
 
 	// root vertex where this traversal is starting

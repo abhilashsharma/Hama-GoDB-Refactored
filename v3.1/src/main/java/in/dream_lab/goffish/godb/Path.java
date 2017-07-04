@@ -1,4 +1,4 @@
-package in.dream_lab.goffish.godb.reach;
+package in.dream_lab.goffish.godb;
 
 import java.util.ArrayList;
 
@@ -31,7 +31,7 @@ public class Path {
     path.add(startVertex);
   }
   
-  void addEV(Long edge,Long Vertex){
+  public void addEV(Long edge,Long Vertex){
     path.add(edge);
     path.add(Vertex);
   }

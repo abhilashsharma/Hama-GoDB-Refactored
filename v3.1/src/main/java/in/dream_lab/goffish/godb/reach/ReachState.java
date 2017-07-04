@@ -11,6 +11,7 @@ import java.util.Map;
 import org.apache.hadoop.io.Writable;
 
 import in.dream_lab.goffish.godb.EdgeAttr;
+import in.dream_lab.goffish.godb.Path;
 import in.dream_lab.goffish.godb.util.DataWriter;
 
 

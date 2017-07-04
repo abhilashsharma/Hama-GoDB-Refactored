@@ -1,4 +1,4 @@
-package in.dream_lab.goffish.godb.reach;
+package in.dream_lab.goffish.godb.path;
 
 import java.io.DataInput;
 import java.io.DataOutput;
@@ -16,6 +16,9 @@ import org.apache.commons.logging.LogFactory;
 import org.apache.hadoop.io.Writable;
 
 import in.dream_lab.goffish.godb.Path;
+import in.dream_lab.goffish.godb.PathWithDir;
+import in.dream_lab.goffish.godb.PathWithDir.EVPair;
+import in.dream_lab.goffish.godb.path.TraversalStep.TraversalWithState;
 import in.dream_lab.goffish.godb.reach.TraversalStep.TraversalWithPath;
 import in.dream_lab.goffish.godb.util.DataReader;
 import in.dream_lab.goffish.godb.util.DataWriter;
@@ -27,9 +30,9 @@ import in.dream_lab.goffish.godb.util.DataWriter;
  * @author simmhan
  *
  */
-public class ReachMessage implements Writable {
+public class PathMessage implements Writable {
 
-        public static final Log LOG = LogFactory.getLog(ReachMessage.class);
+        public static final Log LOG = LogFactory.getLog(PathMessage.class);
 	// Use LSB+1 and LSB+2 bits for type of message
 	private static final byte TRAVERSAL = 0b0010;
 	private static final byte RESULTS = 0b0000;
@@ -61,32 +64,32 @@ public class ReachMessage implements Writable {
 	// A results reader/writer, or traversal reader/write object
 	private Object innerMessage;
 
-	public ReachMessage() {
+	public PathMessage() {
 		// FIXME: Is default constructor required for Writable?
 		messageType = Byte.MIN_VALUE;
 	}
 
-	public ReachMessage(ResultsWriter results) {
+	public PathMessage(ResultsWriter results) {
 		innerMessage = results;
 		messageType = RESULTS_WRITER;
 	}
 
-	public ReachMessage(TraversalWriter traversal) {
+	public PathMessage(TraversalWriter traversal) {
 		innerMessage = traversal;
 		messageType = TRAVERSAL_WRITER;
 	}
 
-	public ReachMessage(RevisitTraversalWriter rtraversal) {
+	public PathMessage(RevisitTraversalWriter rtraversal) {
 		innerMessage = rtraversal;
 		messageType = REVISIT_TRAVERSAL_WRITER;
 	}
 	  
-	public ReachMessage(InEdgesWriter inedges) {
+	public PathMessage(InEdgesWriter inedges) {
           innerMessage = inedges;
           messageType = INEDGES_WRITER;
         }
 
-	public ReachMessage(StopWriter stopmsg){
+	public PathMessage(StopWriter stopmsg){
 	  innerMessage = stopmsg;
 	  messageType = STOP_WRITER;
 	}
@@ -325,16 +328,17 @@ public class ReachMessage implements Writable {
 			messageWriter = DataWriter.newInstance();
 			count = 0;
 		}
-
-		public void addTraversal(long rootSubgraph, long rootVertex, long sinkVID, int depth,Path p) throws IOException {
-			messageWriter.writeLong(rootSubgraph);
+		//(stuff.queryId,stuff.rootSubgraph,stuff.rootVertex, stuff.previousSubgraph,stuff.startVertex,stuff.targetVertex,stuff.depth,false);
+		public void addTraversal(long queryId,long rootSubgraph, long rootVertex,long previousSubgraph,long previousVertex, long sinkVID, int depth,boolean dir) throws IOException {
+			messageWriter.writeLong(queryId);
+		        messageWriter.writeLong(rootSubgraph);
 			messageWriter.writeLong(rootVertex);
+			messageWriter.writeLong(previousSubgraph);
+			messageWriter.writeLong(previousVertex);
 			messageWriter.writeLong(sinkVID);
 			messageWriter.writeInt(depth);
-			messageWriter.writeInt(p.getPath().size());
-			for(Long item:p.getPath()){
-			  messageWriter.writeLong(item);
-			}
+			messageWriter.writeBoolean(dir);
+			
 			count++;
 		}
 
@@ -355,7 +359,7 @@ public class ReachMessage implements Writable {
 	 * Reads and instantiates the list of traversal steps from input stream
 	 */
 	public static class RevisitTraversalReader {
-		private List<TraversalWithPath> steps;
+		private List<TraversalMsg> steps;
 		private int count;
 
 		private RevisitTraversalReader() {
@@ -363,7 +367,7 @@ public class ReachMessage implements Writable {
 			count = 0;
 		}
 
-		public List<TraversalWithPath> getRevisitTraversals() {
+		public List<TraversalMsg> getRevisitTraversals() {
 			return steps;
 		}
 
@@ -380,36 +384,59 @@ public class ReachMessage implements Writable {
 			count = in.readInt();
 			steps = new ArrayList<>(count);
 			for (int i = 0; i < count; i++) {
+			        long queryId=in.readLong();
 				long rootSubgraph = in.readLong();
 				long rootVertex = in.readLong();
+				long previousSubgraph=in.readLong();
+				long previousVertex = in.readLong();
 				long targetVID = in.readLong();
 				int depth = in.readInt();
-				int pathSize = in.readInt();
-				long startVertex = in.readLong();
-				Path p = new Path(startVertex);
-				for(int j=1;j<pathSize;j+=2){
-				  long edge = in.readLong();
-				  long vertex = in.readLong();
-				  p.addEV(edge, vertex);
-				}
-				steps.add(new TraversalWithPath(rootSubgraph, rootVertex, targetVID, depth,p));
+				boolean dir=in.readBoolean();
+				
+				
+				steps.add(new TraversalMsg(queryId,rootSubgraph, rootVertex,previousSubgraph,previousVertex,targetVID,depth,dir));
 			}
 		}
+		
+		public static class TraversalMsg{
+		  
+      long queryId;
+      long rooSubgraph;
+      long rootVertex;
+      long previousSubgraph;
+      long previousVertex;
+      long targetVID;
+      int depth;
+      boolean dir;
+
+      public TraversalMsg(long queryId,long rootSubgraph, long rootVertex,long previousSubgraph,long previousVertex, long sinkVID, int depth,boolean dir){
+		    this.queryId=queryId;
+		    this.rooSubgraph=rootSubgraph;
+		    this.rootVertex=rootVertex;
+		    this.previousSubgraph=previousSubgraph;
+		    this.previousVertex=previousVertex;
+		    this.targetVID=sinkVID;
+		    this.depth=depth;
+		    this.dir=dir;
+		  }
+		  
+		}
+		
 	}
 
+	
+	
 
 	//////////////////////////////////////////////
 	/**
-	 * Buffers result messages for each remote subgraph.
-	 * Maintains a Map from each remote vertex in that subgraph to the list of
-	 * result triples to that vertex.
+	 
 	 * 
 	 * @author simmhan
 	 *
 	 */
 	public static class ResultsWriter {
 
-		// for each remote root vertex, maintain the visited edges
+		// for each remote SGID , main List of Paths
 		private Map<Long, DataWriter> vertexResultsWriter;
 		private int count;
 
@@ -419,15 +446,21 @@ public class ReachMessage implements Writable {
 		}
 
 		// <(long)sourceVID, (long)edgeID, (long)sinkVID>+
-		public void addResult(long rootVertex, long sourceVertex, long edge, long sinkVertex,Path p) throws IOException {
-			DataWriter resultWriter = vertexResultsWriter.get(rootVertex);
+		public void addResult(long queryId,int startDepth,long previousVertex,boolean direction,PathWithDir p) throws IOException {
+			DataWriter resultWriter = vertexResultsWriter.get(queryId);
 			if (resultWriter == null) {
 				resultWriter = DataWriter.newInstance();
-				vertexResultsWriter.put(rootVertex, resultWriter);
+				vertexResultsWriter.put(queryId, resultWriter);
 			}
-			resultWriter.writeInt(p.getPath().size());
-			for(Long item: p.getPath()){
-			  resultWriter.writeLong(item);
+			resultWriter.writeInt(startDepth);
+			resultWriter.writeLong(previousVertex);
+			resultWriter.writeBoolean(direction);
+			resultWriter.writeInt(p.path.size());
+			resultWriter.writeLong(p.startVertex);
+			for(EVPair item: p.path){
+			  resultWriter.writeLong(item.edgeId);
+			  resultWriter.writeLong(item.vertexId);
+			  resultWriter.writeBoolean(item.direction);;
 			}
 			count++;
 		}
@@ -484,7 +517,7 @@ public class ReachMessage implements Writable {
 	 *
 	 */
 	public static class ResultsReader {
-		private Map<Long, ArrayList<DataReader>> vertexResultsReader;
+		private Map<Long, ArrayList<OutputReader>> vertexResultsReader;
 		private int count;
 
 		private ResultsReader() {
@@ -492,7 +525,7 @@ public class ReachMessage implements Writable {
 			count = 0;
 		}
 
-		public Map<Long, ArrayList<DataReader>> getResults() {
+		public Map<Long, ArrayList<OutputReader>> getResults() {
 			return vertexResultsReader;
 		}
 
@@ -524,10 +557,14 @@ public class ReachMessage implements Writable {
 			int vertexCount = in.readInt();
 
 			for (int i = 0; i < vertexCount; i++) {
-				long vertexId = in.readLong();
+				long qId = in.readLong();
+				int startDepth=in.readInt();
+				long previousVertex=in.readLong();
+				boolean dir=in.readBoolean();
 //				LOG.info("ResultReader");
 				int pathSize=in.readInt();
-				byte[] pathBytes = new byte[8*pathSize];
+				long startVertex=in.readLong();
+				byte[] pathBytes = new byte[17*pathSize];//FIX this..DOne 8*2+1
 //				in.readFully(tripleBytes);
 				//FIX:CHANGE this for PATHS
 				 Arrays.fill(pathBytes, (byte) 0);
@@ -539,16 +576,49 @@ public class ReachMessage implements Writable {
 		                           for (byte b : pathBytes)
 		                                System.out.printf("%d %x %n", i1++, b);
 		                     }
-		                ArrayList<DataReader> pathList=vertexResultsReader.get(vertexId);
+		                ArrayList<OutputReader> pathList=vertexResultsReader.get(qId);
 		                if(pathList==null){
 		                  pathList=new ArrayList<>();
-		                  vertexResultsReader.put(vertexId,pathList);
+		                  vertexResultsReader.put(qId,pathList);
 		                }
-				vertexResultsReader.get(vertexId).add( DataReader.newInstance(pathBytes));
+				vertexResultsReader.get(qId).add(new OutputReader(startDepth,previousVertex,dir,startVertex, DataReader.newInstance(pathBytes)));
 			}
 		  }
 		  catch(Exception e){
 		    e.printStackTrace();
+		  }
+		}
+		
+		
+		
+		public static class OutputReader{
+		  int startDepth;
+		  long previousVertex;
+		  boolean dir;
+		  PathWithDir path;
+		  
+		  public OutputReader(int _sd,long _pV,boolean dir,long _sV,DataReader reader){
+		    this.startDepth=_sd;
+		    this.previousVertex=_pV;
+		    this.dir=dir;
+		    PathWithDir p=new PathWithDir(_sV);
+		    boolean eof=false;
+		    while (!eof) {
+	              try {
+//	                 int pathSize=reader.readInt();
+//	                 pathSize=reader.readInt();
+//	                 System.out.println("Path Size:" + pathSize);
+	                   
+
+	                     p.addEV(reader.readLong(), reader.readLong(),reader.readBoolean());
+	                   
+	                  // read and use data
+	              } catch (IOException e) {
+	                  eof = true;
+	              }
+	          }
+		    
+		    path=p;
 		  }
 		}
 	}

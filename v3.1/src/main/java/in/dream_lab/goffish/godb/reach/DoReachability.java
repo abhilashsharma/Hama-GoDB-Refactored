@@ -27,6 +27,7 @@ import in.dream_lab.goffish.godb.EdgeAttr;
 import in.dream_lab.goffish.godb.Hueristics;
 import in.dream_lab.goffish.godb.HueristicsLoad;
 import in.dream_lab.goffish.godb.MapValue;
+import in.dream_lab.goffish.godb.Path;
 import in.dream_lab.goffish.godb.reach.ReachMessage.InEdgesWriter;
 import in.dream_lab.goffish.godb.reach.ReachMessage.ResultsReader;
 import in.dream_lab.goffish.godb.reach.ReachMessage.ResultsWriter;
@@ -660,7 +661,7 @@ for(Map.Entry<Long,StringBuilder> remoteSubgraphMessage: getSubgraph().getSubgra
 		// TODO: We're keeping multiple copies in Map and in message. If we're
 		// bloating memory, we may need to move from Map to message.
 		for (Entry<Long, ResultsWriter> entry : remoteResultsMap.entrySet()) {
-		        LOG.info("Sending Results Back:" + entry.getValue().toString());
+//		        LOG.info("Sending Results Back:" + entry.getValue().toString());
 			sendMessage(new LongWritable(entry.getKey()), new ReachMessage(entry.getValue()));
 		}
 

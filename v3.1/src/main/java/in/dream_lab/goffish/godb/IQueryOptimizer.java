@@ -1,4 +1,4 @@
-package in.dream_lab.goffish.godb.reach;
+package in.dream_lab.goffish.godb;
 
 public interface IQueryOptimizer {
 

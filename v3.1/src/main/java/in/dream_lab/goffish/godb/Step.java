@@ -3,13 +3,13 @@ package in.dream_lab.goffish.godb;
 /**
  * Class for storing the traversal path V->E->V->E->E.....
  */
-class Step{
+public class Step{
 	public String property;
 	public Object value;
 	public Direction direction;
 	public Type type;
-	enum Type{EDGE,VERTEX}
-	enum Direction{OUT,IN}
+	public enum Type{EDGE,VERTEX}
+	public enum Direction{OUT,IN}
 	
 	//used in reachability query
 	public Step(String p,Object v){

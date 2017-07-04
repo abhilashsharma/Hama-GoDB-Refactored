@@ -1,6 +1,7 @@
 package in.dream_lab.goffish.godb.reach;
 
 import in.dream_lab.goffish.godb.Hueristics;
+import in.dream_lab.goffish.godb.IQueryOptimizer;
 
 
 public class ReachabilityHeuristicsOptimizer implements IQueryOptimizer {

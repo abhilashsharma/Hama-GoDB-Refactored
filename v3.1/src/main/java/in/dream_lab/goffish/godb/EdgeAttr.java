@@ -39,4 +39,8 @@ public class EdgeAttr
 	public boolean isRemote(){
 	  return isRemote;
 	}
+	
+	public String getValue(){
+	  return Value;
+	}
 }

@@ -1,11 +1,8 @@
-package in.dream_lab.goffish.godb.bfs;
+package in.dream_lab.goffish.godb.path;
 
 import java.io.BufferedReader;
-import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Paths;
 
 import org.apache.commons.cli.ParseException;
 import org.apache.hadoop.fs.Path;
@@ -15,21 +12,17 @@ import org.apache.hama.HamaConfiguration;
 import org.apache.hama.bsp.TextInputFormat;
 import org.apache.hama.bsp.TextOutputFormat;
 
-import com.sun.tools.javac.util.List;
-
 import in.dream_lab.goffish.hama.GraphJob;
-
 import in.dream_lab.goffish.hama.LongMapPartitionSubsetGsonReader;
-
 import in.dream_lab.goffish.hama.NonSplitTextInputFormat;
 
-public class DoBFSJob {
+public class DoPathJob {
 
 	 public static void main(String args[]) throws IOException,InterruptedException, ClassNotFoundException, ParseException
 	  {
 		  HamaConfiguration conf = new HamaConfiguration();
-		  GraphJob job = new GraphJob(conf, DoBFS.class);
-		  job.setJobName("BFS with revisits");
+		  GraphJob job = new GraphJob(conf, DoPath.class);
+		  job.setJobName("Path");
 		  job.setInputFormat(TextInputFormat.class);
 		  job.setInputKeyClass(LongWritable.class);
 		  job.setInputValueClass(LongWritable.class);
@@ -37,24 +30,22 @@ public class DoBFSJob {
 		  job.setOutputKeyClass(LongWritable.class);
 		  job.setOutputValueClass(LongWritable.class);
 		  job.setMaxIteration(20);
-		  job.setGraphMessageClass(BFSMessage.class);
+		  job.setGraphMessageClass(Text.class);
 		  job.setInputPath(new Path(args[0]));
 		  job.setOutputPath(new Path(args[1]));
 		  job.setInitialInput(readArgsFromFile(args[2]));
-		  job.setSubgraphValueClass(BFSState.class);
-		  /* Reader configuration */
+		  job.setSubgraphValueClass(PathState.class);
 		  job.setInputFormat(NonSplitTextInputFormat.class);
 		  job.setInputReaderClass(LongMapPartitionSubsetGsonReader.class);
 		  
 		  //job.setSubgraphComputeClass(SubgraphComputeReduce.class);
 		  job.waitForCompletion(true);
 	  }
-	 
-	 
+	
 	 static String  readArgsFromFile(String fileName) throws IOException{
-	   String Args="";
-//	   String fileName="/home/abhilash/abhilash/multipleArguments.txt";
-	   FileReader fr = new FileReader(fileName);
+           String Args="";
+//           String fileName="/home/abhilash/abhilash/pathArguments.txt";
+           FileReader fr = new FileReader(fileName);
            BufferedReader br = new BufferedReader(fr);
 
            String sCurrentLine;
@@ -63,14 +54,13 @@ public class DoBFSJob {
 
            while ((sCurrentLine = br.readLine()) != null) {
                if(Args.equals(""))
-                   Args="-i "+sCurrentLine;
+                   Args=sCurrentLine;
                else
-                   Args=Args+";-i " + sCurrentLine;
+                   Args=Args+";" + sCurrentLine;
                
            }
            
            br.close();
-	   return Args;
-	 }
-	
+           return Args;
+         }
 }
