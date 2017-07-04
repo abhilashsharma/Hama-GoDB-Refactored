@@ -58,6 +58,7 @@ import in.dream_lab.goffish.api.AbstractSubgraphComputation;
 import in.dream_lab.goffish.api.IEdge;
 import in.dream_lab.goffish.api.IMessage;
 import in.dream_lab.goffish.api.IRemoteVertex;
+import in.dream_lab.goffish.api.ISubgraph;
 import in.dream_lab.goffish.api.ISubgraphWrapup;
 import in.dream_lab.goffish.api.IVertex;
 import in.dream_lab.goffish.godb.ConfigFile;
@@ -75,6 +76,8 @@ import in.dream_lab.goffish.godb.path.PathMessage;
 import in.dream_lab.goffish.godb.path.PathMessage.InEdgesWriter;
 import in.dream_lab.goffish.godb.path.PathMessage.RevisitTraversalReader.TraversalMsg;
 import in.dream_lab.goffish.godb.path.TraversalStep.TraversalWithState;
+import in.dream_lab.goffish.godb.reach.ReachQuery;
+import in.dream_lab.goffish.godb.reach.ReachState;
 import in.dream_lab.goffish.godb.path.PathMessage.ResultsReader;
 import in.dream_lab.goffish.godb.path.PathMessage.ResultsReader.OutputReader;
 import in.dream_lab.goffish.godb.util.DataReader;
@@ -238,7 +241,7 @@ implements ISubgraphWrapup{
 	 * This method is called in first superstep, it parses the query passed.
 	 * It also reads the Graph statistics(Called as Heuristics) from disk
 	 */
-	private void init(Iterable<IMessage<LongWritable, PathMessage>> messageList){
+	private void init(){
 	        PathState state=getSubgraph().getSubgraphValue();
 		String arguments = Arguments;
 		state.Arguments=Arguments;
@@ -587,7 +590,52 @@ implements ISubgraphWrapup{
 	
 	
 	
-	
+	       ////////////////////////////////////////////////////////////////
+        // SUPERSTEP 0
+        //
+        ////////////////////////////////////////////////////////////////
+        /**
+         * Parse the query
+         * Initialize the state data structures
+         * Initialize the Lucene index
+         * Load Heuristics
+         * Create Inedges
+         */
+        private void doSuperstep0() {
+                ISubgraph<PathState, MapValue, MapValue, LongWritable, LongWritable, LongWritable> subgraph = getSubgraph();
+                PathState state = subgraph.getSubgraphValue();
+
+             
+
+                if (Arguments == null) {
+                        throw new RuntimeException("Invalid input query. Found NULL");
+                }
+
+                // Parse and load queries
+                // TODO: Should this be part of application superstep to include its timing?
+                if (LOG.isInfoEnabled()) LOG.info("***************ARGUMENTS************** :" + Arguments);
+                
+                init();
+                // load index
+                try{
+                        synchronized (initLock) {
+                                if ( !initDone )
+                                      initInMemoryLucene();
+                        }
+                }catch(Exception e){e.printStackTrace();}
+
+          
+
+
+                
+                //Load Heuristics
+                hueristics=HueristicsLoad.getInstance();
+                
+                //create InEdges
+                if(state.InEdges==null){
+                  createInEdges();
+                }
+        }
 	
 	
 	
@@ -652,55 +700,22 @@ implements ISubgraphWrapup{
 			if(getSuperstep() == 0){
 	
 	
-				if( Arguments==null ){
-					System.out.println("START_ERROR:NO ARGUMENTS PROVIDED\tEXPECTED ARGUMENTS FORMAT\tvertexFilter@edgeDirection?edgeFilter@edgeDirection?edgeFilter@...|vertexFilter|edgeDirection?edgeFilter|...//instanceNumber\n");
-					voteToHalt();
-				}
-				else
-				{	
-					init(messageList);
-					// TODO: uncomment after indexing
-					try{
-						synchronized (initLock) {
-							if ( !initDone )
-							      initInMemoryLucene();
-						}
-					}catch(Exception e){e.printStackTrace();}
-					
-				}
-			}
-			
-	
-			else if (getSuperstep()==1) {
-				
-			 
-			//create InEdges
-		                if(state.InEdges==null){
-		                  createInEdges();
-		                }
-			
-				
+			doSuperstep0();
+				return;
 			}
 	
 			//subgraphId/20:attr?21,12,23|attr?12,12
-			else if ( getSuperstep()==2 ) {
+			else if ( getSuperstep()==1 ) {
 			  
 			  //accumulating inedges
 			  doSuperstep1(messageList);
-			if(!gcCalled){
-			System.gc();
-			System.runFinalization();
-			}
-			LOG.info("TIME ACCUMULATING INEDGES....Starting loading of heuristics");
-			hueristics=HueristicsLoad.getInstance();
-			LOG.info("Heuristic Loaded");
 
 			if(!gcCalled){
 	                        System.gc();
 	                        System.runFinalization();
 	                        gcCalled=true;
 	                }
-			
+			return;
 		}
 		}
 		
@@ -708,7 +723,7 @@ implements ISubgraphWrapup{
 		{
 		  
 			// COMPUTE-LOAD-INIT
-			if(getSuperstep()==3){
+			if(getSuperstep()==2){
 			        if(!queryStart){
 			        queryStart=true;  
 				LOG.info("Starting Query Execution");
@@ -996,7 +1011,7 @@ implements ISubgraphWrapup{
 			
 			
 			// CHECK MSSG-PROCESS FORWARD-PROCESS BACKWARD
-			if(getSuperstep()>=3) {
+			if(getSuperstep()>=2) {
 			
 				// CHECK INCOMING MESSAGE, ADD VERTEX TO APPRT LIST
 				// this is for the partially executed paths, which have been 
@@ -1538,7 +1553,7 @@ implements ISubgraphWrapup{
 		}
 		
 		
-		if(getSuperstep()>=3)
+		if(getSuperstep()>=2)
 			voteToHalt();
 	}
 	

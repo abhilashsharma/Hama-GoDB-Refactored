@@ -106,7 +106,7 @@ public class DoReachability extends
 		state.results = new HashMap<>();
 
 		// Load index
-		getSubgraph().getSubgraphId().get();
+//		getSubgraph().getSubgraphId().get();
 		state.rootQuerier.loadIndex(getSubgraph().getSubgraphId().get());
 		
 		//Load Heuristics
