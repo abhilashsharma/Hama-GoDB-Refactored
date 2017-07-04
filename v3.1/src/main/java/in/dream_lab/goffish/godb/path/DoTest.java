@@ -507,6 +507,7 @@ for(Map.Entry<Long,StringBuilder> remoteSubgraphMessage: getSubgraph().getSubgra
          */
         private void forwardOutputToSubgraph(int direction,TraversalWithState step) throws IOException {
                 PathStateTest state=getSubgraph().getSubgraphValue();
+                LOG.info("Sending output backwards:" + step.rootSubgraph + "," + step.previousSubgraph + "," + step.depth);
                 boolean d=false;
                 if(direction==1){
                         d=true;
@@ -515,7 +516,7 @@ for(Map.Entry<Long,StringBuilder> remoteSubgraphMessage: getSubgraph().getSubgra
                 
 //              System.out.println("OUTPUT SIZE:"+step.startVertexId+":"+step.message+":"+state.outputPathMaintainance.get(new OutputPathKey(step.queryId,step.startStep,d,step.startVertexId)).size());
                 
-                for (Pair entry: state.outputPathMaintainance.get(new OutputPathKey(step.queryId,step.depth,d,step.startVertex) )){
+                for (Pair entry: state.outputPathMaintainance.get(new OutputPathKey(step.queryId,step.startDepth,d,step.startVertex) )){
                         
                          ResultsWriter remoteResults = remoteResultsMap.get(step.previousSubgraph);
                          if (remoteResults == null) {
@@ -1389,6 +1390,7 @@ for(Map.Entry<Long,StringBuilder> remoteSubgraphMessage: getSubgraph().getSubgra
                                                                 long otherVertexId = edgeMap.getKey();
                                                                 PathWithDir modifiedPath = vertexMessageStep.path.getCopy();
                                                                 modifiedPath.addEV(edgeMap.getValue().getEdgeId(), otherVertexId,false);
+                                                                LOG.info("Traversed path:" + modifiedPath.toString());
                                                                 if ( !edgeMap.getValue().isRemote() ) {
                                                                         /* TODO :add the correct value to list*/
 //                                                                      state.revLocalVertexList.add(new TraversalWithState(vertexMessageStep.queryId,otherVertexId,_modifiedMessage.toString(),vertexMessageStep.stepsTraversed-1, vertexMessageStep.startVertexId,vertexMessageStep.startStep, vertexMessageStep.previousSubgraphId, vertexMessageStep.previousPartitionId));
@@ -1403,6 +1405,7 @@ for(Map.Entry<Long,StringBuilder> remoteSubgraphMessage: getSubgraph().getSubgra
                                                                         }
                                                                         
                                                                         if(addFlag){
+                                                                          LOG.info("Sending Remote Message");
 //                                                                              state.revRemoteVertexList.add(new TraversalWithState(vertexMessageStep.queryId,otherVertexId,_modifiedMessage.toString(),vertexMessageStep.stepsTraversed-1, vertexMessageStep.vertexId,vertexMessageStep.stepsTraversed-1, vertexMessageStep.previousSubgraphId, vertexMessageStep.previousPartitionId));
                                                                           state.revRemoteVertexList.add(new TraversalWithState(vertexMessageStep.queryId,vertexMessageStep.rootSubgraph,vertexMessageStep.rootVertex,otherVertexId,vertexMessageStep.previousSubgraph,vertexMessageStep.depth-1,vertexMessageStep.targetVertex,vertexMessageStep.depth-1,modifiedPath));
                                                                         }
