@@ -38,7 +38,7 @@ public class DoTestJob {
 		  job.setOutputKeyClass(LongWritable.class);
 		  job.setOutputValueClass(LongWritable.class);
 		  job.setMaxIteration(20);
-		  job.setGraphMessageClass(ReachMessage.class);
+		  job.setGraphMessageClass(PathMessage.class);
 		  job.setInputPath(new Path(args[0]));
 		  job.setOutputPath(new Path(args[1]));
 		  job.setInitialInput(args[2]);
