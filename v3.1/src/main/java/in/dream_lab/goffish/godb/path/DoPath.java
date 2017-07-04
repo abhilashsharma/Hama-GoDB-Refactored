@@ -397,8 +397,9 @@ implements ISubgraphWrapup{
         private void createInEdges(){
           //Logic to Accumulate inedges
           PathState state=getSubgraph().getSubgraphValue();
-          state.InEdges=new HashMap<Long,HashMap<Long,EdgeAttr>>();  
-    
+          //Logic to Accumulate inedges
+          getSubgraph().getSubgraphValue().InEdges=new HashMap<Long,HashMap<Long,EdgeAttr>>();  
+        time=System.currentTimeMillis();
 
         
         String m="";
@@ -407,30 +408,28 @@ implements ISubgraphWrapup{
         for(IEdge<MapValue, LongWritable, LongWritable> edge : sourceVertex.getOutEdges()) {
                 
                 IVertex<MapValue, MapValue, LongWritable, LongWritable> sinkVertex=getSubgraph().getVertexById(edge.getSinkVertexId());
-//              LOG.info("VERTEX:" + sinkVertex.getVertexId().get());
         //if sink vertex is not remote then add inedge to appropriate data structure, otherwise send source value to remote partition
         if(!sinkVertex.isRemote())
         {
- 
-                if(state.InEdges.containsKey(sinkVertex.getVertexId().get()))
+                if(getSubgraph().getSubgraphValue().InEdges.containsKey(sinkVertex.getVertexId().get()))
                 {
-                        if(!state.InEdges.get(sinkVertex.getVertexId().get()).containsKey(sourceVertex.getVertexId().get()))
+                        if(!getSubgraph().getSubgraphValue().InEdges.get(sinkVertex.getVertexId().get()).containsKey(sourceVertex.getVertexId().get()))
                         {
                                 
                                 
-//                            ISubgraphObjectProperties subgraphProperties = subgraphInstance.getPropertiesForEdge(edge.getId());
+//                              ISubgraphObjectProperties subgraphProperties = subgraphInstance.getPropertiesForEdge(edge.getId());
                                 EdgeAttr attr= new EdgeAttr("relation","null" /*subgraphProperties.getValue("relation").toString()*/,edge.getEdgeId().get(),false,null);
-                                state.InEdges.get(sinkVertex.getVertexId().get()).put(sourceVertex.getVertexId().get(), attr);
+                                getSubgraph().getSubgraphValue().InEdges.get(sinkVertex.getVertexId().get()).put(sourceVertex.getVertexId().get(), attr);
                                 //System.out.println("Accumulation inedge for edge "+ edge.getId() + " Value " + subgraphProperties.getValue("relation").toString() );
                         }
                         
                 }
                 else
                 {
-//                    ISubgraphObjectProperties subgraphProperties = subgraphInstance.getPropertiesForEdge(edge.getId());
+//                      ISubgraphObjectProperties subgraphProperties = subgraphInstance.getPropertiesForEdge(edge.getId());
                         EdgeAttr attr= new EdgeAttr("relation", "null"/*subgraphProperties.getValue("relation").toString()*/,edge.getEdgeId().get(),false,null);                                
-                        state.InEdges.put(sinkVertex.getVertexId().get(), new HashMap<Long,EdgeAttr>());
-                        state.InEdges.get(sinkVertex.getVertexId().get()).put(sourceVertex.getVertexId().get(), attr);
+                        getSubgraph().getSubgraphValue().InEdges.put(sinkVertex.getVertexId().get(), new HashMap<Long,EdgeAttr>());
+                        getSubgraph().getSubgraphValue().InEdges.get(sinkVertex.getVertexId().get()).put(sourceVertex.getVertexId().get(), attr);
                         //System.out.println("Accumulation inedge for edge "+ edge.getId() + " Value " + subgraphProperties.getValue("relation").toString() );
                         
                 }
@@ -443,10 +442,10 @@ implements ISubgraphWrapup{
         //TODO: generalize this for all attributes
                 IRemoteVertex<MapValue,MapValue,LongWritable,LongWritable,LongWritable> remoteVertex = (IRemoteVertex<MapValue, MapValue, LongWritable, LongWritable, LongWritable>)sinkVertex;
                 remoteVertex.getSubgraphId().get();
-        if(!state.MessagePacking.containsKey(remoteVertex.getSubgraphId().get()))
-                state.MessagePacking.put(remoteVertex.getSubgraphId().get(),new StringBuilder("#|" + sourceVertex.getVertexId().get()  + "|" + sinkVertex.getVertexId().get() + "|" + "relation" + ":"  +"null" /*subgraphProperties.getValue("relation").toString()*/+"|" + edge.getEdgeId().get()+"|" + getSubgraph().getSubgraphId().get() + "|" +0));
+        if(!getSubgraph().getSubgraphValue().MessagePacking.containsKey(remoteVertex.getSubgraphId().get()))
+                getSubgraph().getSubgraphValue().MessagePacking.put(remoteVertex.getSubgraphId().get(),new StringBuilder("#|" + sourceVertex.getVertexId().get()  + "|" + sinkVertex.getVertexId().get() + "|" + "relation" + ":"  +"null" /*subgraphProperties.getValue("relation").toString()*/+"|" + edge.getEdgeId().get()+"|" + getSubgraph().getSubgraphId().get() + "|" +0));
         else{
-                state.MessagePacking.get(remoteVertex.getSubgraphId().get()).append("$").append("#|").append(sourceVertex.getVertexId().get()).
+                getSubgraph().getSubgraphValue().MessagePacking.get(remoteVertex.getSubgraphId().get()).append("$").append("#|").append(sourceVertex.getVertexId().get()).
                                                         append("|").append(sinkVertex.getVertexId().get()).
                                                         append("|").append("relation").append(":").append("null" /*subgraphProperties.getValue("relation").toString()*/).
                                                         append("|").append(edge.getEdgeId().get()).
@@ -463,7 +462,7 @@ implements ISubgraphWrapup{
         
         
         
-          }//for ends
+}
       //Sending packed messages by iterating through MessagePacking Hashmap
         for(Map.Entry<Long,StringBuilder> remoteSubgraphMessage: state.MessagePacking.entrySet()){
                 
