@@ -29,20 +29,11 @@ import in.dream_lab.goffish.godb.HueristicsLoad;
 import in.dream_lab.goffish.godb.MapValue;
 import in.dream_lab.goffish.godb.Path;
 import in.dream_lab.goffish.godb.reach.ReachMessage;
-import in.dream_lab.goffish.godb.reach.ReachMessage.InEdgesWriter;
-import in.dream_lab.goffish.godb.reach.ReachMessage.ResultsReader;
-import in.dream_lab.goffish.godb.reach.ReachMessage.ResultsWriter;
-import in.dream_lab.goffish.godb.reach.ReachMessage.RevisitTraversalReader;
-import in.dream_lab.goffish.godb.reach.ReachMessage.RevisitTraversalWriter;
-import in.dream_lab.goffish.godb.reach.ReachMessage.StopReader;
-import in.dream_lab.goffish.godb.reach.ReachMessage.StopWriter;
-import in.dream_lab.goffish.godb.reach.TraversalStep.TraversalWithPath;
-import in.dream_lab.goffish.godb.util.DataReader;
-import in.dream_lab.goffish.godb.util.DataWriter;
+import in.dream_lab.goffish.godb.path.PathMessage.InEdgesWriter;
 
 
 public class DoTest extends
-        AbstractSubgraphComputation<PathState, MapValue, MapValue, ReachMessage, LongWritable, LongWritable, LongWritable>
+        AbstractSubgraphComputation<PathState, MapValue, MapValue, PathMessage, LongWritable, LongWritable, LongWritable>
         implements ISubgraphWrapup {
 
 	public static final Log LOG = LogFactory.getLog(DoTest.class);
@@ -183,7 +174,7 @@ public class DoTest extends
 for(Map.Entry<Long,StringBuilder> remoteSubgraphMessage: getSubgraph().getSubgraphValue().MessagePacking.entrySet()){
         
         InEdgesWriter in= new InEdgesWriter(remoteSubgraphMessage.getValue().toString().getBytes());
-        ReachMessage msg = new ReachMessage(in);
+        PathMessage msg = new PathMessage(in);
 
         sendMessage(new LongWritable(remoteSubgraphMessage.getKey()),msg);
 }
@@ -193,9 +184,9 @@ for(Map.Entry<Long,StringBuilder> remoteSubgraphMessage: getSubgraph().getSubgra
 	/**
 	 * Accumulate Inedges
 	 */
-	private void doSuperstep1(Iterable<IMessage<LongWritable, ReachMessage>> messageList) {
+	private void doSuperstep1(Iterable<IMessage<LongWritable, PathMessage>> messageList) {
 	 
-    for (IMessage<LongWritable, ReachMessage> _message: messageList){
+    for (IMessage<LongWritable, PathMessage> _message: messageList){
             
             String message = new String(_message.getMessage().getInEdgesReader().getInEdgesMessage());
 
@@ -234,7 +225,7 @@ for(Map.Entry<Long,StringBuilder> remoteSubgraphMessage: getSubgraph().getSubgra
 //
 ////////////////////////////////////////////////////////////////
   @Override
-	public void compute(Iterable<IMessage<LongWritable, ReachMessage>> messages) throws IOException {
+	public void compute(Iterable<IMessage<LongWritable, PathMessage>> messages) throws IOException {
 
 		ISubgraph<PathState, MapValue, MapValue, LongWritable, LongWritable, LongWritable> subgraph = getSubgraph();
 		long sgid = subgraph.getSubgraphId().get();
