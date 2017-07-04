@@ -1634,15 +1634,31 @@ for(Map.Entry<Long,StringBuilder> remoteSubgraphMessage: getSubgraph().getSubgra
 
   @Override
 	public void wrapup() throws IOException {
-		// Writing results
-	        LOG.info("Ending Query Execution");
-		PathStateTest state = getSubgraph().getSubgraphValue();
-		
-		// clearing Subgraph Value for next query
-		// for cleaning up the subgraph value so that Results could be cleared while
-		// Inedges won't be cleared so that it could be reused.
-		clear();
-		
+    if(!queryEnd){
+      queryEnd=true;
+    LOG.info("Ending Query Execution");
+    }
+    PathStateTest state=getSubgraph().getSubgraphValue();
+          for(Map.Entry<Long, ResultSet> entry: state.resultsMap.entrySet()) {
+                  if (!entry.getValue().revResultSet.isEmpty())
+                          for(String partialRevPath: entry.getValue().revResultSet) {
+                                  if (!entry.getValue().forwardResultSet.isEmpty())
+                                          for(String partialForwardPath: entry.getValue().forwardResultSet) {
+                                                  LOG.info("ResultSetBothNotEmpty:" +partialRevPath+partialForwardPath);
+                                                  //output(partition.getId(), subgraph.getId(), partialRevPath+partialForwardPath); 
+                                          }
+                                  else{
+                                          LOG.info("ResultSetForwardEmpty:" +partialRevPath);
+                                          //output(partition.getId(), subgraph.getId(), partialRevPath);
+                                  }
+                          }
+                  else
+                          for(String partialForwardPath: entry.getValue().forwardResultSet) {
+                                  LOG.info("ResultSetReverseEmpty:" +partialForwardPath);
+                                  //output(partition.getId(), subgraph.getId(), partialForwardPath); 
+                          }
+          }
+  LOG.info("Cumulative Result Collection:" +  state.resultCollectionTime);        
 	}
 
 
