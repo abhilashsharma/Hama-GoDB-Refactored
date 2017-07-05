@@ -1484,7 +1484,7 @@ implements ISubgraphWrapup{
 		if(_direction==true){
 			dir=1;
 		}
-		
+		LOG.info("Storing Recursive:" + vertexMessageStep.queryId+","+vertexMessageStep.stepsTraversed+","+_direction+","+vertexMessageStep.vertexId);
 		if(!getSubgraph().getSubgraphValue().recursivePaths.containsKey(new RecursivePathKey(vertexMessageStep.queryId,vertexMessageStep.stepsTraversed,_direction,vertexMessageStep.vertexId))){
 			
 			ArrayList<RecursivePathMaintained> tempList = new ArrayList<RecursivePathMaintained>();

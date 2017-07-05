@@ -677,7 +677,7 @@ for(Map.Entry<Long,StringBuilder> remoteSubgraphMessage: getSubgraph().getSubgra
                 if(_direction==true){
                         dir=1;
                 }
-                
+                LOG.info("Storing Recursive:" + vertexMessageStep.queryId+","+vertexMessageStep.depth+","+_direction+","+vertexMessageStep.targetVertex);
                 if(!state.recursivePaths.containsKey(new RecursivePathKey(vertexMessageStep.queryId,vertexMessageStep.depth,_direction,vertexMessageStep.targetVertex))){
                         
                         ArrayList<RecursivePathMaintained> tempList = new ArrayList<RecursivePathMaintained>();
