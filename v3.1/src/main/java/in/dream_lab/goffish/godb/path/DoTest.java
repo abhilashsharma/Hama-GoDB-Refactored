@@ -548,9 +548,10 @@ for(Map.Entry<Long,StringBuilder> remoteSubgraphMessage: getSubgraph().getSubgra
                 boolean direction =  o.dir;
                 Long endVertexId = o.previousVertex;
                 Integer step=o.startDepth;
-                LOG.info("Joining:"+ queryId+","+step+","+direction+","+endVertexId);
+                
                 //Recently added line...Reminder
                 step=direction?step-1:step+1;
+                LOG.info("Joining:"+ queryId+","+step+","+direction+","+endVertexId);
                 for (RecursivePathMaintained stuff : state.recursivePaths.get(new RecursivePathKey(queryId, step, direction,endVertexId))){
                         PathWithDir result = new PathWithDir(partialPath.startVertex,partialPath.path);//partial result
                         //*****Adding partial Result to partialResultCache********
