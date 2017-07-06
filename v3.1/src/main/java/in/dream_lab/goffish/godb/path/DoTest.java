@@ -1161,7 +1161,7 @@ for(Map.Entry<Long,StringBuilder> remoteSubgraphMessage: getSubgraph().getSubgra
 //                                              recursivePaths.get(vertexMessageStep.vertexId).add(new RecursivePathMaintained(vertexMessageStep.startVertexId, vertexMessageStep.message,0));
 //                                      }
 //                                      System.out.println("Querying Output Path:" + vertexMessageStep.queryId+","+vertexMessageStep.startStep+","+true+","+vertexMessageStep.startVertexId );
-                                        if(state.outputPathMaintainance.containsKey(new OutputPathKey(vertexMessageStep.queryId,vertexMessageStep.depth,true,vertexMessageStep.startVertex))){
+                                        if(state.outputPathMaintainance.containsKey(new OutputPathKey(vertexMessageStep.queryId,vertexMessageStep.startDepth,true,vertexMessageStep.startVertex))){
                                                 forwardOutputToSubgraph(1,vertexMessageStep);
                                         }
                                         else{
