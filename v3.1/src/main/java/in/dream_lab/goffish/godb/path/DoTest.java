@@ -1190,13 +1190,13 @@ for(Map.Entry<Long,StringBuilder> remoteSubgraphMessage: getSubgraph().getSubgra
                                                 boolean addFlag=false;
                                                 if ( nextStep.property == null && nextStep.value == null ) {
                                                         for( IEdge<MapValue, LongWritable, LongWritable> edge: currentVertex.getOutEdges()) {
-                                                                //count++;
-//                                                              System.out.println("Traversing edges");
+                                                                
                                                                 IVertex<MapValue, MapValue, LongWritable, LongWritable> otherVertex = getSubgraph().getVertexById(edge.getSinkVertexId());
                                                                 long currentVertexId=otherVertex.getVertexId().get();
                                                                 long currentEdgeId=edge.getEdgeId().get();
                                                                 PathWithDir modifiedPath = vertexMessageStep.path.getCopy();
                                                                  modifiedPath.addEV(currentEdgeId, currentVertexId,true);
+                                                                 LOG.info("Traversed path:" + modifiedPath.toString());
                                                                 if ( !otherVertex.isRemote() ) {
 //                                                                      System.out.println("Path Till Now:" + _modifiedMessage.toString());
 //                                                                      state.forwardLocalVertexList.add(new TraversalWithState(vertexMessageStep.queryId,otherVertex.getVertexId().get(),_modifiedMessage.toString(),vertexMessageStep.stepsTraversed+1, vertexMessageStep.startVertexId,vertexMessageStep.startStep, vertexMessageStep.previousSubgraphId, vertexMessageStep.previousPartitionId));
