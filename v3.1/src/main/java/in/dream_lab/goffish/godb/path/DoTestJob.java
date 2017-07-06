@@ -41,7 +41,7 @@ public class DoTestJob {
 		  job.setGraphMessageClass(PathMessage.class);
 		  job.setInputPath(new Path(args[0]));
 		  job.setOutputPath(new Path(args[1]));
-		  job.setInitialInput(args[2]);
+		  job.setInitialInput(readArgsFromFile(args[2]));
 		  job.setSubgraphValueClass(PathStateTest.class);
 		  /* Reader configuration */
 		    job.setInputFormat(NonSplitTextInputFormat.class);
