@@ -126,7 +126,7 @@ public class PathWithDir {
 
   public void append(PathWithDir path2) {
     // TODO Auto-generated method stub
-    System.out.println("Appending Results:" + path2.toString() +"  ###:"+ this.toString() );
+    System.out.println("Appending Results:Stored results:" + path2.toString() +"  partial results:"+ this.toString() );
     PathWithDir newPath=new PathWithDir(this.startVertex);
     
     for(EVPair ev: this.path){
