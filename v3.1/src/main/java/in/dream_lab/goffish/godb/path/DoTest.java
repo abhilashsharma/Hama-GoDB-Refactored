@@ -507,7 +507,7 @@ for(Map.Entry<Long,StringBuilder> remoteSubgraphMessage: getSubgraph().getSubgra
          */
         private void forwardOutputToSubgraph(int direction,TraversalWithState step) throws IOException {
                 PathStateTest state=getSubgraph().getSubgraphValue();
-                LOG.info("Sending output backwards:" + step.rootSubgraph + "," + step.previousSubgraph + "," + step.depth);
+//                LOG.info("Sending output backwards:" + step.rootSubgraph + "," + step.previousSubgraph + "," + step.depth);
                 boolean d=false;
                 if(direction==1){
                         d=true;
@@ -548,10 +548,10 @@ for(Map.Entry<Long,StringBuilder> remoteSubgraphMessage: getSubgraph().getSubgra
                 boolean direction =  o.dir;
                 Long endVertexId = o.previousVertex;
                 Integer step=o.startDepth;
-                LOG.info("JoinBefore:"+ queryId+","+step+","+direction+","+endVertexId);
+//                LOG.info("JoinBefore:"+ queryId+","+step+","+direction+","+endVertexId);
                 //Recently added line...Reminder
                 step=direction?step-1:step+1;
-                LOG.info("Joining:"+ queryId+","+step+","+direction+","+endVertexId +","+ getSubgraph().getSubgraphId() );
+//                LOG.info("Joining:"+ queryId+","+step+","+direction+","+endVertexId +","+ getSubgraph().getSubgraphId() );
                 for (RecursivePathMaintained stuff : state.recursivePaths.get(new RecursivePathKey(queryId, step, direction,endVertexId))){
                         PathWithDir result = new PathWithDir(partialPath.startVertex,partialPath.path);//partial result
                         //*****Adding partial Result to partialResultCache********
@@ -678,7 +678,7 @@ for(Map.Entry<Long,StringBuilder> remoteSubgraphMessage: getSubgraph().getSubgra
                 if(_direction==true){
                         dir=1;
                 }
-                LOG.info("Storing Recursive:" + vertexMessageStep.queryId+","+vertexMessageStep.depth+","+_direction+","+vertexMessageStep.targetVertex + "," + getSubgraph().getSubgraphId());
+//                LOG.info("Storing Recursive:" + vertexMessageStep.queryId+","+vertexMessageStep.depth+","+_direction+","+vertexMessageStep.targetVertex + "," + getSubgraph().getSubgraphId());
                 if(!state.recursivePaths.containsKey(new RecursivePathKey(vertexMessageStep.queryId,vertexMessageStep.depth,_direction,vertexMessageStep.targetVertex))){
                         
                         ArrayList<RecursivePathMaintained> tempList = new ArrayList<RecursivePathMaintained>();
@@ -1392,7 +1392,7 @@ for(Map.Entry<Long,StringBuilder> remoteSubgraphMessage: getSubgraph().getSubgra
                                                                 long otherVertexId = edgeMap.getKey();
                                                                 PathWithDir modifiedPath = vertexMessageStep.path.getCopy();
                                                                 modifiedPath.addEV(edgeMap.getValue().getEdgeId(), otherVertexId,false);
-                                                                LOG.info("Traversed path:" + modifiedPath.toString());
+//                                                                LOG.info("Traversed path:" + modifiedPath.toString());
                                                                 if ( !edgeMap.getValue().isRemote() ) {
                                                                         /* TODO :add the correct value to list*/
 //                                                                      state.revLocalVertexList.add(new TraversalWithState(vertexMessageStep.queryId,otherVertexId,_modifiedMessage.toString(),vertexMessageStep.stepsTraversed-1, vertexMessageStep.startVertexId,vertexMessageStep.startStep, vertexMessageStep.previousSubgraphId, vertexMessageStep.previousPartitionId));
@@ -1407,7 +1407,7 @@ for(Map.Entry<Long,StringBuilder> remoteSubgraphMessage: getSubgraph().getSubgra
                                                                         }
                                                                         
                                                                         if(addFlag){
-                                                                          LOG.info("Sending Remote Message");
+//                                                                          LOG.info("Sending Remote Message");
 //                                                                              state.revRemoteVertexList.add(new TraversalWithState(vertexMessageStep.queryId,otherVertexId,_modifiedMessage.toString(),vertexMessageStep.stepsTraversed-1, vertexMessageStep.vertexId,vertexMessageStep.stepsTraversed-1, vertexMessageStep.previousSubgraphId, vertexMessageStep.previousPartitionId));
                                                                           state.revRemoteVertexList.add(new TraversalWithState(vertexMessageStep.queryId,vertexMessageStep.rootSubgraph,vertexMessageStep.rootVertex,otherVertexId,vertexMessageStep.previousSubgraph,vertexMessageStep.depth-1,vertexMessageStep.targetVertex,vertexMessageStep.depth-1,modifiedPath));
                                                                         }
@@ -1608,7 +1608,7 @@ for(Map.Entry<Long,StringBuilder> remoteSubgraphMessage: getSubgraph().getSubgra
                                         traversalMessage = new RevisitTraversalWriter();
                                         remoteTraversalMap.put(remoteSGID, traversalMessage);
                                 }
-                                LOG.info("Sending Remote Message:"+remoteSGID +","+getSubgraph().getSubgraphId().get() );
+//                                LOG.info("Sending Remote Message:"+remoteSGID +","+getSubgraph().getSubgraphId().get() );
                                 traversalMessage.addTraversal(stuff.queryId,stuff.rootSubgraph,stuff.rootVertex, getSubgraph().getSubgraphId().get(),stuff.startVertex,stuff.targetVertex,stuff.depth,false);
                                 
                         }
