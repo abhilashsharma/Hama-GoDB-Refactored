@@ -1578,7 +1578,7 @@ for(Map.Entry<Long,StringBuilder> remoteSubgraphMessage: getSubgraph().getSubgra
                                         traversalMessage = new RevisitTraversalWriter();
                                         remoteTraversalMap.put(remoteSGID, traversalMessage);
                                 }
-                                traversalMessage.addTraversal(stuff.queryId,stuff.rootSubgraph,stuff.rootVertex, stuff.previousSubgraph,stuff.startVertex,stuff.targetVertex,stuff.depth,true);
+                                traversalMessage.addTraversal(stuff.queryId,stuff.rootSubgraph,stuff.rootVertex, getSubgraph().getSubgraphId().get(),stuff.startVertex,stuff.targetVertex,stuff.depth,true);
                                 
                                         
                         }
@@ -1607,7 +1607,8 @@ for(Map.Entry<Long,StringBuilder> remoteSubgraphMessage: getSubgraph().getSubgra
                                         traversalMessage = new RevisitTraversalWriter();
                                         remoteTraversalMap.put(remoteSGID, traversalMessage);
                                 }
-                                traversalMessage.addTraversal(stuff.queryId,stuff.rootSubgraph,stuff.rootVertex, stuff.previousSubgraph,stuff.startVertex,stuff.targetVertex,stuff.depth,false);
+                                LOG.info("Sending Remote Message:"+remoteSGID +","+getSubgraph().getSubgraphId().get() );
+                                traversalMessage.addTraversal(stuff.queryId,stuff.rootSubgraph,stuff.rootVertex, getSubgraph().getSubgraphId().get(),stuff.startVertex,stuff.targetVertex,stuff.depth,false);
                                 
                         }
                         state.revRemoteVertexList.clear();
