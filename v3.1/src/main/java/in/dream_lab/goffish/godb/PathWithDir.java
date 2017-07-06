@@ -112,13 +112,14 @@ public class PathWithDir {
 
   public void insert(PathWithDir path2) {
     // TODO Auto-generated method stub
-    PathWithDir newPath=new PathWithDir(this.startVertex);
-    for(EVPair ev: this.path){
-      newPath.addEV(ev.edgeId, ev.vertexId, ev.direction);
-    }
+    PathWithDir newPath=new PathWithDir(path2.startVertex);
     for(EVPair ev: path2.path){
       newPath.addEV(ev.edgeId, ev.vertexId, ev.direction);
     }
+    for(EVPair ev: this.path){
+      newPath.addEV(ev.edgeId, ev.vertexId, ev.direction);
+    }
+    
     this.startVertex=newPath.startVertex;
     this.path=newPath.path;
   }
