@@ -127,14 +127,16 @@ public class PathWithDir {
   public void append(PathWithDir path2) {
     // TODO Auto-generated method stub
     System.out.println("Appending Results:Stored results:" + path2.toString() +"  partial results:"+ this.toString() );
-    PathWithDir newPath=new PathWithDir(this.startVertex);
+    PathWithDir newPath=new PathWithDir(path2.startVertex);
+    
+    for(EVPair ev: path2.path){
+      newPath.addEV(ev.edgeId, ev.vertexId, ev.direction);
+    }
     
     for(EVPair ev: this.path){
       newPath.addEV(ev.edgeId, ev.vertexId, ev.direction);
     }
-    for(EVPair ev: path2.path){
-      newPath.addEV(ev.edgeId, ev.vertexId, ev.direction);
-    }
+    
     this.startVertex=newPath.startVertex;
     this.path=newPath.path;
   }
