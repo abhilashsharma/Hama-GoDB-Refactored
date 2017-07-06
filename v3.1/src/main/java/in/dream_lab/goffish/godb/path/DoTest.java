@@ -507,7 +507,7 @@ for(Map.Entry<Long,StringBuilder> remoteSubgraphMessage: getSubgraph().getSubgra
          */
         private void forwardOutputToSubgraph(int direction,TraversalWithState step) throws IOException {
                 PathStateTest state=getSubgraph().getSubgraphValue();
-                LOG.info("Sending output backwards:" + step.rootSubgraph + "," + step.previousSubgraph + "," + step.path.toString());
+//                LOG.info("Sending output backwards:" + step.rootSubgraph + "," + step.previousSubgraph + "," + step.path.toString());
                 boolean d=false;
                 if(direction==1){
                         d=true;
@@ -551,7 +551,7 @@ for(Map.Entry<Long,StringBuilder> remoteSubgraphMessage: getSubgraph().getSubgra
 //                LOG.info("JoinBefore:"+ queryId+","+step+","+direction+","+endVertexId);
                 //Recently added line...Reminder
                 step=direction?step-1:step+1;
-                LOG.info("Joining:"+ queryId+","+step+","+direction+","+endVertexId +","+ getSubgraph().getSubgraphId() );
+//                LOG.info("Joining:"+ queryId+","+step+","+direction+","+endVertexId +","+ getSubgraph().getSubgraphId() );
                 for (RecursivePathMaintained stuff : state.recursivePaths.get(new RecursivePathKey(queryId, step, direction,endVertexId))){
                         PathWithDir result = new PathWithDir(partialPath.startVertex,partialPath.path);//partial result
                         //*****Adding partial Result to partialResultCache********
@@ -567,12 +567,12 @@ for(Map.Entry<Long,StringBuilder> remoteSubgraphMessage: getSubgraph().getSubgra
                         
                         //***************************END***************************
                         
-                        LOG.info("Joining Output Result:" + result.toString() + " Partial path:" + stuff.path.toString());
+//                        LOG.info("Joining Output Result:" + result.toString() + " Partial path:" + stuff.path.toString());
                         if (direction)
                                 result.insert(stuff.path);
                         else
                                 result.append(stuff.path);
-                        LOG.info("Joined Result:" + result.toString());
+//                        LOG.info("Joined Result:" + result.toString());
 //                      System.out.println("END:" + endVertexId + "PATH:"+stuff.path + "Merged path:" + result);
                         Integer recursiveStartStep=stuff.startStep;
                         boolean recursion=false;
@@ -678,7 +678,7 @@ for(Map.Entry<Long,StringBuilder> remoteSubgraphMessage: getSubgraph().getSubgra
                 if(_direction==true){
                         dir=1;
                 }
-                LOG.info("Storing Recursive:" + vertexMessageStep.queryId+","+vertexMessageStep.depth+","+_direction+","+vertexMessageStep.targetVertex + "," + getSubgraph().getSubgraphId());
+//                LOG.info("Storing Recursive:" + vertexMessageStep.queryId+","+vertexMessageStep.depth+","+_direction+","+vertexMessageStep.targetVertex + "," + getSubgraph().getSubgraphId());
                 if(!state.recursivePaths.containsKey(new RecursivePathKey(vertexMessageStep.queryId,vertexMessageStep.depth,_direction,vertexMessageStep.targetVertex))){
                         
                         ArrayList<RecursivePathMaintained> tempList = new ArrayList<RecursivePathMaintained>();
@@ -1196,7 +1196,7 @@ for(Map.Entry<Long,StringBuilder> remoteSubgraphMessage: getSubgraph().getSubgra
                                                                 long currentEdgeId=edge.getEdgeId().get();
                                                                 PathWithDir modifiedPath = vertexMessageStep.path.getCopy();
                                                                  modifiedPath.addEV(currentEdgeId, currentVertexId,true);
-                                                                 LOG.info("Traversed path:" + modifiedPath.toString());
+//                                                                 LOG.info("Traversed path:" + modifiedPath.toString());
                                                                 if ( !otherVertex.isRemote() ) {
 //                                                                      System.out.println("Path Till Now:" + _modifiedMessage.toString());
 //                                                                      state.forwardLocalVertexList.add(new TraversalWithState(vertexMessageStep.queryId,otherVertex.getVertexId().get(),_modifiedMessage.toString(),vertexMessageStep.stepsTraversed+1, vertexMessageStep.startVertexId,vertexMessageStep.startStep, vertexMessageStep.previousSubgraphId, vertexMessageStep.previousPartitionId));
