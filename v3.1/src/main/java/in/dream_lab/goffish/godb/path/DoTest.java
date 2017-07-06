@@ -799,11 +799,11 @@ for(Map.Entry<Long,StringBuilder> remoteSubgraphMessage: getSubgraph().getSubgra
                   
                         // COMPUTE-LOAD-INIT
                         if(getSuperstep()==2){
-                                if(!queryStart){
-                                queryStart=true;  
+//                                if(!queryStart){
+//                                queryStart=true;  
                                 LOG.info("Starting Query Execution");
-                                 queryEnd=false;
-                                }
+//                                 queryEnd=false;
+//                                }
                                 // COMPUTE HUERISTIC BASED QUERY COST
                                 {
                                         // TODO: implementation for calc cost from middle of query ( for each position calc cost forward and backward cost and add them)
@@ -1640,10 +1640,10 @@ for(Map.Entry<Long,StringBuilder> remoteSubgraphMessage: getSubgraph().getSubgra
 
   @Override
 	public void wrapup() throws IOException {
-    if(!queryEnd){
-      queryEnd=true;
+//    if(!queryEnd){
+//      queryEnd=true;
     LOG.info("Ending Query Execution");
-    }
+//    }
     PathStateTest state=getSubgraph().getSubgraphValue();
           for(Map.Entry<Long, ResultSet> entry: state.resultsMap.entrySet()) {
                   if (!entry.getValue().revResultSet.isEmpty())
