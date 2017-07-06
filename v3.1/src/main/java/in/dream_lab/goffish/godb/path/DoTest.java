@@ -567,7 +567,7 @@ for(Map.Entry<Long,StringBuilder> remoteSubgraphMessage: getSubgraph().getSubgra
                         
                         //***************************END***************************
                         
-                        LOG.info("Joining Output Result:" + partialPath.toString() + " Partial path:" + result.toString());
+                        LOG.info("Joining Output Result:" + result.toString() + " Partial path:" + stuff.path.toString());
                         if (direction)
                                 result.insert(stuff.path);
                         else
