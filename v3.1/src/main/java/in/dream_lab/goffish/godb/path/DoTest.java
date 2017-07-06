@@ -507,7 +507,7 @@ for(Map.Entry<Long,StringBuilder> remoteSubgraphMessage: getSubgraph().getSubgra
          */
         private void forwardOutputToSubgraph(int direction,TraversalWithState step) throws IOException {
                 PathStateTest state=getSubgraph().getSubgraphValue();
-//                LOG.info("Sending output backwards:" + step.rootSubgraph + "," + step.previousSubgraph + "," + step.depth);
+                LOG.info("Sending output backwards:" + step.rootSubgraph + "," + step.previousSubgraph + "," + step.path.toString());
                 boolean d=false;
                 if(direction==1){
                         d=true;
