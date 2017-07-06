@@ -567,6 +567,7 @@ for(Map.Entry<Long,StringBuilder> remoteSubgraphMessage: getSubgraph().getSubgra
                         
                         //***************************END***************************
                         
+                        LOG.info("Appending Results:" + stuff.path.toString() +"  ###:"+ result.toString() );
                         if (direction)
                                 result.insert(stuff.path);
                         else
