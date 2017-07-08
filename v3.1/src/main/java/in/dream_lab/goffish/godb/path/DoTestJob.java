@@ -30,7 +30,7 @@ public class DoTestJob {
 	  {
 		  HamaConfiguration conf = new HamaConfiguration();
 		  GraphJob job = new GraphJob(conf, DoTest.class);
-		  job.setJobName("InEdges Test");
+		  job.setJobName("InEdges + Path Queries");
 		  job.setInputFormat(TextInputFormat.class);
 		  job.setInputKeyClass(LongWritable.class);
 		  job.setInputValueClass(LongWritable.class);
