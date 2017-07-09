@@ -1644,6 +1644,7 @@ for(Map.Entry<Long,StringBuilder> remoteSubgraphMessage: getSubgraph().getSubgra
 //      queryEnd=true;
     LOG.info("Ending Query Execution");
 //    }
+    long resultSetSize=0;
     PathStateTest state=getSubgraph().getSubgraphValue();
           for(Map.Entry<Long, ResultSet> entry: state.resultsMap.entrySet()) {
                   if (!entry.getValue().revResultSet.isEmpty())
@@ -1657,12 +1658,14 @@ for(Map.Entry<Long,StringBuilder> remoteSubgraphMessage: getSubgraph().getSubgra
                                           LOG.info("ResultSetForwardEmpty:" +partialRevPath);
                                           //output(partition.getId(), subgraph.getId(), partialRevPath);
                                   }
+                                  resultSetSize++;
                           }
                   else
                           for(String partialForwardPath: entry.getValue().forwardResultSet) {
                                   LOG.info("ResultSetReverseEmpty:" +partialForwardPath);
                                   //output(partition.getId(), subgraph.getId(), partialForwardPath); 
                           }
+                  resultSetSize++;
           }
   LOG.info("Cumulative Result Collection:" +  state.resultCollectionTime);        
           clear();
