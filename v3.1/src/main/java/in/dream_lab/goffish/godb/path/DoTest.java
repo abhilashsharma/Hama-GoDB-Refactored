@@ -1653,20 +1653,24 @@ for(Map.Entry<Long,StringBuilder> remoteSubgraphMessage: getSubgraph().getSubgra
                                           for(String partialForwardPath: entry.getValue().forwardResultSet) {
                                                   LOG.info("ResultSetBothNotEmpty:" +partialRevPath+partialForwardPath);
                                                   //output(partition.getId(), subgraph.getId(), partialRevPath+partialForwardPath); 
+                                                  resultSetSize++;
                                           }
                                   else{
                                           LOG.info("ResultSetForwardEmpty:" +partialRevPath);
                                           //output(partition.getId(), subgraph.getId(), partialRevPath);
+                                          resultSetSize++;
                                   }
-                                  resultSetSize++;
+                                  
                           }
                   else
                           for(String partialForwardPath: entry.getValue().forwardResultSet) {
                                   LOG.info("ResultSetReverseEmpty:" +partialForwardPath);
                                   //output(partition.getId(), subgraph.getId(), partialForwardPath); 
+                                  resultSetSize++;
                           }
-                  resultSetSize++;
+                 
           }
+          LOG.info("ResultSetSize:" + resultSetSize);
   LOG.info("Cumulative Result Collection:" +  state.resultCollectionTime);        
           clear();
 	}
