@@ -1670,7 +1670,9 @@ for(Map.Entry<Long,StringBuilder> remoteSubgraphMessage: getSubgraph().getSubgra
                           }
                  
           }
+          if(resultSetSize!=0){
           LOG.info("ResultSetSize:" + resultSetSize);
+          }
   LOG.info("Cumulative Result Collection:" +  state.resultCollectionTime);        
           clear();
 	}
