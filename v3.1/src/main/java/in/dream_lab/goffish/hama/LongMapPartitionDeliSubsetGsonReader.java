@@ -318,6 +318,7 @@ public class LongMapPartitionDeliSubsetGsonReader<S extends Writable, V extends 
   
   @SuppressWarnings("unchecked")
   Vertex<V, E, LongWritable, LongWritable> createVertex(String JSONString) {
+    LOG.info("Json String:"+JSONString);
     JsonArray JSONInput = GsonParser.parse(JSONString).getAsJsonArray();
 
     LongWritable sourceID = new LongWritable(
