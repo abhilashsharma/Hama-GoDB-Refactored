@@ -318,7 +318,7 @@ public class LongMapPartitionDeliSubsetGsonReader<S extends Writable, V extends 
   
   @SuppressWarnings("unchecked")
   Vertex<V, E, LongWritable, LongWritable> createVertex(String JSONString) {
-    LOG.info("Json String:"+JSONString);
+//    LOG.info("Json String:"+JSONString);
     JsonArray JSONInput = GsonParser.parse(JSONString).getAsJsonArray();
 
     LongWritable sourceID = new LongWritable(
@@ -336,6 +336,7 @@ public class LongMapPartitionDeliSubsetGsonReader<S extends Writable, V extends 
     //key,value property pairs for a vertex
     MapValue vertexValueMap=new MapValue();
     for(int i=0;i<vprop.length;i++){
+      LOG.info("Vprop:" + vprop[i]);
         String[] map=vprop[i].split(Pattern.quote(":String:"));
           
 //        LOG.info("HashMap:" + map[0] + "," + map[2]);
