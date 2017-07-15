@@ -344,11 +344,10 @@ public class LongMapPartitionDeliSubsetGsonReader<S extends Writable, V extends 
     for(int i=0;i<vprop.length;i++){
         String[] map=vprop[i].split(Pattern.quote(":String:"));
           
-//        LOG.info("HashMap:" + map[0] + "," + map[2]);
+        LOG.info("VProp:" + vprop[i]);
         if(vertexPropertySet.contains(map[0])){
           
             vertexValueMap.put(map[0], map[1]);
-//            LOG.info("Entered HashMap:" + map[0] + "," + map[2]);
         }
         
     }
