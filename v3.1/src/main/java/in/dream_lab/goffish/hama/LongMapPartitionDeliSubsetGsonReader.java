@@ -337,11 +337,11 @@ public class LongMapPartitionDeliSubsetGsonReader<S extends Writable, V extends 
     //type could be Long or String or Double
     String jsonMap=JSONInput.get(1).toString();
     jsonMap=jsonMap.substring(1, jsonMap.length()-1);
-    LOG.info("JSONMAP:" + jsonMap);
-    String[] vprop ={jsonMap};
-    if(!jsonMap.split(Pattern.quote("$"))[0].split(":String:")[0].equals("tag")){
-      vprop=jsonMap.split(Pattern.quote("$"));
-    }
+//    LOG.info("JSONMAP:" + jsonMap);
+//    String[] vprop ={jsonMap};
+//    if(!jsonMap.split(Pattern.quote("$"))[0].split(":String:")[0].equals("tag")){
+      String[] vprop=jsonMap.split(Pattern.quote("$:$"));
+//    }
     //key,value property pairs for a vertex
     MapValue vertexValueMap=new MapValue();
     for(int i=0;i<vprop.length;i++){
@@ -367,7 +367,7 @@ public class LongMapPartitionDeliSubsetGsonReader<S extends Writable, V extends 
           Long.valueOf(edgeValues.get(1).toString()));
       //fix this
       //same format as vertex
-      String[] eprop= edgeValues.get(2).toString().split(Pattern.quote("$"));
+      String[] eprop= edgeValues.get(2).toString().split(Pattern.quote("$:$"));
       MapValue edgeMap=new MapValue();
       for(int i=0;i<eprop.length;i++){
         String[] map=eprop[i].split(Pattern.quote(":String:"));
