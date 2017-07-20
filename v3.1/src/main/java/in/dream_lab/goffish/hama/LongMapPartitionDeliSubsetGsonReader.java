@@ -344,7 +344,7 @@ public class LongMapPartitionDeliSubsetGsonReader<S extends Writable, V extends 
 //    }
     //key,value property pairs for a vertex
     MapValue vertexValueMap=new MapValue();
-    for(int i=0;i<vprop.length;i++){
+    for(int i=0;i<vprop.length-1;i++){
         String[] map=vprop[i].split(Pattern.quote(":String:"));
           
 //        LOG.info("VProp:" + vprop[i]);
@@ -369,7 +369,7 @@ public class LongMapPartitionDeliSubsetGsonReader<S extends Writable, V extends 
       //same format as vertex
       String[] eprop= edgeValues.get(2).toString().split(Pattern.quote("$:$"));
       MapValue edgeMap=new MapValue();
-      for(int i=0;i<eprop.length;i++){
+      for(int i=0;i<eprop.length-1;i++){
         String[] map=eprop[i].split(Pattern.quote(":String:"));
         if(edgePropertySet.contains(map[0])){
            
