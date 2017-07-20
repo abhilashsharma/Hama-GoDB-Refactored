@@ -348,8 +348,12 @@ public class LongMapPartitionDeliSubsetGsonReader<S extends Writable, V extends 
         String[] map=vprop[i].split(Pattern.quote(":String:"));
           
 //        LOG.info("VProp:" + vprop[i]);
+        try{
         if(vertexPropertySet.contains(map[0])){
             vertexValueMap.put(map[0], map[1]);
+        }
+        }catch(Exception e){
+          LOG.info("Error processing property:" + vprop[i]);
         }
         
     }
