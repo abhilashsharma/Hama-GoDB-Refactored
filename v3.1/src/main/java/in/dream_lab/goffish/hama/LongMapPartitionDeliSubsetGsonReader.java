@@ -353,7 +353,7 @@ public class LongMapPartitionDeliSubsetGsonReader<S extends Writable, V extends 
             vertexValueMap.put(map[0], map[1]);
         }
         }catch(Exception e){
-          LOG.info("Error processing property:" + vprop[i]);
+          LOG.info("Error processing property:" + vprop[i] + " #VPROP:" + vprop);
         }
         
     }
