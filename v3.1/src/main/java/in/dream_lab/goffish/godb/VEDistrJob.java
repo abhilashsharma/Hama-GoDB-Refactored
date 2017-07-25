@@ -21,7 +21,7 @@ public class VEDistrJob {
 	 public static void main(String args[]) throws IOException,InterruptedException, ClassNotFoundException, ParseException
 	  {
 		  HamaConfiguration conf = new HamaConfiguration();
-		  GraphJob job = new GraphJob(conf, pathDistr.class);
+		  GraphJob job = new GraphJob(conf, VEDistr.class);
 		  job.setJobName("Vertex Query");
 		  job.setInputFormat(TextInputFormat.class);
 		  job.setInputKeyClass(LongWritable.class);
@@ -33,8 +33,8 @@ public class VEDistrJob {
 		  job.setGraphMessageClass(Text.class);
 		  job.setInputPath(new Path(args[0]));
 		  job.setOutputPath(new Path(args[1]));
-		  job.setInitialInput(readArgsFromFile());
-		  job.setSubgraphValueClass(pathDistrSubgraphState.class);
+		  job.setInitialInput(readArgsFromFile(args[2]));
+		  job.setSubgraphValueClass(VEDistrSubgraphState.class);
 		  job.setInputFormat(NonSplitTextInputFormat.class);
 		  job.setInputReaderClass(LongMapPartitionSubsetGsonReader.class);
 		  
@@ -42,9 +42,9 @@ public class VEDistrJob {
 		  job.waitForCompletion(true);
 	  }
 	
-	 static String  readArgsFromFile() throws IOException{
+	 static String  readArgsFromFile(String fileName) throws IOException{
            String Args="";
-           String fileName="/home/abhilash/abhilash/VertexQueries-patid.txt";
+//           String fileName="/home/abhilash/abhilash/VertexQueries-patid.txt";
            FileReader fr = new FileReader(fileName);
            BufferedReader br = new BufferedReader(fr);
 
