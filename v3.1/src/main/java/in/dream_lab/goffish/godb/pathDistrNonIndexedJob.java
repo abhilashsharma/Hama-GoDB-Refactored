@@ -33,7 +33,7 @@ public class pathDistrNonIndexedJob {
 		  job.setGraphMessageClass(Text.class);
 		  job.setInputPath(new Path(args[0]));
 		  job.setOutputPath(new Path(args[1]));
-		  job.setInitialInput(readArgsFromFile());
+		  job.setInitialInput(readArgsFromFile(args[2]));
 		  job.setSubgraphValueClass(pathDistrNonIndexedSubgraphState.class);
 		  job.setInputFormat(NonSplitTextInputFormat.class);
 		  job.setInputReaderClass(LongMapPartitionSubsetGsonReader.class);
@@ -42,9 +42,9 @@ public class pathDistrNonIndexedJob {
 		  job.waitForCompletion(true);
 	  }
 	
-	 static String  readArgsFromFile() throws IOException{
+	 static String  readArgsFromFile(String fileName) throws IOException{
            String Args="";
-           String fileName="/home/abhilash/abhilash/pathArguments.txt";
+//           String fileName="/home/abhilash/abhilash/pathArguments.txt";
            FileReader fr = new FileReader(fileName);
            BufferedReader br = new BufferedReader(fr);
 
