@@ -54,7 +54,7 @@ import in.dream_lab.goffish.api.IMessage;
 import in.dream_lab.goffish.api.ISubgraphWrapup;
 
 
-public class SerializeFullHeu extends AbstractSubgraphComputation<pathDistrSubgraphState, MapWritable, MapWritable, Text, LongWritable, LongWritable, LongWritable>
+public class SerializeFullHeu extends AbstractSubgraphComputation<pathDistrSubgraphState, MapValue, MapValue, Text, LongWritable, LongWritable, LongWritable>
 implements ISubgraphWrapup{
 	// Variables and DataStructures
 	
