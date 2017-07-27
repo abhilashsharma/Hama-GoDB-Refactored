@@ -51,7 +51,7 @@ import org.apache.lucene.document.Field;
 /*     */ 
 /*     */ 
 /*     */ public class goffishIndexBuilder extends
-/*     */    AbstractSubgraphComputation<LongWritable, MapWritable, MapWritable, Text, LongWritable, LongWritable, LongWritable>
+/*     */    AbstractSubgraphComputation<LongWritable, MapValue, MapValue, Text, LongWritable, LongWritable, LongWritable>
 /*     */ implements ISubgraphWrapup{
   
   
@@ -175,7 +175,7 @@ import org.apache.lucene.document.Field;
 /*     */     throws IOException
 /*     */   {
 				LOG.info("Writing VERTEX INDEX");
-/* 213 */     for (IVertex<MapWritable,MapWritable,LongWritable,LongWritable> vertex : getSubgraph().getLocalVertices())
+/* 213 */     for (IVertex<MapValue,MapValue,LongWritable,LongWritable> vertex : getSubgraph().getLocalVertices())
 /*     */     {
 /* 215 */       Document doc = new Document();
                 //only Vertex Properties considered for now in arguments passed
@@ -190,7 +190,7 @@ import org.apache.lucene.document.Field;
 /*     */         
 		{
 					 //assuming all property types are string, to be changed for other types
-/* 253 */           String value = vertex.getValue().get(new Text(property)).toString();
+/* 253 */           String value = vertex.getValue().get(property).toString();
 /* 254 */           if (value != null) {
 /* 255 */             doc.add(new StringField(property, value.toString(), Field.Store.NO));
 /*     */           } else
