@@ -38,7 +38,7 @@ import in.dream_lab.goffish.api.IVertex;
 import in.dream_lab.goffish.godb.EdgeAttr;
 
 public class computeDistrHueristics 
-extends AbstractSubgraphComputation<pathDistrSubgraphState, MapWritable, MapWritable, Text, LongWritable, LongWritable, LongWritable> 
+extends AbstractSubgraphComputation<pathDistrSubgraphState, MapValue, MapValue, Text, LongWritable, LongWritable, LongWritable> 
 implements ISubgraphWrapup {
 
 	
@@ -89,10 +89,10 @@ implements ISubgraphWrapup {
                         
                         String m="";
                         
-                        for(IVertex<MapWritable, MapWritable, LongWritable, LongWritable> sourceVertex:getSubgraph().getLocalVertices())
-                        for(IEdge<MapWritable, LongWritable, LongWritable> edge : sourceVertex.getOutEdges()) {
+                        for(IVertex<MapValue, MapValue, LongWritable, LongWritable> sourceVertex:getSubgraph().getLocalVertices())
+                        for(IEdge<MapValue, LongWritable, LongWritable> edge : sourceVertex.getOutEdges()) {
                                 
-                                IVertex<MapWritable, MapWritable, LongWritable, LongWritable> sinkVertex=getSubgraph().getVertexById(edge.getSinkVertexId());
+                                IVertex<MapValue, MapValue, LongWritable, LongWritable> sinkVertex=getSubgraph().getVertexById(edge.getSinkVertexId());
                         //if sink vertex is not remote then add inedge to appropriate data structure, otherwise send source value to remote partition
                         if(!sinkVertex.isRemote())
                         {
@@ -125,7 +125,7 @@ implements ISubgraphWrapup {
                         { //send message to remote partition
                         
                         //TODO: generalize this for all attributes
-                                IRemoteVertex<MapWritable,MapWritable,LongWritable,LongWritable,LongWritable> remoteVertex = (IRemoteVertex<MapWritable, MapWritable, LongWritable, LongWritable, LongWritable>)sinkVertex;
+                                IRemoteVertex<MapValue,MapValue,LongWritable,LongWritable,LongWritable> remoteVertex = (IRemoteVertex<MapValue, MapValue, LongWritable, LongWritable, LongWritable>)sinkVertex;
                                 remoteVertex.getSubgraphId().get();
                         if(!getSubgraph().getSubgraphValue().MessagePacking.containsKey(remoteVertex.getSubgraphId().get()))
                                 getSubgraph().getSubgraphValue().MessagePacking.put(remoteVertex.getSubgraphId().get(),new StringBuilder("#|" + sourceVertex.getVertexId().get()  + "|" + sinkVertex.getVertexId().get() + "|" + "relation" + ":"  +"null" /*subgraphProperties.getValue("relation").toString()*/+"|" + edge.getEdgeId().get()+"|" + getSubgraph().getSubgraphId().get() + "|" +0));
@@ -235,7 +235,7 @@ implements ISubgraphWrapup {
 				}
 				
 				//extract vertex hueristics and avg edge degree
-				for(IVertex<MapWritable, MapWritable, LongWritable, LongWritable> vertex:getSubgraph().getLocalVertices()){
+				for(IVertex<MapValue, MapValue, LongWritable, LongWritable> vertex:getSubgraph().getLocalVertices()){
 					if(vertex.isRemote()){continue;}
 					Iterator<String> it = vertexProperties.iterator();
 					while(it.hasNext()){
@@ -257,7 +257,7 @@ implements ISubgraphWrapup {
 						Iterator _it = vertex.getOutEdges().iterator();
 						while(_it.hasNext()){
 							IEdge<MapWritable,LongWritable,LongWritable> edge = (IEdge<MapWritable, LongWritable, LongWritable>) _it.next();
-							IVertex<MapWritable, MapWritable, LongWritable, LongWritable> sink=getSubgraph().getVertexById(edge.getSinkVertexId());
+							IVertex<MapValue, MapValue, LongWritable, LongWritable> sink=getSubgraph().getVertexById(edge.getSinkVertexId());
 							if (sink.isRemote())
 								subgraphHueristics.vertexPredicateMap.get(prop).get(value).numRemoteOutDegree += 1;
 						}
@@ -303,7 +303,7 @@ implements ISubgraphWrapup {
 				
 				System.out.println("Extracting edge heuristics");				
 				//extract edge hueristics
-				for(IEdge<MapWritable, LongWritable, LongWritable> edge: getSubgraph().getOutEdges()){
+				for(IEdge<MapValue, LongWritable, LongWritable> edge: getSubgraph().getOutEdges()){
 					Iterator<String> it = edgeProperties.iterator();
 					while(it.hasNext()){
 						String prop = it.next();
