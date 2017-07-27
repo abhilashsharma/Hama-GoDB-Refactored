@@ -77,6 +77,7 @@ implements ISubgraphWrapup {
 		//TODO: REMOVE THIS HACK AND ADD ACTUAL SUPPORT FOR THIS
 		
 		if ( getSuperstep()==0) {
+		  System.out.println("Starting Inedges"+ getSubgraph().getSubgraphId());
 			//send messages along remote edges
 			vertexProperties.add("patid");
 			vertexProperties.add("nclass");
