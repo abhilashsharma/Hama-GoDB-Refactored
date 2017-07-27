@@ -251,6 +251,7 @@ implements ISubgraphWrapup {
 						Iterator edgeIter=vertex.getOutEdges().iterator();
 						while(edgeIter.hasNext()){
 						  size++;
+						  edgeIter.next();
 						}
 						    
 						subgraphHueristics.vertexPredicateMap.get(prop).get(value).numOutDegree += size;
