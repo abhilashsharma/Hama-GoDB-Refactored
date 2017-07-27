@@ -273,10 +273,15 @@ implements ISubgraphWrapup{
 								Double number = hueristics.vertexPredicateMap.get(entry.getKey()).get(entry_inside.getKey()).numberMatchingPredicate;
 								Double out = hueristics.vertexPredicateMap.get(entry.getKey()).get(entry_inside.getKey()).numOutDegree;
 								Double in = hueristics.vertexPredicateMap.get(entry.getKey()).get(entry_inside.getKey()).numInDegree;
+								Double rOut = hueristics.vertexPredicateMap.get(entry.getKey()).get(entry_inside.getKey()).numRemoteOutDegree;
+                                                                Double rIn = hueristics.vertexPredicateMap.get(entry.getKey()).get(entry_inside.getKey()).numRemoteInDegree;
+                                                                
 								vertexPredicateStats vertexStats = new vertexPredicateStats();
 								vertexStats.numberMatchingPredicate = number + entry_inside.getValue().numberMatchingPredicate;
 								vertexStats.numOutDegree = out + entry_inside.getValue().numOutDegree;
 								vertexStats.numInDegree = in + entry_inside.getValue().numInDegree;
+                                                                vertexStats.numRemoteOutDegree = rOut + entry_inside.getValue().numRemoteOutDegree;
+                                                                vertexStats.numRemoteInDegree = rIn + entry_inside.getValue().numRemoteInDegree;
 								hueristics.vertexPredicateMap.get(entry.getKey()).put(entry_inside.getKey(),vertexStats);
 							}
 								
@@ -313,6 +318,8 @@ implements ISubgraphWrapup{
 				entry_inside.getValue().probability = new BigDecimal(entry_inside.getValue().numberMatchingPredicate / hueristics.numVertices).setScale(8, BigDecimal.ROUND_HALF_UP).doubleValue();
 				entry_inside.getValue().avgOutDegree = new BigDecimal(entry_inside.getValue().numOutDegree / entry_inside.getValue().numberMatchingPredicate).setScale(8, BigDecimal.ROUND_HALF_UP).doubleValue();
 				entry_inside.getValue().avgInDegree = new BigDecimal(entry_inside.getValue().numInDegree / entry_inside.getValue().numberMatchingPredicate).setScale(8, BigDecimal.ROUND_HALF_UP).doubleValue();
+				entry_inside.getValue().avgRemoteOutDegree = new BigDecimal(entry_inside.getValue().numRemoteOutDegree / entry_inside.getValue().numberMatchingPredicate).setScale(8, BigDecimal.ROUND_HALF_UP).doubleValue();
+                                entry_inside.getValue().avgRemoteInDegree = new BigDecimal(entry_inside.getValue().numRemoteInDegree / entry_inside.getValue().numberMatchingPredicate).setScale(8, BigDecimal.ROUND_HALF_UP).doubleValue();
 			}
 		}
 		for(Map.Entry<String,HashMap<String,edgePredicateStats>> entry:hueristics.edgePredicateMap.entrySet()){
