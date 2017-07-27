@@ -259,7 +259,7 @@ implements ISubgraphWrapup {
 							IEdge<MapWritable,LongWritable,LongWritable> edge = (IEdge<MapWritable, LongWritable, LongWritable>) _it.next();
 							IVertex<MapWritable, MapWritable, LongWritable, LongWritable> sink=getSubgraph().getVertexById(edge.getSinkVertexId());
 							if (sink.isRemote())
-								subgraphHueristics.vertexPredicateMap.get(prop).get(value).numRemoteInDegree += 1;
+								subgraphHueristics.vertexPredicateMap.get(prop).get(value).numRemoteOutDegree += 1;
 						}
 						 
 						
