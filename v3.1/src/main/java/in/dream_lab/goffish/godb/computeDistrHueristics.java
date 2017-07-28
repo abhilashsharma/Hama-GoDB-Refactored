@@ -297,6 +297,10 @@ implements ISubgraphWrapup {
 						entry_inside.getValue().probability = new BigDecimal(entry_inside.getValue().numberMatchingPredicate / subgraphHueristics.numVertices).setScale(8, BigDecimal.ROUND_HALF_UP).doubleValue();
 						entry_inside.getValue().avgOutDegree = new BigDecimal(entry_inside.getValue().numOutDegree / entry_inside.getValue().numberMatchingPredicate).setScale(8, BigDecimal.ROUND_HALF_UP).doubleValue();
 						entry_inside.getValue().avgInDegree = new BigDecimal(entry_inside.getValue().numInDegree / entry_inside.getValue().numberMatchingPredicate).setScale(8, BigDecimal.ROUND_HALF_UP).doubleValue();
+						if(entry_inside.getValue().numRemoteOutDegree > 0 ){
+						  System.out
+                                                      .println("Got Positive RemoteDegree:" + entry_inside.getValue().numRemoteOutDegree);
+						}
 						entry_inside.getValue().avgRemoteOutDegree = new BigDecimal(entry_inside.getValue().numRemoteOutDegree / entry_inside.getValue().numberMatchingPredicate).setScale(8, BigDecimal.ROUND_HALF_UP).doubleValue();
 						entry_inside.getValue().avgRemoteInDegree = new BigDecimal(entry_inside.getValue().numRemoteInDegree / entry_inside.getValue().numberMatchingPredicate).setScale(8, BigDecimal.ROUND_HALF_UP).doubleValue();
 
