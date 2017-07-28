@@ -309,7 +309,10 @@ implements ISubgraphWrapup {
 //                                                }
 						entry_inside.getValue().avgRemoteOutDegree = entry_inside.getValue().numRemoteOutDegree / entry_inside.getValue().numberMatchingPredicate;
 						entry_inside.getValue().avgRemoteInDegree = entry_inside.getValue().numRemoteInDegree / entry_inside.getValue().numberMatchingPredicate;
-
+						System.out
+                                                    .println("AvgRemoteOutDegree:" + entry_inside.getValue().avgRemoteOutDegree);
+						System.out
+                                                .println("AvgRemoteInDegree:" + entry_inside.getValue().avgRemoteInDegree);
 					}
 				}
 				
