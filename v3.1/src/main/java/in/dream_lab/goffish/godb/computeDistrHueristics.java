@@ -294,9 +294,9 @@ implements ISubgraphWrapup {
 				
 				for(Map.Entry<String,HashMap<String,vertexPredicateStats>> entry:subgraphHueristics.vertexPredicateMap.entrySet()){
 					for(Map.Entry<String, vertexPredicateStats> entry_inside: entry.getValue().entrySet()){
-						entry_inside.getValue().probability = new BigDecimal(entry_inside.getValue().numberMatchingPredicate / subgraphHueristics.numVertices).setScale(8, BigDecimal.ROUND_HALF_UP).doubleValue();
-						entry_inside.getValue().avgOutDegree = new BigDecimal(entry_inside.getValue().numOutDegree / entry_inside.getValue().numberMatchingPredicate).setScale(8, BigDecimal.ROUND_HALF_UP).doubleValue();
-						entry_inside.getValue().avgInDegree = new BigDecimal(entry_inside.getValue().numInDegree / entry_inside.getValue().numberMatchingPredicate).setScale(8, BigDecimal.ROUND_HALF_UP).doubleValue();
+						entry_inside.getValue().probability = entry_inside.getValue().numberMatchingPredicate / subgraphHueristics.numVertices;
+						entry_inside.getValue().avgOutDegree = entry_inside.getValue().numOutDegree / entry_inside.getValue().numberMatchingPredicate;
+						entry_inside.getValue().avgInDegree = entry_inside.getValue().numInDegree / entry_inside.getValue().numberMatchingPredicate;
 //						if(entry_inside.getValue().numRemoteOutDegree > 0 ){
 //						  System.out
 //                                                      .println("Got Positive RemoteDegree:" + entry_inside.getValue().numRemoteOutDegree);
