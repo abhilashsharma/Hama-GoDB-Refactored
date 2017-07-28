@@ -309,10 +309,10 @@ implements ISubgraphWrapup {
 //                                                }
 						entry_inside.getValue().avgRemoteOutDegree = entry_inside.getValue().numRemoteOutDegree / entry_inside.getValue().numberMatchingPredicate;
 						entry_inside.getValue().avgRemoteInDegree = entry_inside.getValue().numRemoteInDegree / entry_inside.getValue().numberMatchingPredicate;
-						System.out
-                                                    .println("AvgRemoteOutDegree:" + entry_inside.getValue().avgRemoteOutDegree);
-						System.out
-                                                .println("AvgRemoteInDegree:" + entry_inside.getValue().avgRemoteInDegree);
+//						System.out
+//                                                    .println("AvgRemoteOutDegree:" + entry_inside.getValue().avgRemoteOutDegree);
+//						System.out
+//                                                .println("AvgRemoteInDegree:" + entry_inside.getValue().avgRemoteInDegree);
 					}
 				}
 				
@@ -334,7 +334,7 @@ implements ISubgraphWrapup {
 				}
 				for(Map.Entry<String,HashMap<String,edgePredicateStats>> entry:subgraphHueristics.edgePredicateMap.entrySet()){
 					for(Map.Entry<String, edgePredicateStats> entry_inside: entry.getValue().entrySet()){
-						entry_inside.getValue().probability = new BigDecimal(entry_inside.getValue().numberMatchingPredicate / subgraphHueristics.numEdges).setScale(8, BigDecimal.ROUND_HALF_UP).doubleValue();
+						entry_inside.getValue().probability = entry_inside.getValue().numberMatchingPredicate / subgraphHueristics.numEdges;
 					}
 				}
 								

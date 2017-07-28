@@ -315,16 +315,16 @@ implements ISubgraphWrapup{
 		}
 		for(Map.Entry<String,HashMap<String,vertexPredicateStats>> entry:hueristics.vertexPredicateMap.entrySet()){
 			for(Map.Entry<String, vertexPredicateStats> entry_inside: entry.getValue().entrySet()){
-				entry_inside.getValue().probability = new BigDecimal(entry_inside.getValue().numberMatchingPredicate / hueristics.numVertices).setScale(8, BigDecimal.ROUND_HALF_UP).doubleValue();
-				entry_inside.getValue().avgOutDegree = new BigDecimal(entry_inside.getValue().numOutDegree / entry_inside.getValue().numberMatchingPredicate).setScale(8, BigDecimal.ROUND_HALF_UP).doubleValue();
-				entry_inside.getValue().avgInDegree = new BigDecimal(entry_inside.getValue().numInDegree / entry_inside.getValue().numberMatchingPredicate).setScale(8, BigDecimal.ROUND_HALF_UP).doubleValue();
-				entry_inside.getValue().avgRemoteOutDegree = new BigDecimal(entry_inside.getValue().numRemoteOutDegree / entry_inside.getValue().numberMatchingPredicate).setScale(8, BigDecimal.ROUND_HALF_UP).doubleValue();
-                                entry_inside.getValue().avgRemoteInDegree = new BigDecimal(entry_inside.getValue().numRemoteInDegree / entry_inside.getValue().numberMatchingPredicate).setScale(8, BigDecimal.ROUND_HALF_UP).doubleValue();
+				entry_inside.getValue().probability = entry_inside.getValue().numberMatchingPredicate / hueristics.numVertices;
+				entry_inside.getValue().avgOutDegree = entry_inside.getValue().numOutDegree / entry_inside.getValue().numberMatchingPredicate;
+				entry_inside.getValue().avgInDegree = entry_inside.getValue().numInDegree / entry_inside.getValue().numberMatchingPredicate;
+				entry_inside.getValue().avgRemoteOutDegree = entry_inside.getValue().numRemoteOutDegree / entry_inside.getValue().numberMatchingPredicate;
+                                entry_inside.getValue().avgRemoteInDegree = entry_inside.getValue().numRemoteInDegree / entry_inside.getValue().numberMatchingPredicate;
 			}
 		}
 		for(Map.Entry<String,HashMap<String,edgePredicateStats>> entry:hueristics.edgePredicateMap.entrySet()){
 			for(Map.Entry<String, edgePredicateStats> entry_inside: entry.getValue().entrySet()){
-				entry_inside.getValue().probability = new BigDecimal(entry_inside.getValue().numberMatchingPredicate / hueristics.numEdges).setScale(8, BigDecimal.ROUND_HALF_UP).doubleValue();
+				entry_inside.getValue().probability = entry_inside.getValue().numberMatchingPredicate / hueristics.numEdges;
 			}
 		}
 		
