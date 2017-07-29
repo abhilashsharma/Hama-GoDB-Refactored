@@ -250,7 +250,7 @@ public class DoTestFixedStart extends
                 state.Arguments=queryParam;
           
         
-                state.startPos=Integer.parseInt(arguments.split(Pattern.quote("//"))[2]);
+                state.startPos=Integer.parseInt(arguments.split(Pattern.quote("//"))[1]);
             state.path = new ArrayList<Step>();
                 Type previousStepType = Type.EDGE;
                 for(String _string : arguments.split(Pattern.quote("//"))[0].split(Pattern.quote("@")) ){
