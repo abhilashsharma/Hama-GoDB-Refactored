@@ -97,7 +97,7 @@ public class LongMapPartitionDeliSubsetGsonReader<S extends Writable, V extends 
 //    this.vertexPropertySet.add("nclass");
     this.vertexPropertySet.add("tag");
     this.vertexPropertySet.add("url");
-    this.edgePropertySet.add("time");
+//    this.edgePropertySet.add("time");
   }
   
   public static final Log LOG = LogFactory.getLog(LongMapPartitionDeliSubsetGsonReader.class);
