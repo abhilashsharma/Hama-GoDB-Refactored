@@ -154,7 +154,7 @@ AbstractSubgraphComputation<BFSDistrSubgraphState, MapValue, MapValue, Text, Lon
              
              //TODO: generalize this for all attributes
                      IRemoteVertex<MapValue,MapValue,LongWritable,LongWritable,LongWritable> remoteVertex = (IRemoteVertex<MapValue, MapValue, LongWritable, LongWritable, LongWritable>)sinkVertex;
-                     remoteVertex.getSubgraphId().get();
+                     
              if(!MessagePacking.containsKey(remoteVertex.getSubgraphId().get()))
                      MessagePacking.put(remoteVertex.getSubgraphId().get(),new StringBuilder("#|" + sourceVertex.getVertexId().get()  + "|" + sinkVertex.getVertexId().get() + "|" + "relation" + ":"  +"null" /*subgraphProperties.getValue("relation").toString()*/+"|" + edge.getEdgeId().get()+"|" + getSubgraph().getSubgraphId().get() + "|" +0));
              else{
@@ -221,13 +221,7 @@ AbstractSubgraphComputation<BFSDistrSubgraphState, MapValue, MapValue, Text, Lon
      }
     
      
-}
-
-	   
-	   
-	   
-	   
-	   if(getSuperstep()==2){
+}else if(getSuperstep()==2){
 	   int count=0;
 	   for(IVertex<MapValue, MapValue, LongWritable, LongWritable> v:getSubgraph().getLocalVertices()){
 	     for(IEdge<MapValue, LongWritable, LongWritable> e: v.getOutEdges()){
@@ -247,7 +241,7 @@ AbstractSubgraphComputation<BFSDistrSubgraphState, MapValue, MapValue, Text, Lon
 	    }
 	    
 	  }
-	  else{
+	  else if(getSuperstep()==4){
 	    voteToHalt();
 	  }
 	    
