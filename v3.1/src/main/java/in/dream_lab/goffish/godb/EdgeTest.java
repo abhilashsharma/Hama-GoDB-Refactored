@@ -228,6 +228,7 @@ AbstractSubgraphComputation<BFSDistrSubgraphState, MapValue, MapValue, Text, Lon
 	       count++;
 	     }
 	   }
+	   LOG.info("OCOUNT:" + count);
 	  }
 	  else if(getSuperstep()==3){
 	    int count=0;
@@ -239,6 +240,7 @@ AbstractSubgraphComputation<BFSDistrSubgraphState, MapValue, MapValue, Text, Lon
 	      }
 	      
 	    }
+	    LOG.info("ICOUNT:" +count);
 	    
 	  }
 	  else if(getSuperstep()==4){
