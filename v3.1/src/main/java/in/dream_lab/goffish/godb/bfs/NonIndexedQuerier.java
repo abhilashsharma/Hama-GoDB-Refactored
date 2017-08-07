@@ -42,12 +42,13 @@ public class NonIndexedQuerier implements IBFSRootQuerier {
 		for (IVertex<MapValue, MapValue, LongWritable, LongWritable> vertex : subgraph.getLocalVertices()) {
 			if (vertex.isRemote()) continue;
 			String val=vertex.getValue().get(queryProperty.toString());
+			System.out.println("VertexVal:" + val);
 			String vertexValue; 
 			if(val==null)
 			  continue;
 			  
 			vertexValue = val.toString();
-			System.out.println("VertexVal:" + vertexValue);
+			
 			
 			// FIXME: Only supporting string value type for now
 			if (queryValue.toString().equals(vertexValue)) rootVertices.add(vertex.getVertexId().get());
