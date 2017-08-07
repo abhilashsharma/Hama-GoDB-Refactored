@@ -47,6 +47,7 @@ public class NonIndexedQuerier implements IBFSRootQuerier {
 			  continue;
 			  
 			vertexValue = val.toString();
+			System.out.println("VertexVal:" + vertexValue);
 			
 			// FIXME: Only supporting string value type for now
 			if (queryValue.toString().equals(vertexValue)) rootVertices.add(vertex.getVertexId().get());
