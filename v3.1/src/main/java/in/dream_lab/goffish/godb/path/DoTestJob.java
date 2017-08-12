@@ -42,7 +42,7 @@ public class DoTestJob {
 		  job.setInputPath(new Path(args[0]));
 		  job.setOutputPath(new Path(args[1]));
 		  job.setInitialInput(readArgsFromFile(args[2]));
-		  job.setSubgraphValueClass(PathStateTest.class);
+		  job.setSubgraphValueClass(PathStateTest1.class);
 		  /* Reader configuration */
 		    job.setInputFormat(NonSplitTextInputFormat.class);
 		    job.setInputReaderClass(LongMapPartitionSubsetGsonReader.class);
