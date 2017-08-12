@@ -67,7 +67,7 @@ public class PathStateTest1 implements Writable {
 
 		//Data Structure for storing inedges 
 		HashMap<Long,ArrayList<SinkData>>  InEdges = null;
-		HashMap<Long,Long> remoteSinkToSubgraphMapping=null;
+		HashMap<Long,Long> remoteSourceToSubgraphMapping=null;
 		/**
 		 * HashMap for recursive path Maintenance
 		 * Used when getting a remote message from  another subgraph say 'S', to record information about endVertex of 'S' so that if any

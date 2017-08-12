@@ -386,8 +386,9 @@ public class DoTest extends
 	 */
 	private void createInEdges(){
 	  //Logic to Accumulate inedges
-          getSubgraph().getSubgraphValue().InEdges=new HashMap<Long,ArrayList<SinkData>>();  
-          getSubgraph().getSubgraphValue().remoteSinkToSubgraphMapping = new HashMap<>();
+	  PathStateTest1 state=getSubgraph().getSubgraphValue();
+          state.InEdges=new HashMap<Long,ArrayList<SinkData>>();  
+          state.remoteSourceToSubgraphMapping = new HashMap<>();
 
         
         String m="";
@@ -486,7 +487,7 @@ for(Map.Entry<Long,StringBuilder> remoteSubgraphMessage: getSubgraph().getSubgra
                      getSubgraph().getSubgraphValue().InEdges.get(Sink).add(attr);
               }
              
-             getSubgraph().getSubgraphValue().remoteSinkToSubgraphMapping.put(Sink, Long.parseLong(values[5]));
+             getSubgraph().getSubgraphValue().remoteSourceToSubgraphMapping.put(Source, Long.parseLong(values[5]));
             }
             
                     
@@ -1568,7 +1569,7 @@ for(Map.Entry<Long,StringBuilder> remoteSubgraphMessage: getSubgraph().getSubgra
                                         else{
 //                                              remoteMessage.append(String.valueOf(stuff.startVertexId)).append(";").append(String.valueOf(stuff.previousSubgraphId)).append(";").append(stuff.previousPartitionId).append(";").append(stuff.vertexId).append(";").append(stuff.stepsTraversed).append(";").append(state.InEdges.get(stuff.startVertexId).get(stuff.vertexId).getSinkSubgraphId());
 //                                        remoteMessage=new PathMessage(stuff.queryId,stuff.startVertex,stuff.previousSubgraph,stuff.targetVertex,stuff.depth,true);
-                                          remoteSGID=state.remoteSinkToSubgraphMapping.get(stuff.targetVertex);
+                                          remoteSGID=state.remoteSourceToSubgraphMapping.get(stuff.targetVertex);
                                         }
 //                              
                                 RevisitTraversalWriter traversalMessage = remoteTraversalMap.get(remoteSGID);
@@ -1597,7 +1598,7 @@ for(Map.Entry<Long,StringBuilder> remoteSubgraphMessage: getSubgraph().getSubgra
                                         }
                                         else{
 //                                              remoteMessage.append(String.valueOf(stuff.startVertexId)).append(";").append(String.valueOf(stuff.previousSubgraphId)).append(";").append(stuff.previousPartitionId).append(";").append(stuff.vertexId).append(";").append(stuff.stepsTraversed).append(";").append(state.InEdges.get(stuff.startVertexId).get(stuff.vertexId).getSinkSubgraphId());
-                                          remoteSGID=state.remoteSinkToSubgraphMapping.get(stuff.targetVertex);
+                                          remoteSGID=state.remoteSourceToSubgraphMapping.get(stuff.targetVertex);
                                         }
 //                              
                                 RevisitTraversalWriter traversalMessage = remoteTraversalMap.get(remoteSGID);
