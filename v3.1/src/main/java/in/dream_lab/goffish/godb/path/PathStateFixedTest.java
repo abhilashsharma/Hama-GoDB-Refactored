@@ -15,6 +15,7 @@ import org.apache.hadoop.io.Writable;
 import in.dream_lab.goffish.godb.ConfigFile;
 import in.dream_lab.goffish.godb.EdgeAttr;
 import in.dream_lab.goffish.godb.ResultSet;
+import in.dream_lab.goffish.godb.SinkData;
 import in.dream_lab.goffish.godb.Step;
 import in.dream_lab.goffish.godb.path.DoTestFixedStart.OutputPathKey;
 import in.dream_lab.goffish.godb.path.DoTestFixedStart.Pair;
@@ -65,8 +66,9 @@ public class PathStateFixedTest implements Writable {
 
 
 		//Data Structure for storing inedges 
-		HashMap<Long,HashMap<Long,EdgeAttr>>  InEdges = null;
-
+                HashMap<Long,ArrayList<SinkData>>  InEdges = null;
+                HashMap<Long,Long> remoteSourceToSubgraphMapping=null;
+                
 		/**
 		 * HashMap for recursive path Maintenance
 		 * Used when getting a remote message from  another subgraph say 'S', to record information about endVertex of 'S' so that if any

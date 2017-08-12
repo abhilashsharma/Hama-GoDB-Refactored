@@ -53,6 +53,7 @@ import in.dream_lab.goffish.godb.MapValue;
 import in.dream_lab.goffish.godb.Path;
 import in.dream_lab.goffish.godb.PathWithDir;
 import in.dream_lab.goffish.godb.ResultSet;
+import in.dream_lab.goffish.godb.SinkData;
 import in.dream_lab.goffish.godb.Step;
 import in.dream_lab.goffish.godb.Step.Direction;
 import in.dream_lab.goffish.godb.Step.Type;
@@ -375,14 +376,16 @@ public class DoTestFixedStart extends
 		  createInEdges();
 		}
 	}
+
 	
 	/**
-	 * create InEdges
-	 */
-	private void createInEdges(){
-	  //Logic to Accumulate inedges
-          getSubgraph().getSubgraphValue().InEdges=new HashMap<Long,HashMap<Long,EdgeAttr>>();  
-    
+         * create InEdges
+         */
+        private void createInEdges(){
+          //Logic to Accumulate inedges
+          PathStateFixedTest state=getSubgraph().getSubgraphValue();
+          state.InEdges=new HashMap<Long,ArrayList<SinkData>>();  
+          state.remoteSourceToSubgraphMapping = new HashMap<>();
 
         
         String m="";
@@ -398,28 +401,21 @@ public class DoTestFixedStart extends
  
                 if(getSubgraph().getSubgraphValue().InEdges.containsKey(sinkVertex.getVertexId().get()))
                 {
-                        if(!getSubgraph().getSubgraphValue().InEdges.get(sinkVertex.getVertexId().get()).containsKey(sourceVertex.getVertexId().get()))
+//                        if(!getSubgraph().getSubgraphValue().InEdges.get(sinkVertex.getVertexId().get()).containsKey(sourceVertex.getVertexId().get()))
                         {
-                                
-                                
-//                            ISubgraphObjectProperties subgraphProperties = subgraphInstance.getPropertiesForEdge(edge.getId());
-                                EdgeAttr attr= new EdgeAttr("relation","null" /*subgraphProperties.getValue("relation").toString()*/,edge.getEdgeId().get(),false,null);
-                                getSubgraph().getSubgraphValue().InEdges.get(sinkVertex.getVertexId().get()).put(sourceVertex.getVertexId().get(), attr);
-                                //System.out.println("Accumulation inedge for edge "+ edge.getId() + " Value " + subgraphProperties.getValue("relation").toString() );
+                                SinkData attr= new SinkData("r","n" ,sourceVertex.getVertexId().get(),edge.getEdgeId().get(),false,null);
+                                getSubgraph().getSubgraphValue().InEdges.get(sinkVertex.getVertexId().get()).add(attr);
                         }
                         
                 }
                 else
                 {
-//                    ISubgraphObjectProperties subgraphProperties = subgraphInstance.getPropertiesForEdge(edge.getId());
-                        EdgeAttr attr= new EdgeAttr("relation", "null"/*subgraphProperties.getValue("relation").toString()*/,edge.getEdgeId().get(),false,null);                                
-                        getSubgraph().getSubgraphValue().InEdges.put(sinkVertex.getVertexId().get(), new HashMap<Long,EdgeAttr>());
-                        getSubgraph().getSubgraphValue().InEdges.get(sinkVertex.getVertexId().get()).put(sourceVertex.getVertexId().get(), attr);
-                        //System.out.println("Accumulation inedge for edge "+ edge.getId() + " Value " + subgraphProperties.getValue("relation").toString() );
+                        SinkData attr= new SinkData("r", "n",sourceVertex.getVertexId().get(),edge.getEdgeId().get(),false,null);                                
+                        getSubgraph().getSubgraphValue().InEdges.put(sinkVertex.getVertexId().get(), new ArrayList<SinkData>());
+                        getSubgraph().getSubgraphValue().InEdges.get(sinkVertex.getVertexId().get()).add(attr);
                         
                 }
                 
-                //System.out.println(edge.getSource().getId() + " -->" + edge.getSink().getId());
         }
         else
         { //send message to remote partition
@@ -428,11 +424,11 @@ public class DoTestFixedStart extends
                 IRemoteVertex<MapValue,MapValue,LongWritable,LongWritable,LongWritable> remoteVertex = (IRemoteVertex<MapValue, MapValue, LongWritable, LongWritable, LongWritable>)sinkVertex;
                 remoteVertex.getSubgraphId().get();
         if(!getSubgraph().getSubgraphValue().MessagePacking.containsKey(remoteVertex.getSubgraphId().get()))
-                getSubgraph().getSubgraphValue().MessagePacking.put(remoteVertex.getSubgraphId().get(),new StringBuilder("#|" + sourceVertex.getVertexId().get()  + "|" + sinkVertex.getVertexId().get() + "|" + "relation" + ":"  +"null" /*subgraphProperties.getValue("relation").toString()*/+"|" + edge.getEdgeId().get()+"|" + getSubgraph().getSubgraphId().get() + "|" +0));
+                getSubgraph().getSubgraphValue().MessagePacking.put(remoteVertex.getSubgraphId().get(),new StringBuilder("#|" + sourceVertex.getVertexId().get()  + "|" + sinkVertex.getVertexId().get() + "|" + "r" + ":"  +"n" /*subgraphProperties.getValue("relation").toString()*/+"|" + edge.getEdgeId().get()+"|" + getSubgraph().getSubgraphId().get() + "|" +0));
         else{
                 getSubgraph().getSubgraphValue().MessagePacking.get(remoteVertex.getSubgraphId().get()).append("$").append("#|").append(sourceVertex.getVertexId().get()).
                                                         append("|").append(sinkVertex.getVertexId().get()).
-                                                        append("|").append("relation").append(":").append("null" /*subgraphProperties.getValue("relation").toString()*/).
+                                                        append("|").append("r").append(":").append("n").
                                                         append("|").append(edge.getEdgeId().get()).
                                                         append("|").append(getSubgraph().getSubgraphId().get()).
                                                         append("|").append(0);
@@ -457,14 +453,14 @@ for(Map.Entry<Long,StringBuilder> remoteSubgraphMessage: getSubgraph().getSubgra
 
         sendMessage(new LongWritable(remoteSubgraphMessage.getKey()),msg);
 }
-	  
-	}
-	
-	/**
-	 * Accumulate Inedges
-	 */
-	private void doSuperstep1(Iterable<IMessage<LongWritable, PathMessage>> messageList) {
-	 
+          
+        }
+        
+        /**
+         * Accumulate Inedges
+         */
+        private void doSuperstep1(Iterable<IMessage<LongWritable, PathMessage>> messageList) {
+         
     for (IMessage<LongWritable, PathMessage> _message: messageList){
             
             String message = new String(_message.getMessage().getInEdgesReader().getInEdgesMessage());
@@ -478,23 +474,25 @@ for(Map.Entry<Long,StringBuilder> remoteSubgraphMessage: getSubgraph().getSubgra
              String[] attr_data=values[3].split(":");
              if(getSubgraph().getSubgraphValue().InEdges.containsKey(Sink))
               {
-                     EdgeAttr attr= new EdgeAttr(attr_data[0],attr_data[1],Long.parseLong(values[4]),true,Long.parseLong(values[5]));                               
-                     getSubgraph().getSubgraphValue().InEdges.get(Sink).put(Source, attr);
+                     SinkData attr= new SinkData(attr_data[0],attr_data[1],Source,Long.parseLong(values[4]),true,Long.parseLong(values[5]));                               
+                     getSubgraph().getSubgraphValue().InEdges.get(Sink).add(attr);
               }
              else
               {
-                     EdgeAttr attr= new EdgeAttr(attr_data[0],attr_data[1],Long.parseLong(values[4]),true,Long.parseLong(values[5]));   
-                     getSubgraph().getSubgraphValue().InEdges.put(Sink, new HashMap<Long,EdgeAttr>());
-                     getSubgraph().getSubgraphValue().InEdges.get(Sink).put(Source, attr);
+                     SinkData attr= new SinkData(attr_data[0],attr_data[1],Source,Long.parseLong(values[4]),true,Long.parseLong(values[5]));   
+                     getSubgraph().getSubgraphValue().InEdges.put(Sink, new ArrayList<SinkData>());
+                     getSubgraph().getSubgraphValue().InEdges.get(Sink).add(attr);
               }
+             
+             getSubgraph().getSubgraphValue().remoteSourceToSubgraphMapping.put(Source, Long.parseLong(values[5]));
             }
+            
                     
             
             
                     
     }
-	}
-	
+        }
 	
 	/**
          * When there is match for a path and parent subgraph is not the current subgraph then this method is used to send partial results back to parent subgraph. 
@@ -1259,11 +1257,11 @@ for(Map.Entry<Long,StringBuilder> remoteSubgraphMessage: getSubgraph().getSubgra
                                                 boolean addFlag=false;
                                                 if ( nextStep.property == null && nextStep.value == null ) {
                                                         if(state.InEdges.containsKey(currentVertex.getVertexId().get()))
-                                                        for(Map.Entry<Long, EdgeAttr> edgeMap: state.InEdges.get(currentVertex.getVertexId().get()).entrySet()) {
-                                                                long otherVertexId = edgeMap.getKey();
+                                                        for(SinkData edgeItem: state.InEdges.get(currentVertex.getVertexId().get())) {
+                                                                long otherVertexId = edgeItem.getSrcId();
                                                                 PathWithDir modifiedPath = vertexMessageStep.path.getCopy();
-                                                                modifiedPath.addEV(edgeMap.getValue().getEdgeId(), otherVertexId,false);
-                                                                if ( !edgeMap.getValue().isRemote() ) {
+                                                                modifiedPath.addEV(edgeItem.getEdgeId(), otherVertexId,false);
+                                                                if ( !edgeItem.isRemote() ) {
                                                                         /* TODO :add the correct value to list*/
 //                                                                      state.forwardLocalVertexList.add(new TraversalWithState(vertexMessageStep.queryId,otherVertexId,_modifiedMessage.toString(),vertexMessageStep.stepsTraversed+1, vertexMessageStep.startVertexId,vertexMessageStep.startStep, vertexMessageStep.previousSubgraphId, vertexMessageStep.previousPartitionId));
                                                                   state.forwardLocalVertexList.add(new TraversalWithState(vertexMessageStep.queryId,vertexMessageStep.rootSubgraph,vertexMessageStep.rootVertex,otherVertexId,vertexMessageStep.previousSubgraph,vertexMessageStep.startDepth,vertexMessageStep.startVertex,vertexMessageStep.depth+1,modifiedPath));
@@ -1289,14 +1287,14 @@ for(Map.Entry<Long,StringBuilder> remoteSubgraphMessage: getSubgraph().getSubgra
                                                 /* filtered edge*/
                                                 else {
                                                         if(state.InEdges.containsKey(currentVertex.getVertexId().get()))
-                                                        for( Map.Entry<Long, EdgeAttr> edgeMap: state.InEdges.get(currentVertex.getVertexId().get()).entrySet() ) {
+                                                        for( SinkData edgeItem: state.InEdges.get(currentVertex.getVertexId().get()) ) {
                                                                 //ISubgraphObjectProperties subgraphProperties = subgraphInstance.getPropertiesForEdge(edge.getId());
                                                                 //output(partition.getId(), subgraph.getId(), currentVertex.getId()+":"+subgraphProperties.getValue("relation"));
-                                                                if ( compareValuesUtil(edgeMap.getValue().getValue().toString(), nextStep.value.toString()) ) {
-                                                                        long otherVertexId = edgeMap.getKey();
+                                                                if ( compareValuesUtil(edgeItem.getValue().toString(), nextStep.value.toString()) ) {
+                                                                        long otherVertexId = edgeItem.getSrcId();
                                                                         PathWithDir modifiedPath = vertexMessageStep.path.getCopy();
-                                                                        modifiedPath.addEV(edgeMap.getValue().getEdgeId(), otherVertexId,false);
-                                                                        if ( !edgeMap.getValue().isRemote() ) {
+                                                                        modifiedPath.addEV(edgeItem.getEdgeId(), otherVertexId,false);
+                                                                        if ( !edgeItem.isRemote() ) {
                                                                                 /* TODO :add the correct value to list*/
 //                                                                              state.forwardLocalVertexList.add(new TraversalWithState(vertexMessageStep.queryId,otherVertexId,_modifiedMessage.toString(),vertexMessageStep.stepsTraversed+1, vertexMessageStep.startVertexId,vertexMessageStep.startStep, vertexMessageStep.previousSubgraphId, vertexMessageStep.previousPartitionId));
                                                                           state.forwardLocalVertexList.add(new TraversalWithState(vertexMessageStep.queryId,vertexMessageStep.rootSubgraph,vertexMessageStep.rootVertex,otherVertexId,vertexMessageStep.previousSubgraph,vertexMessageStep.startDepth,vertexMessageStep.startVertex,vertexMessageStep.depth+1,modifiedPath));
@@ -1384,12 +1382,12 @@ for(Map.Entry<Long,StringBuilder> remoteSubgraphMessage: getSubgraph().getSubgra
                                                 boolean addFlag=false;
                                                 if ( prevStep.property == null && prevStep.value == null ) {
                                                         if(state.InEdges.containsKey(currentVertex.getVertexId().get()))
-                                                        for( Map.Entry<Long, EdgeAttr> edgeMap: state.InEdges.get(currentVertex.getVertexId().get()).entrySet()) {
-                                                                long otherVertexId = edgeMap.getKey();
+                                                        for( SinkData edgeItem: state.InEdges.get(currentVertex.getVertexId().get())) {
+                                                                long otherVertexId = edgeItem.getSrcId();
                                                                 PathWithDir modifiedPath = vertexMessageStep.path.getCopy();
-                                                                modifiedPath.addEV(edgeMap.getValue().getEdgeId(), otherVertexId,false);
+                                                                modifiedPath.addEV(edgeItem.getEdgeId(), otherVertexId,false);
 //                                                                LOG.info("Traversed path:" + modifiedPath.toString());
-                                                                if ( !edgeMap.getValue().isRemote() ) {
+                                                                if ( !edgeItem.isRemote() ) {
                                                                         /* TODO :add the correct value to list*/
 //                                                                      state.revLocalVertexList.add(new TraversalWithState(vertexMessageStep.queryId,otherVertexId,_modifiedMessage.toString(),vertexMessageStep.stepsTraversed-1, vertexMessageStep.startVertexId,vertexMessageStep.startStep, vertexMessageStep.previousSubgraphId, vertexMessageStep.previousPartitionId));
                                                                   state.revLocalVertexList.add(new TraversalWithState(vertexMessageStep.queryId,vertexMessageStep.rootSubgraph,vertexMessageStep.rootVertex,otherVertexId,vertexMessageStep.previousSubgraph,vertexMessageStep.startDepth,vertexMessageStep.startVertex,vertexMessageStep.depth-1,modifiedPath));
@@ -1415,15 +1413,15 @@ for(Map.Entry<Long,StringBuilder> remoteSubgraphMessage: getSubgraph().getSubgra
                                                 /* filtered edge*/
                                                 else {
                                                         if(state.InEdges.containsKey(currentVertex.getVertexId().get()))
-                                                        for( Map.Entry<Long, EdgeAttr> edgeMap: state.InEdges.get(currentVertex.getVertexId().get()).entrySet() ) {
+                                                        for( SinkData edgeItem: state.InEdges.get(currentVertex.getVertexId().get()) ) {
                                                                 //ISubgraphObjectProperties subgraphProperties = subgraphInstance.getPropertiesForEdge(edge.getId());
                                                                 //output(partition.getId(), subgraph.getId(), currentVertex.getId()+":"+subgraphProperties.getValue("relation"));
-                                                                if ( compareValuesUtil(edgeMap.getValue().getValue(), prevStep.value) ) {
-                                                                        long otherVertexId = edgeMap.getKey();
+                                                                if ( compareValuesUtil(edgeItem.getValue(), prevStep.value) ) {
+                                                                        long otherVertexId = edgeItem.getSrcId();
                                                                         //output(partition.getId(), subgraph.getId(), String.valueOf(otherVertex.getId()));
                                                                         PathWithDir modifiedPath = vertexMessageStep.path.getCopy();
-                                                                        modifiedPath.addEV(edgeMap.getValue().getEdgeId(), otherVertexId,false);
-                                                                        if ( !edgeMap.getValue().isRemote()) {
+                                                                        modifiedPath.addEV(edgeItem.getEdgeId(), otherVertexId,false);
+                                                                        if ( !edgeItem.isRemote()) {
                                                                                 /* TODO :add the correct value to list*/
 //                                                                              state.revLocalVertexList.add(new TraversalWithState(vertexMessageStep.queryId,otherVertexId,_modifiedMessage.toString(),vertexMessageStep.stepsTraversed-1, vertexMessageStep.startVertexId,vertexMessageStep.startStep, vertexMessageStep.previousSubgraphId, vertexMessageStep.previousPartitionId));
                                                                                 state.revLocalVertexList.add(new TraversalWithState(vertexMessageStep.queryId,vertexMessageStep.rootSubgraph,vertexMessageStep.rootVertex,otherVertexId,vertexMessageStep.previousSubgraph,vertexMessageStep.startDepth,vertexMessageStep.startVertex,vertexMessageStep.depth-1,modifiedPath));
@@ -1567,7 +1565,7 @@ for(Map.Entry<Long,StringBuilder> remoteSubgraphMessage: getSubgraph().getSubgra
                                         else{
 //                                              remoteMessage.append(String.valueOf(stuff.startVertexId)).append(";").append(String.valueOf(stuff.previousSubgraphId)).append(";").append(stuff.previousPartitionId).append(";").append(stuff.vertexId).append(";").append(stuff.stepsTraversed).append(";").append(state.InEdges.get(stuff.startVertexId).get(stuff.vertexId).getSinkSubgraphId());
 //                                        remoteMessage=new PathMessage(stuff.queryId,stuff.startVertex,stuff.previousSubgraph,stuff.targetVertex,stuff.depth,true);
-                                          remoteSGID=state.InEdges.get(stuff.startVertex).get(stuff.targetVertex).getSinkSubgraphId();
+                                          remoteSGID=state.remoteSourceToSubgraphMapping.get(stuff.targetVertex);
                                         }
 //                              
                                 RevisitTraversalWriter traversalMessage = remoteTraversalMap.get(remoteSGID);
@@ -1596,7 +1594,7 @@ for(Map.Entry<Long,StringBuilder> remoteSubgraphMessage: getSubgraph().getSubgra
                                         }
                                         else{
 //                                              remoteMessage.append(String.valueOf(stuff.startVertexId)).append(";").append(String.valueOf(stuff.previousSubgraphId)).append(";").append(stuff.previousPartitionId).append(";").append(stuff.vertexId).append(";").append(stuff.stepsTraversed).append(";").append(state.InEdges.get(stuff.startVertexId).get(stuff.vertexId).getSinkSubgraphId());
-                                          remoteSGID=state.InEdges.get(stuff.startVertex).get(stuff.targetVertex).getSinkSubgraphId();
+                                          remoteSGID=state.remoteSourceToSubgraphMapping.get(stuff.targetVertex);
                                         }
 //                              
                                 RevisitTraversalWriter traversalMessage = remoteTraversalMap.get(remoteSGID);
