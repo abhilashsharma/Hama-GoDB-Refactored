@@ -336,7 +336,7 @@ public class LongMapPartitionDeliSubsetGsonReader<S extends Writable, V extends 
   //assumed value of jsonMap= "key1:type1:value1$ key2:type2:value2$....."
     //type could be Long or String or Double
     String jsonMap=JSONInput.get(1).toString();
-    jsonMap=jsonMap.substring(1, jsonMap.length()-1);
+//    jsonMap=jsonMap.substring(1, jsonMap.length()-1);
 //    LOG.info("JSONMAP:" + jsonMap);
 //    String[] vprop ={jsonMap};
 //    if(!jsonMap.split(Pattern.quote("$"))[0].split(":String:")[0].equals("tag")){
@@ -347,8 +347,9 @@ public class LongMapPartitionDeliSubsetGsonReader<S extends Writable, V extends 
     for(int i=0;i<vprop.length-1;i++){
         String[] map=vprop[i].split(Pattern.quote(":String:"));
           
-//        LOG.info("VProp:" + vprop[i]);
+        
         try{
+        	LOG.info("VProp:" + map[0] + "," + map[1]);
         if(vertexPropertySet.contains(map[0])){
             vertexValueMap.put(map[0], map[1]);
         }
