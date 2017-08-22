@@ -349,8 +349,9 @@ public class LongMapPartitionDeliSubsetGsonReader<S extends Writable, V extends 
           
         
         try{
-        	LOG.info("VProp:" + map[0] + "," + map[1]);
+        	
         if(vertexPropertySet.contains(map[0])){
+        	LOG.info("VProp:" + map[0] + "," + map[1]);
             vertexValueMap.put(map[0], map[1]);
         }
         }catch(Exception e){
