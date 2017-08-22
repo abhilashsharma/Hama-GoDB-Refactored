@@ -345,7 +345,7 @@ public class LongMapPartitionDeliSubsetGsonReader<S extends Writable, V extends 
       LOG.info("Length:"+ vprop.length);
     //key,value property pairs for a vertex
     MapValue vertexValueMap=new MapValue();
-    for(int i=0;i<vprop.length-1;i++){
+    for(int i=0;i<vprop.length;i++){
         String[] map=vprop[i].split(Pattern.quote(":String:"));
           
         
