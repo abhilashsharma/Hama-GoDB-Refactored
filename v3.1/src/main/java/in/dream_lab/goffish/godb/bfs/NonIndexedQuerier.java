@@ -42,7 +42,7 @@ public class NonIndexedQuerier implements IBFSRootQuerier {
 		for (IVertex<MapValue, MapValue, LongWritable, LongWritable> vertex : subgraph.getLocalVertices()) {
 			if (vertex.isRemote()) continue;
 			String val=vertex.getValue().get(queryProperty.toString());
-			System.out.println("VertexVal:" + val);
+//			System.out.println("VertexVal:" + val);
 			String vertexValue; 
 			if(val==null)
 			  continue;
