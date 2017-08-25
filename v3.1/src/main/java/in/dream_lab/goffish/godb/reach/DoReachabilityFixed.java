@@ -51,7 +51,11 @@ public class DoReachabilityFixed extends
 	// FIXME: We're copying this to the subgraph state in sstep 0. Is that fine?
 	String queryParam;
 	IReachRootQuerier rootQuerier;
-	Double networkCoeff=49.57;
+	Double networkCoeff=0.006514;
+	Double vertexCoeff=0.00217;
+	Double indexCoeff=0.000731;
+	Double edgeCoeff=0.0;
+	
 	Hueristics heuristics=null;
 	/**
 	 * Initialize BFS query with query string
@@ -260,7 +264,7 @@ for(Map.Entry<Long,StringBuilder> remoteSubgraphMessage: getSubgraph().getSubgra
 		long sgid = subgraph.getSubgraphId().get();
 		ReachState state = subgraph.getSubgraphValue();
 		
-		int startPoint=new ReachabilityHeuristicsOptimizer(heuristics, networkCoeff).Optimize(state.query);
+		int startPoint=new ReachabilityHeuristicsOptimizer(heuristics, networkCoeff,indexCoeff,vertexCoeff,edgeCoeff).Optimize(state.query);
 //		startPoint=0;//for debugging
 		//fixing start point
 		startPoint=fixedStartPoint;

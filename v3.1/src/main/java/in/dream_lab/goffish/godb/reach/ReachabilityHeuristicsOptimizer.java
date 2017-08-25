@@ -10,10 +10,16 @@ public class ReachabilityHeuristicsOptimizer implements IQueryOptimizer {
   
   Double[] queryCostHolder;
   Double networkCoeff;
-  public ReachabilityHeuristicsOptimizer(Hueristics _heuristics,Double _networkCoeff){
+  Double indexCoeff;
+  Double vertexCoeff;
+  Double edgeCoeff;
+  public ReachabilityHeuristicsOptimizer(Hueristics _heuristics,Double _networkCoeff,Double _indexCoeff,Double _vertexCoeff,Double _edgeCoeff){
     this.heuristics=_heuristics;
     this.queryCostHolder = new Double[2];
     this.networkCoeff=_networkCoeff;
+    this.indexCoeff=_indexCoeff;
+    this.vertexCoeff=_vertexCoeff;
+    this.edgeCoeff=_edgeCoeff;
   }
   /*
    * (non-Javadoc)
@@ -48,11 +54,11 @@ public class ReachabilityHeuristicsOptimizer implements IQueryOptimizer {
                                     
                                     Double avgDeg = null;
                                     Double avgRemoteDeg = null;
-                                    System.out.println("Hue:"+ heuristics + " propertyName:" + propertyName + " propertyValue:" + propertyValue.toString());
+//                                    System.out.println("Hue:"+ heuristics + " propertyName:" + propertyName + " propertyValue:" + propertyValue.toString());
                                     avgDeg = heuristics.vertexPredicateMap.get(propertyName).get(propertyValue.toString()).avgOutDegree; 
                                     avgRemoteDeg = heuristics.vertexPredicateMap.get(propertyName).get(propertyValue.toString()).avgRemoteOutDegree;
                                     if (totalCost!=-1)
-                                            totalCost = prevScanCost * probability *  ( avgDeg + (1+networkCoeff) * avgRemoteDeg);
+                                            totalCost = prevScanCost * probability *  ( avgDeg*edgeCoeff + (networkCoeff) * avgRemoteDeg) + indexCoeff*heuristics.numVertices;
                             }       
                                                             
                     }
@@ -82,7 +88,7 @@ public class ReachabilityHeuristicsOptimizer implements IQueryOptimizer {
                                     avgDeg = heuristics.vertexPredicateMap.get(propertyName).get(propertyValue.toString()).avgInDegree; 
                                     avgRemoteDeg = heuristics.vertexPredicateMap.get(propertyName).get(propertyValue.toString()).avgRemoteInDegree;    
                                     if (totalCost!=-1)
-                                            totalCost = prevScanCost * probability *  ( avgDeg + (1+networkCoeff) * avgRemoteDeg);
+                                            totalCost = prevScanCost * probability *  ( avgDeg*edgeCoeff + (networkCoeff) * avgRemoteDeg) + indexCoeff*heuristics.numVertices;
                             }       
                                                             
                     }
