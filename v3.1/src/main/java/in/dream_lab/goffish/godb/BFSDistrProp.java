@@ -486,7 +486,7 @@ AbstractSubgraphComputation<BFSDistrPropSubgraphState, MapValue, MapValue, Text,
 				if ( vertexMessageStep.stepsTraversed == getSubgraph().getSubgraphValue().Depth ){
 				  IVertex<MapValue,MapValue,LongWritable,LongWritable> currentVertex = getSubgraph().getVertexById(new LongWritable(vertexMessageStep.vertexId));
 				  StringBuilder _modifiedMsg = new StringBuilder("");
-                                  _modifiedMsg .append(vertexMessageStep.message).append(currentVertex.getValue().get("country"));
+                                  _modifiedMsg .append(vertexMessageStep.message).append(currentVertex.getValue().get("country")).append(",").append(currentVertex.getValue().get("nclass"));
                                   System.out.println("MODIFIEDMSG:" + _modifiedMsg.toString());
 					if (vertexMessageStep.startSubgraphId == getSubgraph().getSubgraphId().get()) {
 						if ( !getSubgraph().getSubgraphValue().resultsMap.containsKey(vertexMessageStep.startVertexId) )
@@ -515,7 +515,7 @@ AbstractSubgraphComputation<BFSDistrPropSubgraphState, MapValue, MapValue, Text,
 								count ++;
 								IVertex<MapValue,MapValue,LongWritable,LongWritable> otherVertex = getSubgraph().getVertexById(edge.getSinkVertexId());
 								StringBuilder _modifiedMessage = new StringBuilder("");
-								_modifiedMessage.append(vertexMessageStep.message).append(currentVertex.getValue().get("country")).append("-->E:").append(String.valueOf(edge.getEdgeId())).append("-->V:");
+								_modifiedMessage.append(vertexMessageStep.message).append(currentVertex.getValue().get("country")).append(",").append(currentVertex.getValue().get("nclass")).append("-->E:").append(String.valueOf(edge.getEdgeId())).append("-->V:");
 								if ( !otherVertex.isRemote() ) {
 									/* TODO :add the correct value to list*/
 //									if(!visitedVertices.contains(otherVertex.getId()))
@@ -529,7 +529,7 @@ AbstractSubgraphComputation<BFSDistrPropSubgraphState, MapValue, MapValue, Text,
 							}
 							if(count==0){
 							 
-				                                _modifiedMsg.append(vertexMessageStep.message).append(currentVertex.getValue().get("country"));
+				                                _modifiedMsg.append(vertexMessageStep.message).append(currentVertex.getValue().get("country")).append(",").append(currentVertex.getValue().get("nclass"));
 				                                System.out.println("MODIFIEDMSG:" + _modifiedMsg.toString());
 				                                vertexMessageStep = new VertexMessageSteps(vertexMessageStep.vertexId, _modifiedMsg.toString(), vertexMessageStep.stepsTraversed, vertexMessageStep.startVertexId, vertexMessageStep.startSubgraphId, vertexMessageStep.startPartitionId);
 				                                
@@ -606,25 +606,25 @@ AbstractSubgraphComputation<BFSDistrPropSubgraphState, MapValue, MapValue, Text,
 	  
 		
 		
-		for(Map.Entry<Long, ResultSet> entry: getSubgraph().getSubgraphValue().resultsMap.entrySet()) {
-			if (!entry.getValue().revResultSet.isEmpty())
-				for(String partialRevPath: entry.getValue().revResultSet) {
-					if (!entry.getValue().forwardResultSet.isEmpty())
-						for(String partialForwardPath: entry.getValue().forwardResultSet) {
-							LOG.info("ResultSet:" +partialRevPath+partialForwardPath);
-							//output(partition.getId(), subgraph.getId(), partialRevPath+partialForwardPath); 
-						}
-					else{
-						LOG.info("ResultSet:" +partialRevPath);
-						//output(partition.getId(), subgraph.getId(), partialRevPath);
-					}
-				}
-			else
-				for(String partialForwardPath: entry.getValue().forwardResultSet) {
-					LOG.info("ResultSet:" +partialForwardPath);
-					//output(partition.getId(), subgraph.getId(), partialForwardPath); 
-				}
-		}
+//		for(Map.Entry<Long, ResultSet> entry: getSubgraph().getSubgraphValue().resultsMap.entrySet()) {
+//			if (!entry.getValue().revResultSet.isEmpty())
+//				for(String partialRevPath: entry.getValue().revResultSet) {
+//					if (!entry.getValue().forwardResultSet.isEmpty())
+//						for(String partialForwardPath: entry.getValue().forwardResultSet) {
+//							LOG.info("ResultSet:" +partialRevPath+partialForwardPath);
+//							//output(partition.getId(), subgraph.getId(), partialRevPath+partialForwardPath); 
+//						}
+//					else{
+//						LOG.info("ResultSet:" +partialRevPath);
+//						//output(partition.getId(), subgraph.getId(), partialRevPath);
+//					}
+//				}
+//			else
+//				for(String partialForwardPath: entry.getValue().forwardResultSet) {
+//					LOG.info("ResultSet:" +partialForwardPath);
+//					//output(partition.getId(), subgraph.getId(), partialForwardPath); 
+//				}
+//		}
 		
 		
 //		LOG.info("SetSize:" + getSubgraph().getSubgraphValue().resultsMap.size());
