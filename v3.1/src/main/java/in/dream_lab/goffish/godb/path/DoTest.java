@@ -92,6 +92,8 @@ public class DoTest extends
         private static boolean queryStart=false;//later lock this when multithreaded
         private static boolean queryEnd=false;//later lock this when multithreaded
         private static boolean gcCalled=false;
+       
+      
         Map<Long, ResultsWriter> remoteResultsMap = new HashMap<>();
         long time;
         class Pair{
@@ -192,7 +194,11 @@ public class DoTest extends
         
 	// FIXME: We're copying this to the subgraph state in sstep 0. Is that fine?
 	String queryParam;
-	Double networkCoeff=49.57;
+	Double networkCoeff=0.006514;
+	Double vertexCoeff=0.00217;
+	Double indexCoeff=0.000731;
+	Double edgeCoeff=0.0;
+	Double joinCoeff=0.0000278;
 	Hueristics hueristics=null;
 	/**
 	 * Initialize BFS query with query string
@@ -866,8 +872,10 @@ for(Map.Entry<Long,StringBuilder> remoteSubgraphMessage: getSubgraph().getSubgra
                                                                         Double eScanCost = prevScanCost * probability * avgDeg;
                                                                         Double networkCost = new Double(0);
                                                                         Double vScanCost = new Double(0);
-                                                                        if(nextStep.property == null)
+                                                                        if(nextStep.property == null) {
                                                                                 vScanCost = eScanCost;
+                                                                                networkCost = networkCoeff * prevScanCost * probability * avgRemoteDeg;
+                                                                        }
                                                                         else {
                                                                                 //output(partition.getId(), subgraph.getId(),nextStep.property);
                                                                                 //output(partition.getId(), subgraph.getId(),nextStep.value.toString());
@@ -877,7 +885,7 @@ for(Map.Entry<Long,StringBuilder> remoteSubgraphMessage: getSubgraph().getSubgra
                                                                                 //System.out.println(nextStep.property+":"+nextStep.value);
                                                                                 if ( hueristics.edgePredicateMap.get(nextStep.property).containsKey(nextStep.value.toString()) ) {
                                                                                         vScanCost = eScanCost * hueristics.edgePredicateMap.get(nextStep.property).get(nextStep.value.toString()).probability;
-                                                                                        networkCost = state.networkCoeff * prevScanCost * probability * avgRemoteDeg * hueristics.edgePredicateMap.get(nextStep.property).get(nextStep.value.toString()).probability;
+                                                                                        networkCost = networkCoeff * prevScanCost * probability * avgRemoteDeg * hueristics.edgePredicateMap.get(nextStep.property).get(nextStep.value.toString()).probability;
                                                                                         resultSetNumber *= hueristics.edgePredicateMap.get(nextStep.property).get(nextStep.value.toString()).probability;
                                                                                         //System.out.println("Edge:" + hueristics.edgePredicateMap.get(nextStep.property).get(nextStep.value.toString()).probability);
                                                                                 }
@@ -886,7 +894,7 @@ for(Map.Entry<Long,StringBuilder> remoteSubgraphMessage: getSubgraph().getSubgra
                                                                                         break;
                                                                                 }
                                                                         }
-                                                                        totalCost += (eScanCost+vScanCost+networkCost);
+                                                                        totalCost += (eScanCost*edgeCoeff+vScanCost*vertexCoeff+networkCost);
                                                                         prevScanCost = vScanCost;
                                                                         currentStep = It.next();
                                                                 }       
@@ -946,12 +954,14 @@ for(Map.Entry<Long,StringBuilder> remoteSubgraphMessage: getSubgraph().getSubgra
                                                                         Double eScanCost = prevScanCost * probability * avgDeg;
                                                                         Double vScanCost = new Double(0);
                                                                         Double networkCost = new Double(0);
-                                                                        if(nextStep.property == null)
+                                                                        if(nextStep.property == null) {
                                                                                 vScanCost = eScanCost;
+                                                                                networkCost = networkCoeff * prevScanCost * probability * avgRemoteDeg;
+                                                                        }
                                                                         else {
                                                                                 if ( hueristics.edgePredicateMap.get(nextStep.property).containsKey(nextStep.value.toString()) ) {
                                                                                         vScanCost = eScanCost * hueristics.edgePredicateMap.get(nextStep.property).get(nextStep.value.toString()).probability;
-                                                                                        networkCost = state.networkCoeff * prevScanCost * probability * avgRemoteDeg * hueristics.edgePredicateMap.get(nextStep.property).get(nextStep.value.toString()).probability;
+                                                                                        networkCost = networkCoeff * prevScanCost * probability * avgRemoteDeg * hueristics.edgePredicateMap.get(nextStep.property).get(nextStep.value.toString()).probability;
                                                                                         resultSetNumber *= hueristics.edgePredicateMap.get(nextStep.property).get(nextStep.value.toString()).probability;
                                                                                 }
                                                                                 else {
@@ -959,12 +969,12 @@ for(Map.Entry<Long,StringBuilder> remoteSubgraphMessage: getSubgraph().getSubgra
                                                                                         break;
                                                                                 }
                                                                         }
-                                                                        totalCost += (eScanCost+vScanCost);
+                                                                        totalCost += (edgeCoeff*eScanCost+vertexCoeff*vScanCost + networkCost);
                                                                         prevScanCost = vScanCost;
                                                                         currentStep = revIt.previous();
                                                                 }
                                                         }
-                                                        joinCost *= resultSetNumber;
+                                                        joinCost *= resultSetNumber* joinCoeff;
                                                         if ( state.queryCostHolder[pos] != -1 && totalCost != -1) {
                                                                 state.queryCostHolder[pos] += totalCost;
                                                                 if (pos!=0 && pos!= state.path.size()-1)
@@ -979,9 +989,9 @@ for(Map.Entry<Long,StringBuilder> remoteSubgraphMessage: getSubgraph().getSubgra
                                                 if ( state.queryCostHolder[pos] != -1 )
                                                 {
                                                         if(!initDone)
-                                                                state.queryCostHolder[pos] += hueristics.numVertices;
+                                                                state.queryCostHolder[pos] += hueristics.numVertices*vertexCoeff;
                                                         else
-                                                                state.queryCostHolder[pos] +=1;
+                                                                state.queryCostHolder[pos] +=hueristics.numVertices*indexCoeff;
                                                                 
                                                 }
 //                                              System.out.println(pos+":Total:"+String.valueOf(state.queryCostHolder[pos]));
