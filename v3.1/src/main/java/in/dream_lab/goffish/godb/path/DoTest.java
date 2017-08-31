@@ -221,9 +221,9 @@ public class DoTest extends
                      vertexIndexDir = new File(ConfigFile.basePath+ "/index/Partition"+pseudoPid+"/vertexIndex");
                      vertexDirectory = FSDirectory.open(vertexIndexDir);
                      analyzer = new StandardAnalyzer(Version.LATEST);
-                     RAMDirectory ramDir=new RAMDirectory(vertexDirectory, IOContext.READ);
+//                     RAMDirectory ramDir=new RAMDirectory(vertexDirectory, IOContext.READ);
                      indexReader  = DirectoryReader.open(new RAMDirectory(vertexDirectory, IOContext.READ));//passing RAM directory to load indexes in memory
-                     LOG.info("INDEX SIZE:" + ramDir.ramBytesUsed());
+//                     LOG.info("INDEX SIZE:" + ramDir.ramBytesUsed());
                      indexSearcher = new IndexSearcher(indexReader);
              }
           
