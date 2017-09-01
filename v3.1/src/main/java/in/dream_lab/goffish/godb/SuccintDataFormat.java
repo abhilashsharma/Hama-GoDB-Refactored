@@ -114,10 +114,10 @@ AbstractSubgraphComputation<BFSDistrPropSubgraphState, MapValue, MapValue, Text,
 			int count=0;
 			if(getSuperstep() == 0){
 				for(IVertex<MapValue, MapValue, LongWritable, LongWritable> v : getSubgraph().getLocalVertices()) {
-					count++;
-					if(count==1000) {
-						break;
-					}
+//					count++;
+//					if(count==1000) {
+//						break;
+//					}
 					LOG.info("VERTEXDATA:" + v.getValue().get("patid") + "|" + v.getValue().get("country") + "|" + v.getValue().get("nclass") + "|" );
 					
 					for(IEdge<MapValue, LongWritable, LongWritable> e:v.getOutEdges()) {
