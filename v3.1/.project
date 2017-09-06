@@ -3,6 +3,7 @@
 	<name>goffish-hama-multithreading-bfsrefactored</name>
 	<comment></comment>
 	<projects>
+		<project>succinct-core</project>
 	</projects>
 	<buildSpec>
 		<buildCommand>

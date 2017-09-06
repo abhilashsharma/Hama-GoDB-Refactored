@@ -21,7 +21,7 @@ public class pathDistrJob {
 	 public static void main(String args[]) throws IOException,InterruptedException, ClassNotFoundException, ParseException
 	  {
 		  HamaConfiguration conf = new HamaConfiguration();
-		  GraphJob job = new GraphJob(conf, pathDistr.class);
+		  GraphJob job = new GraphJob(conf, pathDistrSuccinctIndex.class);
 		  job.setJobName("Path");
 		  job.setInputFormat(TextInputFormat.class);
 		  job.setInputKeyClass(LongWritable.class);
@@ -34,7 +34,7 @@ public class pathDistrJob {
 		  job.setInputPath(new Path(args[0]));
 		  job.setOutputPath(new Path(args[1]));
 		  job.setInitialInput(args[2]);
-		  job.setSubgraphValueClass(pathDistrSubgraphState.class);
+		  job.setSubgraphValueClass(pathDistrSuccinctSubgraphState.class);
 		  job.setInputFormat(NonSplitTextInputFormat.class);
 		  job.setInputReaderClass(LongMapPartitionSubsetGsonReader.class);
 		  
