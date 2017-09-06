@@ -911,9 +911,9 @@ implements ISubgraphWrapup{
 							if(!queryMade){
 //								makeQuery(currentProperty,currentValue);
 								hitList=makeQuerySuccinct(currentProperty,(String)currentValue);
-								for(long vid:hitList) {
-									System.out.println("QUERYING:"+ vid);
-								}
+//								for(long vid:hitList) {
+//									System.out.println("QUERYING:"+ vid);
+//								}
 							}
 						}
 						
@@ -924,7 +924,7 @@ implements ISubgraphWrapup{
 							for (long vid:hitList){
 							
 								if ( getSubgraph().getVertexById(new LongWritable(vid) ) !=null){
-									System.out.println("GOT:"+ vid);
+//									System.out.println("GOT:"+ vid);
 									Long _vertexId = vid;
 									String _message = "V:"+String.valueOf(_vertexId);
 									
