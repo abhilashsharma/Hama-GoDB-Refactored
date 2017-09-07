@@ -1495,7 +1495,7 @@ implements ISubgraphWrapup{
 
 
 	private List<Long> makeQuerySuccinct(String currentProperty, Object currentValue) {
-		
+		queryMade = true;
 		return succinctSubgraph.getVertices(currentProperty, (String)currentValue);
 	}
 

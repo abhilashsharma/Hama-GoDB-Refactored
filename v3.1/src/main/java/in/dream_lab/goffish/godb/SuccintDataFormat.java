@@ -119,17 +119,18 @@ AbstractSubgraphComputation<BFSDistrPropSubgraphState, MapValue, MapValue, Text,
 //						break;
 //					}
 					LOG.info("VERTEXDATA:" + getSubgraph().getSubgraphId().toString()+"#" + v.getValue().get("patid") + "@" + v.getValue().get("country") + "$" + v.getValue().get("nclass") + "|" );
-					String str="";
+					StringBuilder str=new StringBuilder("");
 					int ecount=0;
+					
 					for(IEdge<MapValue, LongWritable, LongWritable> e:v.getOutEdges()) {
-						ecount++;
-						if(str.equals("")) {
-						str=e.getSinkVertexId().toString();
+						
+						if(ecount==0) {
+						str.append(e.getSinkVertexId().toString());
 						}
 						else {
-							str=str+":" + e.getSinkVertexId().toString();
+							str.append(":").append(e.getSinkVertexId().toString());
 						}
-						
+						ecount++;
 					}
 					LOG.info("EDGEDATA:"+ getSubgraph().getSubgraphId().toString()+"#" + v.getVertexId() + "@" + ecount + "%" + str + "|" );
 				}
