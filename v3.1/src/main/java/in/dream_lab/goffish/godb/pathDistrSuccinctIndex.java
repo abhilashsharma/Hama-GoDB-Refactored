@@ -910,7 +910,9 @@ implements ISubgraphWrapup{
 						synchronized(queryLock){
 							if(!queryMade){
 //								makeQuery(currentProperty,currentValue);
+								LOG.info("Querying Index");
 								hitList=makeQuerySuccinct(currentProperty,(String)currentValue);
+								LOG.info("Querying Done");
 //								for(long vid:hitList) {
 //									System.out.println("QUERYING:"+ vid);
 //								}
@@ -922,7 +924,7 @@ implements ISubgraphWrapup{
 					
 						if(hitList.size()>0){
 							for (long vid:hitList){
-							
+								LOG.info("Index Querying Processing");
 								if ( getSubgraph().getVertexById(new LongWritable(vid) ) !=null){
 //									System.out.println("GOT:"+ vid);
 									Long _vertexId = vid;
@@ -941,6 +943,7 @@ implements ISubgraphWrapup{
 //									getSubgraph().getSubgraphValue().forwardLocalVertexList.add( new VertexMessageSteps(_vertexId,_message,0) );
 								}
 							}
+							LOG.info("Index Querying Processing Done");
 						}
 						
 					}catch(Exception e){e.printStackTrace();}
