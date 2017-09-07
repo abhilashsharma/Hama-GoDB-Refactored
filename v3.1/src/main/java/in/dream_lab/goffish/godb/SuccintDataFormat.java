@@ -126,12 +126,8 @@ AbstractSubgraphComputation<BFSDistrPropSubgraphState, MapValue, MapValue, Text,
 					for(IEdge<MapValue, LongWritable, LongWritable> e:v.getOutEdges()) {
 						
 						System.out.println("SinkId:"+ e.getSinkVertexId());
-//						if(ecount==0) {
-//						str.append(e.getSinkVertexId().toString());
-//						}
-//						else {
-							str.append(":").append(e.getSinkVertexId().toString());
-//						}
+						str.append((ecount==0)?"":":");
+						str.append(e.getSinkVertexId().toString());
 						ecount++;
 					}
 					System.out.println("ECOUNT:" + ecount);
