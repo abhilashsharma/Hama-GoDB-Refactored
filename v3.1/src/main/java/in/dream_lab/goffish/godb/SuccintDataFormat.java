@@ -132,7 +132,7 @@ AbstractSubgraphComputation<BFSDistrPropSubgraphState, MapValue, MapValue, Text,
 						ecount++;
 					}
 					System.out.println("ECOUNT:" + ecount);
-					LOG.info("EDGEDATA:"+ getSubgraph().getSubgraphId().toString()+"#" + v.getVertexId() + "@" + ecount + "%" + str.toString() + "|" );
+					System.out.println("EDGEDATA:"+ getSubgraph().getSubgraphId().toString()+"#" + v.getVertexId() + "@" + ecount + "%" + str.toString() + "|" );
 				}
 			}
 	
