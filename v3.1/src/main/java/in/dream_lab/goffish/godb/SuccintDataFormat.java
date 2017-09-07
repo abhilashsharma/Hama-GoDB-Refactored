@@ -112,6 +112,7 @@ AbstractSubgraphComputation<BFSDistrPropSubgraphState, MapValue, MapValue, Text,
 		{
 			// LOAD QUERY AND INITIALIZE LUCENE
 			int count=0;
+			int ecount=0;
 			if(getSuperstep() == 0){
 				for(IVertex<MapValue, MapValue, LongWritable, LongWritable> v : getSubgraph().getLocalVertices()) {
 //					count++;
@@ -120,19 +121,19 @@ AbstractSubgraphComputation<BFSDistrPropSubgraphState, MapValue, MapValue, Text,
 //					}
 					LOG.info("VERTEXDATA:" + getSubgraph().getSubgraphId().toString()+"#" + v.getValue().get("patid") + "@" + v.getValue().get("country") + "$" + v.getValue().get("nclass") + "|" );
 					StringBuilder str=new StringBuilder("");
-					int ecount=0;
+					ecount=0;
 					
 					for(IEdge<MapValue, LongWritable, LongWritable> e:v.getOutEdges()) {
 						
-						if(ecount==0) {
-						str.append(e.getSinkVertexId().toString());
-						}
-						else {
+//						if(ecount==0) {
+//						str.append(e.getSinkVertexId().toString());
+//						}
+//						else {
 							str.append(":").append(e.getSinkVertexId().toString());
-						}
+//						}
 						ecount++;
 					}
-					LOG.info("EDGEDATA:"+ getSubgraph().getSubgraphId().toString()+"#" + v.getVertexId() + "@" + ecount + "%" + str + "|" );
+					LOG.info("EDGEDATA:"+ getSubgraph().getSubgraphId().toString()+"#" + v.getVertexId() + "@" + ecount + "%" + str.toString() + "|" );
 				}
 			}
 	
