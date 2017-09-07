@@ -1485,6 +1485,7 @@ implements ISubgraphWrapup{
 
 	private void initSuccinct() {
 		// TODO Auto-generated method stub
+		initDone=true;
 		LOG.info("Initializing Succinct");
 		 succinctSubgraph = SuccinctSubgraph.createSubgraph("/home/abhilash/vertex.succinct");
 		
