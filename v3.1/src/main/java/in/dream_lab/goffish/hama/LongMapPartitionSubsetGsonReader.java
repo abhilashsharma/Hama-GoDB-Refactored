@@ -94,8 +94,8 @@ public class LongMapPartitionSubsetGsonReader<S extends Writable, V extends Writ
     this.conf = peer.getConfiguration();
     this.vertexSubgraphMap = new HashMap<LongWritable, LongWritable>();
     this.vertexPropertySet.add("patid");
-    this.vertexPropertySet.add("nclass");
-    this.vertexPropertySet.add("country");
+//    this.vertexPropertySet.add("nclass");
+//    this.vertexPropertySet.add("country");
   }
   
   public static final Log LOG = LogFactory.getLog(LongMapPartitionSubsetGsonReader.class);
