@@ -1756,7 +1756,7 @@ implements ISubgraphWrapup{
 	  getSubgraph().getSubgraphValue().startPos=0;
 	  queryMade=false;
 	  queryStart=false;
-	
+	  hitList.size();
 	}
 
 
