@@ -22,7 +22,7 @@ public class pathDistrSuccinctJob {
 	  {
 		  HamaConfiguration conf = new HamaConfiguration();
 		  GraphJob job = new GraphJob(conf, pathDistrSuccinctIndex.class);
-		  job.setJobName("Path");
+		  job.setJobName("Path Succinct");
 		  job.setInputFormat(TextInputFormat.class);
 		  job.setInputKeyClass(LongWritable.class);
 		  job.setInputValueClass(LongWritable.class);
