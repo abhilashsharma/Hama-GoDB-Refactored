@@ -105,9 +105,7 @@ AbstractSubgraphComputation<BFSDistrPropSubgraphState, MapValue, MapValue, Text,
 				
 				
 				try  {
-					if(getSubgraph().getVertexCount()==0) {
-						voteToHalt();
-					}
+					
 					
 					Writer vertexWriter = new BufferedWriter(new OutputStreamWriter(
 				              new FileOutputStream("/home/abhilash/SuccinctSubgraphFiles/Sub"+getSubgraph().getSubgraphId() + "VertexData" ), "utf-8"));
