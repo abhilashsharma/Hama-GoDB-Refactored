@@ -15,6 +15,7 @@ public class SuccinctSubgraph<S extends Writable, V extends Writable, E extends 
     private SuccinctIndexedFileBuffer succinctIndexedVertexFileBuffer,succinctIndexedEdgeFileBuffer;
     public Map<Long, Long> remotevertexToSubgraph;
     public K subgraphId;
+    S _value;
     public SuccinctSubgraph(K subgraphId, String vPath,String ePath)
     {
     	succinctIndexedVertexFileBuffer = new SuccinctIndexedFileBuffer(vPath, StorageMode.MEMORY_ONLY);
@@ -77,14 +78,18 @@ public class SuccinctSubgraph<S extends Writable, V extends Writable, E extends 
     {
         throw new UnsupportedOperationException("We do not get an edge by its id");
     }
-    public void setSubgraphValue(S value)
-    {
-        throw new UnsupportedOperationException("We do not set the subgraph value");
+    @Override
+    public void setSubgraphValue(S value) {
+      _value = value;
     }
-    public S getSubgraphValue()
-    {
-        throw new UnsupportedOperationException("We do not return the subgraph value");
+
+    @Override
+    public S getSubgraphValue() {
+     
+	return _value;
     }
+
+  
     public List<Long> getVertexByProp(String name, String value, char delim)
     {
     	List<Long> vid = new ArrayList<>();
