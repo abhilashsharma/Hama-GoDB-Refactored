@@ -921,7 +921,7 @@ implements ISubgraphWrapup{
 						
 //					System.out.println("Starting Position:" + getSubgraph().getSubgraphValue().startPos +"  Query min Cost:" + minCost + "   Path Size:" + getSubgraph().getSubgraphValue().path.size());	
 //					System.out.println("*******Querying done********:"+hits.length);
-					
+//					System.out.println("hitListObject:" + hitList);
 						if(hitList.size()>0){
 							for (int i=0;i< hitList.size();i=i+2){
 								LOG.info("Index Querying Processing");
