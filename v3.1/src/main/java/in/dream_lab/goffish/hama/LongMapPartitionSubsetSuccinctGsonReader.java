@@ -435,7 +435,7 @@ public class LongMapPartitionSubsetSuccinctGsonReader<S extends Writable, V exte
       //TODO:remove hard coding later
       ConstructSuccinctFile.construct("/home/abhilash/SuccinctSubgraphFiles/Sub"+subgraphID.get() + "VertexData", "/home/abhilash/SuccinctSubgraphFiles/Sub"+subgraphID.get() + "VertexData.succinct");
       ConstructSuccinctFile.construct("/home/abhilash/SuccinctSubgraphFiles/Sub"+subgraphID.get() + "edgeData", "/home/abhilash/SuccinctSubgraphFiles/Sub"+subgraphID.get() + "edgeData.succinct");
-      SuccinctSubgraph<S, V, E, LongWritable, LongWritable, LongWritable> subgraph = SuccinctSubgraph.createSubgraph("/home/abhilash/SuccinctSubgraphFiles/Sub"+subgraphID.get() + "VertexData.succinct","/home/abhilash/SuccinctSubgraphFiles/Sub"+subgraphID.get() + "edgeData.succinct");
+      SuccinctSubgraph<S, V, E, LongWritable, LongWritable, LongWritable> subgraph = new SuccinctSubgraph(subgraphID,"/home/abhilash/SuccinctSubgraphFiles/Sub"+subgraphID.get() + "VertexData.succinct","/home/abhilash/SuccinctSubgraphFiles/Sub"+subgraphID.get() + "edgeData.succinct");
       
 
 //      for (IVertex<V, E, LongWritable, LongWritable> vertex : component) {

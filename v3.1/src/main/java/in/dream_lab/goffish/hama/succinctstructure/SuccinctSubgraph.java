@@ -14,15 +14,17 @@ import org.apache.hadoop.io.Writable;
 public class SuccinctSubgraph<S extends Writable, V extends Writable, E extends Writable, I extends Writable, J extends Writable, K extends Writable> implements ISubgraph<S, V, E, I, J, K> {
     private SuccinctIndexedFileBuffer succinctIndexedVertexFileBuffer,succinctIndexedEdgeFileBuffer;
     public Map<Long, Long> remotevertexToSubgraph;
-    private SuccinctSubgraph(String vPath,String ePath)
+    public K subgraphId;
+    public SuccinctSubgraph(K subgraphId, String vPath,String ePath)
     {
     	succinctIndexedVertexFileBuffer = new SuccinctIndexedFileBuffer(vPath, StorageMode.MEMORY_ONLY);
         succinctIndexedEdgeFileBuffer = new SuccinctIndexedFileBuffer(ePath, StorageMode.MEMORY_ONLY);
+        this.subgraphId = subgraphId;
     }
-    public static SuccinctSubgraph createSubgraph(String vPath, String ePath)
+    /*public static SuccinctSubgraph createSubgraph(K subgraphId, String vPath, String ePath)
     {
-    	return new SuccinctSubgraph(vPath, ePath);
-    }
+    	return new SuccinctSubgraph(subgraphId, vPath, ePath);
+    }*/
     public SuccinctIndexedFileBuffer getVertexBuffer()
     {
         return succinctIndexedVertexFileBuffer;
@@ -41,7 +43,7 @@ public class SuccinctSubgraph<S extends Writable, V extends Writable, E extends 
     }
     public K getSubgraphId()
     {
-        throw new UnsupportedOperationException("Subgraph Ids are not supported");
+        return subgraphId;
     }
     public IVertex<V, E, I, J> getVertexById(I vertexId)
     {
