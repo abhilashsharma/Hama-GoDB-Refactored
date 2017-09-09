@@ -119,6 +119,7 @@ AbstractSubgraphComputation<BFSDistrPropSubgraphState, MapValue, MapValue, Text,
 //						break;
 //					}
 					vertexWriter.write(getSubgraph().getSubgraphId().toString()+"#" + v.getValue().get("patid") + "@" + v.getValue().get("country") + "$" + v.getValue().get("nclass") + "|\n" );
+					vertexWriter.flush();
 					localecount=0;
 //					ArrayList<Long> localSinkArray = new ArrayList<>();
 					ArrayList<Long> remoteSinkArray = new ArrayList<>();
@@ -164,12 +165,18 @@ AbstractSubgraphComputation<BFSDistrPropSubgraphState, MapValue, MapValue, Text,
 							edgeWriter.write(getSubgraph().getSubgraphId().toString()+"#" + v.getVertexId() + "@" + localecount + "%" +str.toString()+":"+ remoteStr.toString() + "|\n" );
 						}
 					}
+					edgeWriter.flush();
 				}
+				vertexWriter.close();
+				edgeWriter.close();
 			}catch(Exception e) {
 				
 			}
+				
+				
 			}
 	
+
 		}
 		
 				voteToHalt();
