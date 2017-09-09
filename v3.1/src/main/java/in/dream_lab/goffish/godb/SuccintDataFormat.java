@@ -108,9 +108,9 @@ AbstractSubgraphComputation<BFSDistrPropSubgraphState, MapValue, MapValue, Text,
 					
 					
 					Writer vertexWriter = new BufferedWriter(new OutputStreamWriter(
-				              new FileOutputStream("/home/abhilash/SuccinctSubgraphFiles/Sub"+getSubgraph().getSubgraphId() + "VertexData" ), "utf-8"));
+				              new FileOutputStream("/home/abhilash/SuccinctSubgraphFilesRerun/Sub"+getSubgraph().getSubgraphId() + "VertexData" ), "utf-8"));
 					Writer edgeWriter = new BufferedWriter(new OutputStreamWriter(
-				              new FileOutputStream("/home/abhilash/SuccinctSubgraphFiles/Sub"+getSubgraph().getSubgraphId() + "edgeData" ), "utf-8"));
+				              new FileOutputStream("/home/abhilash/SuccinctSubgraphFilesRerun/Sub"+getSubgraph().getSubgraphId() + "edgeData" ), "utf-8"));
 					
 					
 				for(IVertex<MapValue, MapValue, LongWritable, LongWritable> v : getSubgraph().getLocalVertices()) {
