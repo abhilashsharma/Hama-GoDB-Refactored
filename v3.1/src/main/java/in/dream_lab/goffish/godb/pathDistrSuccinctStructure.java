@@ -511,7 +511,9 @@ implements ISubgraphWrapup{
 
 	
 	
-	
+	void initNull() {
+		initDone=true;
+	}
 	
 	
 	/**
@@ -547,7 +549,7 @@ implements ISubgraphWrapup{
 					try{
 						synchronized (initLock) {
 							if ( !initDone )
-							      initInMemoryLucene();
+							      initNull();
 						}
 					}catch(Exception e){e.printStackTrace();}
 					
@@ -589,6 +591,7 @@ implements ISubgraphWrapup{
 					try{
 						synchronized(queryLock){
 							if(!queryMade){
+								queryMade=true;
 								LOG.info("Querying Index");
 								sg.getVertexByProp(currentProperty, (String)currentValue, '@');
 								LOG.info("Querying Done");
@@ -813,194 +816,6 @@ implements ISubgraphWrapup{
 				
 			}
 			
-			
-			// PROCESS REVERSE LIST
-			while(!getSubgraph().getSubgraphValue().revLocalVertexList.isEmpty()) {
-				VertexMessageSteps vertexMessageStep = getSubgraph().getSubgraphValue().revLocalVertexList.poll();
-				
-				/* if last step,end that iteration, while traversing in reverse direction last step is first step which is zero */
-				if ( vertexMessageStep.stepsTraversed == 0 ){
-					//if current subgraph is not source subgraph then start recursive aggregation of partial results
-//					System.out.println("Querying Output Path:" + vertexMessageStep.queryId+","+vertexMessageStep.startStep+","+false+","+vertexMessageStep.startVertexId );
-					if(getSubgraph().getSubgraphValue().outputPathMaintainance.containsKey(new OutputPathKey(vertexMessageStep.queryId,vertexMessageStep.startStep,false,vertexMessageStep.startVertexId))){
-						forwardOutputToSubgraph(0,vertexMessageStep);
-					}
-					else{//else if current subgraph is source subgraph then store the results
-					  time=System.currentTimeMillis();
-						if ( !getSubgraph().getSubgraphValue().resultsMap.containsKey(vertexMessageStep.startVertexId) )
-							getSubgraph().getSubgraphValue().resultsMap.put(vertexMessageStep.startVertexId, new ResultSet());
-						
-						getSubgraph().getSubgraphValue().resultsMap.get(vertexMessageStep.startVertexId).revResultSet.add(vertexMessageStep.message);
-						getSubgraph().getSubgraphValue().resultCollectionTime+=(System.currentTimeMillis() - time);
-					}
-										
-					continue;
-				}
-				
-				Step prevStep = getSubgraph().getSubgraphValue().path.get(vertexMessageStep.stepsTraversed-1);
-				IVertex<MapValue, MapValue, LongWritable, LongWritable> currentVertex = getSubgraph().getVertexById(new LongWritable(vertexMessageStep.vertexId));
-			
-				
-				
-				if( prevStep.type == Type.EDGE ) {
-					
-					if ( prevStep.direction == Direction.OUT ) {
-						/* null predicate handling*/
-						boolean flag=false;
-						boolean addFlag=false;
-						if ( prevStep.property == null && prevStep.value == null ) {
-							if(getSubgraph().getSubgraphValue().InEdges.containsKey(currentVertex.getVertexId().get()))
-							for( Map.Entry<Long, EdgeAttr> edgeMap: getSubgraph().getSubgraphValue().InEdges.get(currentVertex.getVertexId().get()).entrySet()) {
-								long otherVertexId = edgeMap.getKey();
-								StringBuilder _modifiedMessage = new StringBuilder("");
-								_modifiedMessage.append("V:").append(String.valueOf(otherVertexId)).append("-->E:").append(String.valueOf(edgeMap.getValue().EdgeId)).append("-->").append(vertexMessageStep.message);
-								if ( !edgeMap.getValue().isRemote ) {
-									/* TODO :add the correct value to list*/
-									getSubgraph().getSubgraphValue().revLocalVertexList.add(new VertexMessageSteps(vertexMessageStep.queryId,otherVertexId,_modifiedMessage.toString(),vertexMessageStep.stepsTraversed-1, vertexMessageStep.startVertexId,vertexMessageStep.startStep, vertexMessageStep.previousSubgraphId, vertexMessageStep.previousPartitionId));
-								}
-								else{
-									
-									if(!flag){
-									addFlag=StoreRecursive(vertexMessageStep,_modifiedMessage.toString(),false);
-									
-									flag=true;
-									}
-									
-									if(addFlag){
-										getSubgraph().getSubgraphValue().revRemoteVertexList.add(new VertexMessageSteps(vertexMessageStep.queryId,otherVertexId,_modifiedMessage.toString(),vertexMessageStep.stepsTraversed-1, vertexMessageStep.vertexId,vertexMessageStep.stepsTraversed-1, vertexMessageStep.previousSubgraphId, vertexMessageStep.previousPartitionId));
-									}
-									
-								}
-							
-							}
-						}
-						/* filtered edge*/
-						else {
-							if(getSubgraph().getSubgraphValue().InEdges.containsKey(currentVertex.getVertexId().get()))
-							for( Map.Entry<Long, EdgeAttr> edgeMap: getSubgraph().getSubgraphValue().InEdges.get(currentVertex.getVertexId().get()).entrySet() ) {
-								//ISubgraphObjectProperties subgraphProperties = subgraphInstance.getPropertiesForEdge(edge.getId());
-								//output(partition.getId(), subgraph.getId(), currentVertex.getId()+":"+subgraphProperties.getValue("relation"));
-								if ( compareValuesUtil(edgeMap.getValue().Value, prevStep.value) ) {
-									long otherVertexId = edgeMap.getKey();
-									//output(partition.getId(), subgraph.getId(), String.valueOf(otherVertex.getId()));
-									StringBuilder _modifiedMessage = new StringBuilder("");
-									_modifiedMessage.append("V:").append(String.valueOf(otherVertexId)).append("-->E:").append(String.valueOf(edgeMap.getValue().EdgeId)).append("-->").append(vertexMessageStep.message);
-									if ( !edgeMap.getValue().isRemote) {
-										/* TODO :add the correct value to list*/
-										getSubgraph().getSubgraphValue().revLocalVertexList.add(new VertexMessageSteps(vertexMessageStep.queryId,otherVertexId,_modifiedMessage.toString(),vertexMessageStep.stepsTraversed-1, vertexMessageStep.startVertexId,vertexMessageStep.startStep, vertexMessageStep.previousSubgraphId, vertexMessageStep.previousPartitionId));
-									}
-									else{
-										
-										
-										if(!flag){
-										addFlag=StoreRecursive(vertexMessageStep,_modifiedMessage.toString(),false);
-										
-										flag=true;
-										}
-										
-										if(addFlag){
-											getSubgraph().getSubgraphValue().revRemoteVertexList.add(new VertexMessageSteps(vertexMessageStep.queryId,otherVertexId,_modifiedMessage.toString(),vertexMessageStep.stepsTraversed-1, vertexMessageStep.vertexId,vertexMessageStep.stepsTraversed-1, vertexMessageStep.previousSubgraphId, vertexMessageStep.previousPartitionId));
-										}
-										
-									}
-									
-								}
-							
-							}
-						}
-					}
-					else if ( prevStep.direction == Direction.IN ) {
-
-						/* null predicate handling*/
-						boolean flag=false;
-						boolean addFlag=false;
-						if ( prevStep.property == null && prevStep.value == null ) {
-							for(IEdge<MapValue, LongWritable, LongWritable> edge: currentVertex.getOutEdges()) {
-								IVertex<MapValue, MapValue, LongWritable, LongWritable> otherVertex = getSubgraph().getVertexById(edge.getSinkVertexId());
-								StringBuilder _modifiedMessage = new StringBuilder("");
-								_modifiedMessage.append("V:").append(String.valueOf(otherVertex.getVertexId().get())).append("<--E:").append(String.valueOf(edge.getEdgeId().get())).append("<--").append(vertexMessageStep.message);
-								if ( !otherVertex.isRemote() ) {
-									/* add the correct value to list*/
-									getSubgraph().getSubgraphValue().revLocalVertexList.add(new VertexMessageSteps(vertexMessageStep.queryId,otherVertex.getVertexId().get(),_modifiedMessage.toString(),vertexMessageStep.stepsTraversed-1, vertexMessageStep.startVertexId,vertexMessageStep.startStep, vertexMessageStep.previousSubgraphId, vertexMessageStep.previousPartitionId));
-								}
-								/* TODO : clarify with Ravi about InEdge having remote source( not possible?)*/
-								else {
-									/* TODO :add vertex to revRemoteVertexList*/
-									
-									if(!flag){
-									addFlag=StoreRecursive(vertexMessageStep,_modifiedMessage.toString(),false);
-									
-									flag=true;
-									}
-									
-									if(addFlag){
-										getSubgraph().getSubgraphValue().revRemoteVertexList.add(new VertexMessageSteps(vertexMessageStep.queryId,otherVertex.getVertexId().get(),_modifiedMessage.toString(),vertexMessageStep.stepsTraversed-1, vertexMessageStep.vertexId, vertexMessageStep.stepsTraversed-1, vertexMessageStep.previousSubgraphId, vertexMessageStep.previousPartitionId));
-									}
-									
-								}
-									
-							}
-							
-						}
-						/* filtered edge*/
-						else {
-							for( IEdge<MapValue, LongWritable, LongWritable> edge: currentVertex.getOutEdges() ) {
-//								ISubgraphObjectProperties subgraphProperties = subgraphInstance.getPropertiesForEdge(edge.getId());
-//								output(partition.getId(), subgraph.getId(), currentVertex.getId()+":"+subgraphProperties.getValue("relation"));
-							  //CHANGE it when moving to hashmaps
-								if ( compareValuesUtil(edge.getValue().get(prevStep.property.toString()).toString(), prevStep.value.toString()) ) {
-									IVertex<MapValue, MapValue, LongWritable, LongWritable> otherVertex = getSubgraph().getVertexById(edge.getSinkVertexId());
-									StringBuilder _modifiedMessage = new StringBuilder("");
-									_modifiedMessage.append("V:").append(String.valueOf(otherVertex.getVertexId().get())).append("<--E:").append(String.valueOf(edge.getEdgeId().get())).append("<--").append(vertexMessageStep.message);
-									if ( !otherVertex.isRemote() ) {
-										/* TODO :add the correct value to list*/
-										getSubgraph().getSubgraphValue().revLocalVertexList.add(new VertexMessageSteps(vertexMessageStep.queryId,otherVertex.getVertexId().get(),_modifiedMessage.toString(),vertexMessageStep.stepsTraversed-1, vertexMessageStep.startVertexId,vertexMessageStep.startStep, vertexMessageStep.previousSubgraphId, vertexMessageStep.previousPartitionId));
-									}
-									/* TODO : clarify with Ravi about InEdge having remote source( not possible?)*/
-									else {
-										/* TODO :add vertex to revRemoteVertexList*/
-										
-										if(!flag){
-										addFlag=StoreRecursive(vertexMessageStep,_modifiedMessage.toString(),false);
-										
-										flag=true;
-										}
-										
-										if(addFlag){
-											getSubgraph().getSubgraphValue().revRemoteVertexList.add(new VertexMessageSteps(vertexMessageStep.queryId,otherVertex.getVertexId().get(),_modifiedMessage.toString(),vertexMessageStep.stepsTraversed-1, vertexMessageStep.vertexId,vertexMessageStep.stepsTraversed-1, vertexMessageStep.previousSubgraphId, vertexMessageStep.previousPartitionId));
-										}
-										
-									}
-								}
-							}
-						}
-					}
-					
-				}
-				else if ( prevStep.type == Type.VERTEX ) {
-					
-					/* null predicate*/
-					if( prevStep.property == null && prevStep.value == null ) {
-						/* add appropriate value later*/
-						getSubgraph().getSubgraphValue().revLocalVertexList.add(new VertexMessageSteps(vertexMessageStep.queryId,vertexMessageStep.vertexId,vertexMessageStep.message,vertexMessageStep.stepsTraversed-1, vertexMessageStep.startVertexId,vertexMessageStep.startStep, vertexMessageStep.previousSubgraphId, vertexMessageStep.previousPartitionId));
-						//revLocalVertexList.add(vertexMessageStep);
-					}
-					/* filtered vertex*/
-					else {
-					        LOG.info("PROP:"+prevStep.property.toString() + " VALUE:" + currentVertex.getValue().get(prevStep.property.toString()));
-//						ISubgraphObjectProperties subgraphProperties = subgraphInstance.getPropertiesForVertex(currentVertex.getId());
-						if ( compareValuesUtil(currentVertex.getValue().get(prevStep.property.toString()).toString(), prevStep.value.toString()) ) {
-							/* add appropriate value later*/
-						  
-							getSubgraph().getSubgraphValue().revLocalVertexList.add(new VertexMessageSteps(vertexMessageStep.queryId,vertexMessageStep.vertexId,vertexMessageStep.message,vertexMessageStep.stepsTraversed-1, vertexMessageStep.startVertexId,vertexMessageStep.startStep,vertexMessageStep.previousSubgraphId, vertexMessageStep.previousPartitionId));
-							//revLocalVertexList.add(vertexMessaf.vertexIdgeStep);
-							//output(partition.getId(), subgraph.getId(), vertexMessageStep.message);
-						}
-					}
-					
-				}
-				
-			}
 
 			// TODO: send the messages in Remote vertex list
 			for(VertexMessageSteps stuff: getSubgraph().getSubgraphValue().forwardRemoteVertexList){
