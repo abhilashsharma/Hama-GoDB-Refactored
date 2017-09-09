@@ -98,7 +98,7 @@ implements ISubgraphWrapup{
 	static Hueristics hueristics = new Hueristics(); 
 	//for succinct
 	HashMap<String,Integer> propToIndex= new HashMap<String,Integer>();
-	public List<Long> hitList;
+	public static List<Long> hitList;
 	/**
 	 * Representative class to keep tab of next vertex to be processed, different for path query
 	 */
