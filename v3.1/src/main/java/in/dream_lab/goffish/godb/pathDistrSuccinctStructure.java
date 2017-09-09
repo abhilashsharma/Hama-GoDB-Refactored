@@ -61,6 +61,7 @@ import in.dream_lab.goffish.api.ISubgraphWrapup;
 import in.dream_lab.goffish.api.IVertex;
 import in.dream_lab.goffish.godb.Step.Direction;
 import in.dream_lab.goffish.godb.Step.Type;
+import in.dream_lab.goffish.godb.pathDistrSuccinctIndex.VertexMessageSteps;
 import in.dream_lab.goffish.hama.succinctstructure.SuccinctSubgraph;
 import in.dream_lab.goffish.hama.succinctstructure.SuccinctVertex;
 
@@ -97,7 +98,7 @@ implements ISubgraphWrapup{
 	static Hueristics hueristics = new Hueristics(); 
 	//for succinct
 	HashMap<String,Integer> propToIndex= new HashMap<String,Integer>();
-
+	public List<Long> hitList;
 	/**
 	 * Representative class to keep tab of next vertex to be processed, different for path query
 	 */
@@ -593,7 +594,7 @@ implements ISubgraphWrapup{
 							if(!queryMade){
 								queryMade=true;
 								LOG.info("Querying Index");
-								sg.getVertexByProp(currentProperty, (String)currentValue, '@');
+								hitList=sg.getVertexByProp(currentProperty, (String)currentValue, '@');
 								LOG.info("Querying Done");
 							}
 						}
@@ -601,14 +602,15 @@ implements ISubgraphWrapup{
 //					System.out.println("Starting Position:" + getSubgraph().getSubgraphValue().startPos +"  Query min Cost:" + minCost + "   Path Size:" + getSubgraph().getSubgraphValue().path.size());	
 //					System.out.println("*******Querying done********:"+hits.length);
 					
-						if(hits.length>0){
-							LOG.info("Index Querying Processing");
-							for (int i=0;i<hits.length;i++){
-								Document doc = indexSearcher.doc(hits[i].doc);
-								if ( Long.valueOf(doc.get("subgraphid")) == getSubgraph().getSubgraphId().get() ){
-									Long _vertexId = Long.valueOf(doc.get("id"));
+						if(hitList.size()>0){
+							for (int i=0;i< hitList.size();i=i+2){
+								LOG.info("Index Querying Processing");
+								long vid= hitList.get(i+1);
+								if ( getSubgraph().getSubgraphId().get() ==hitList.get(i)){
+//									System.out.println("GOT:"+ vid);
+									Long _vertexId = vid;
 									String _message = "V:"+String.valueOf(_vertexId);
-//									System.out.println("STARTING VERTEX:" + _message);
+									
 									if ( getSubgraph().getSubgraphValue().startPos == 0)
 									  getSubgraph().getSubgraphValue().forwardLocalVertexList.add( new VertexMessageSteps(QueryId,_vertexId,_message, getSubgraph().getSubgraphValue().startPos, _vertexId,getSubgraph().getSubgraphValue().startPos, getSubgraph().getSubgraphId().get(), 0) );
 									else
