@@ -10,6 +10,7 @@ import in.dream_lab.goffish.api.IRemoteVertex;
 import in.dream_lab.goffish.api.ISubgraph;
 import in.dream_lab.goffish.api.IVertex;
 import org.apache.hadoop.io.Writable;
+import org.mortbay.log.Log;
 
 public class SuccinctSubgraph<S extends Writable, V extends Writable, E extends Writable, I extends Writable, J extends Writable, K extends Writable> implements ISubgraph<S, V, E, I, J, K> {
     private SuccinctIndexedFileBuffer succinctIndexedVertexFileBuffer,succinctIndexedEdgeFileBuffer;
@@ -97,6 +98,7 @@ public class SuccinctSubgraph<S extends Writable, V extends Writable, E extends 
     	String record;
     	String[] tokens;
     	Integer[] recordID = succinctIndexedVertexFileBuffer.recordSearchIds(value.getBytes());
+    	Log.info("Inside Get vertex by Prop:"+ recordID.length + " ,Value:"+value);
     	for (Integer rid : recordID)
     	{
     		offset = succinctIndexedVertexFileBuffer.getRecordOffset(rid);
