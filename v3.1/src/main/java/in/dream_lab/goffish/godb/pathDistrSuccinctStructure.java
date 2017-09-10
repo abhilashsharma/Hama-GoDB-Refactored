@@ -595,12 +595,13 @@ implements ISubgraphWrapup{
 								queryMade=true;
 								LOG.info("Querying Index SG:"+ sg.getSubgraphId());
 								hitList=sg.getVertexByProp(currentProperty, (String)currentValue, '@');
+								LOG.info("*******Start Vertices********:"+hitList.size());
 								LOG.info("Querying Done");
 							
 						}
 						
 //					System.out.println("Starting Position:" + getSubgraph().getSubgraphValue().startPos +"  Query min Cost:" + minCost + "   Path Size:" + getSubgraph().getSubgraphValue().path.size());	
-					System.out.println("*******Start Vertices********:"+hitList.size());
+					
 					
 						if(hitList.size()>0){
 							for (int i=0;i< hitList.size();i=i+2){
