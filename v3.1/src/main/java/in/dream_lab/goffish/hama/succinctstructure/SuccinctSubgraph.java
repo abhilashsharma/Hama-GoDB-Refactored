@@ -20,7 +20,7 @@ public class SuccinctSubgraph<S extends Writable, V extends Writable, E extends 
     String vertexPath,edgePath;
     public SuccinctSubgraph(K subgraphId, String vPath,String ePath)
     {
-    	vertexPath=ePath;
+    	vertexPath=vPath;
     	edgePath=ePath;
     	succinctIndexedVertexFileBuffer = new SuccinctIndexedFileBuffer(vPath, StorageMode.MEMORY_ONLY);
         succinctIndexedEdgeFileBuffer = new SuccinctIndexedFileBuffer(ePath, StorageMode.MEMORY_ONLY);

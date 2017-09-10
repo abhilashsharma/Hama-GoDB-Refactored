@@ -98,7 +98,7 @@ implements ISubgraphWrapup{
 	static Hueristics hueristics = new Hueristics(); 
 	//for succinct
 	HashMap<String,Integer> propToIndex= new HashMap<String,Integer>();
-	public static List<Long> hitList;
+	public  List<Long> hitList;
 	/**
 	 * Representative class to keep tab of next vertex to be processed, different for path query
 	 */
@@ -590,13 +590,13 @@ implements ISubgraphWrapup{
 					long QueryId=getQueryId();
 					
 					try{
-						synchronized(queryLock){
-							if(!queryMade){
+						{
+							
 								queryMade=true;
 								LOG.info("Querying Index SG:"+ sg.getSubgraphId());
 								hitList=sg.getVertexByProp(currentProperty, (String)currentValue, '@');
 								LOG.info("Querying Done");
-							}
+							
 						}
 						
 //					System.out.println("Starting Position:" + getSubgraph().getSubgraphValue().startPos +"  Query min Cost:" + minCost + "   Path Size:" + getSubgraph().getSubgraphValue().path.size());	
