@@ -594,10 +594,9 @@ implements ISubgraphWrapup{
 						{
 							
 								queryMade=true;
-//								LOG.info("Querying Index SG:"+ sg.getSubgraphId());
+//								LOG.info("Querying start");
 								hitList=sg.getVertexByProp(currentProperty, (String)currentValue, '@');
-//								LOG.info("*******Start Vertices********:"+hitList.size());
-//								LOG.info("Querying Done");
+//								LOG.info("Querying end");
 							
 						}
 						
@@ -605,10 +604,11 @@ implements ISubgraphWrapup{
 					
 					
 						if(hitList.size()>0){
+//							LOG.info("Index Querying Processing");
 							for (int i=0;i< hitList.size();i=i+2){
-//								LOG.info("Index Querying Processing");
+
 								long vid= hitList.get(i+1);
-								if ( getSubgraph().getSubgraphId().get() ==hitList.get(i)){
+//								if ( getSubgraph().getSubgraphId().get() ==hitList.get(i)){
 //									System.out.println("GOT:"+ vid);
 									Long _vertexId = vid;
 									String _message = "V:"+String.valueOf(_vertexId);
@@ -624,7 +624,7 @@ implements ISubgraphWrapup{
 									}
 										
 //									getSubgraph().getSubgraphValue().forwardLocalVertexList.add( new VertexMessageSteps(_vertexId,_message,0) );
-								}
+//								}//subgraph checking
 							}
 //							LOG.info("Index Querying Processing Done");
 						}

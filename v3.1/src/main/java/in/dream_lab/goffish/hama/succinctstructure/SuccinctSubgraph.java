@@ -96,14 +96,12 @@ public class SuccinctSubgraph<S extends Writable, V extends Writable, E extends 
   
     public List<Long> getVertexByProp(String name, String value, char delim)
     {
-    	
-//    	Log.info("Querying File:" + vertexPath);
+    	long start = System.nanoTime();
     	List<Long> vid = new ArrayList<>();
     	int offset;
     	String record;
     	String[] tokens;
     	Integer[] recordID = succinctIndexedVertexFileBuffer.recordSearchIds(value.getBytes());
-//    	Log.info("Inside Get vertex by Prop:"+ recordID.length + " ,Value:"+value);
     	for (Integer rid : recordID)
     	{
     		offset = succinctIndexedVertexFileBuffer.getRecordOffset(rid);
@@ -114,6 +112,7 @@ public class SuccinctSubgraph<S extends Writable, V extends Writable, E extends 
     			vid.add(Long.parseLong(tokens[i]));
     		}
     	}
+    	Log.info("Querying Time:" + (System.nanoTime() - start));
     	return vid;
     }
 }
