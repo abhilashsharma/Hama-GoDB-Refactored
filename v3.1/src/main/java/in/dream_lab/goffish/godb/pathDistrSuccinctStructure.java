@@ -747,7 +747,7 @@ implements ISubgraphWrapup{
 				Step nextStep = getSubgraph().getSubgraphValue().path.get(vertexMessageStep.stepsTraversed+1);
 				
 				
-				SuccinctVertex<MapValue,MapValue,LongWritable,LongWritable> currentVertex = new SuccinctVertex(new LongWritable(vertexMessageStep.vertexId),sg.getVertexBuffer(),sg.getEdgeBuffer(),'@');
+				SuccinctVertex<MapValue,MapValue,LongWritable,LongWritable> currentVertex = new SuccinctVertex(new LongWritable(vertexMessageStep.vertexId),sg.getVertexBuffer(),sg.getEdgeBuffer(),'|');
 				
 				if( nextStep.type == Type.EDGE ) {
 					
