@@ -35,7 +35,7 @@ public class SuccinctVertex<V extends Writable, E extends Writable, I extends Wr
         String record;
         List<IEdge<E, I, J>> localsinks = new ArrayList<>();
         Long searchQuery=((LongWritable)vid).get();
-        Integer[] recordID = ebuffer.recordSearchIds(searchQuery.toString().getBytes());
+        Integer[] recordID = ebuffer.recordSearchIds(searchQuery.toString().concat("@").getBytes());
         for (Integer rid : recordID)
         {
             offset = ebuffer.getRecordOffset(rid);
@@ -54,7 +54,8 @@ public class SuccinctVertex<V extends Writable, E extends Writable, I extends Wr
         String[] tokens;
         String record;
         List<IEdge<E, I, J>> remotesinks = new ArrayList<>();
-        Integer[] recordID = ebuffer.recordSearchIds(((BytesWritable)vid).getBytes());
+        Long searchQuery=((LongWritable)vid).get();
+        Integer[] recordID = ebuffer.recordSearchIds(searchQuery.toString().concat("@").getBytes());
         for (Integer rid : recordID)
         {
             offset = ebuffer.getRecordOffset(rid);
