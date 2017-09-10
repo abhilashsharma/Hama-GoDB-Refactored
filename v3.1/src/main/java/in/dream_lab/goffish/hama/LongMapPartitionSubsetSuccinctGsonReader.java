@@ -175,6 +175,7 @@ public class LongMapPartitionSubsetSuccinctGsonReader<S extends Writable, V exte
     //TODO: pass  pid instead of peerindex
     
     Partition<S, V, E, LongWritable, LongWritable, LongWritable> partition = new Partition<S, V, E, LongWritable, LongWritable, LongWritable>(peer.getPeerIndex());
+//    Partition<S, V, E, LongWritable, LongWritable, LongWritable> classicPartition = new Partition<S, V, E, LongWritable, LongWritable, LongWritable>(peer.getPeerIndex());
     
     formSubgraphs(partition, vertexMap.values());
     
@@ -438,18 +439,23 @@ public class LongMapPartitionSubsetSuccinctGsonReader<S extends Writable, V exte
       ConstructSuccinctFile.construct("/home/abhilash/SuccinctSubgraphFiles/Sub"+subgraphID.get() + "edgeData", "/home/abhilash/SuccinctSubgraphFiles/Sub"+subgraphID.get() + "edgeData.succinct");
       SuccinctSubgraph<S, V, E, LongWritable, LongWritable, LongWritable> subgraph = new SuccinctSubgraph(subgraphID,"/home/abhilash/SuccinctSubgraphFiles/Sub"+subgraphID.get() + "VertexData.succinct","/home/abhilash/SuccinctSubgraphFiles/Sub"+subgraphID.get() + "edgeData.succinct");
       
+//      Subgraph<S, V, E, LongWritable, LongWritable, LongWritable> classicSubgraph = new Subgraph<S, V, E, LongWritable, LongWritable, LongWritable>(
+//              peer.getPeerIndex(), subgraphID);
+          
 
-//      for (IVertex<V, E, LongWritable, LongWritable> vertex : component) {
-//        subgraph.addVertex(vertex);
-//        
-//        // Dont add remote vertices to the VertexSubgraphMap as remote vertex subgraphID is unknown
-//        if (!vertex.isRemote()) {
-//          vertexSubgraphMap.put(vertex.getVertexId(), subgraph.getSubgraphId());
-//        }        
-//      }
+          for (IVertex<V, E, LongWritable, LongWritable> vertex : component) {
+//            classicSubgraph.addVertex(vertex);
+            
+            // Dont add remote vertices to the VertexSubgraphMap as remote vertex subgraphID is unknown
+            if (!vertex.isRemote()) {
+              vertexSubgraphMap.put(vertex.getVertexId(), subgraph.getSubgraphId());
+            }        
+          }
+
+      
       
       partition.addSubgraph(subgraph);
-      
+//      classicPartition.addSubgraph(classicSubgraph);
       byte subgraphIDbytes[] = Longs.toByteArray(subgraphID.get());
       controlInfo.addextraInfo(subgraphIDbytes); 
      
