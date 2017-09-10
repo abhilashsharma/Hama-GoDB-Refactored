@@ -850,7 +850,7 @@ implements ISubgraphWrapup{
 		
 		LOG.info("Ending Query Traversal");
 		
-		if(getSuperstep()>=3)
+		if(getSuperstep()>=1)
 			voteToHalt();
 	}
 	
