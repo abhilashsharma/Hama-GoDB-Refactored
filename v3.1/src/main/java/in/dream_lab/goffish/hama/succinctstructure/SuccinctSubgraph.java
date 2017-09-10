@@ -42,7 +42,7 @@ public class SuccinctSubgraph<S extends Writable, V extends Writable, E extends 
     {
         this.remotevertexToSubgraph = v2s;
     }
-    public Map<Long, Long> getMap(Map<V, S> v2s)
+    public Map<Long, Long> getMap()
     {
         return remotevertexToSubgraph;
     }
