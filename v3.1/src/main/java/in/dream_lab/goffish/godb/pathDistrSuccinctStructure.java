@@ -604,7 +604,7 @@ implements ISubgraphWrapup{
 					
 					
 						if(hitList.size()>0){
-//							LOG.info("Index Querying Processing");
+							LOG.info("Index Querying Processing");
 							for (int i=0;i< hitList.size();i=i+2){
 
 								long vid= hitList.get(i+1);
@@ -613,20 +613,14 @@ implements ISubgraphWrapup{
 									Long _vertexId = vid;
 									String _message = "V:"+String.valueOf(_vertexId);
 									
-									if ( getSubgraph().getSubgraphValue().startPos == 0)
+									
 									  getSubgraph().getSubgraphValue().forwardLocalVertexList.add( new VertexMessageSteps(QueryId,_vertexId,_message, getSubgraph().getSubgraphValue().startPos, _vertexId,getSubgraph().getSubgraphValue().startPos, getSubgraph().getSubgraphId().get(), 0) );
-									else
-									if( getSubgraph().getSubgraphValue().startPos == (getSubgraph().getSubgraphValue().path.size()-1))
-									  getSubgraph().getSubgraphValue().revLocalVertexList.add( new VertexMessageSteps(QueryId,_vertexId,_message, getSubgraph().getSubgraphValue().startPos , _vertexId,getSubgraph().getSubgraphValue().startPos, getSubgraph().getSubgraphId().get(), 0) );
-									else{
-									  getSubgraph().getSubgraphValue().forwardLocalVertexList.add( new VertexMessageSteps(QueryId,_vertexId,_message, getSubgraph().getSubgraphValue().startPos, _vertexId,getSubgraph().getSubgraphValue().startPos, getSubgraph().getSubgraphId().get(), 0) );
-									  getSubgraph().getSubgraphValue().revLocalVertexList.add( new VertexMessageSteps(QueryId,_vertexId,_message, getSubgraph().getSubgraphValue().startPos , _vertexId,getSubgraph().getSubgraphValue().startPos, getSubgraph().getSubgraphId().get(), 0) );
-									}
+									
 										
 //									getSubgraph().getSubgraphValue().forwardLocalVertexList.add( new VertexMessageSteps(_vertexId,_message,0) );
 //								}//subgraph checking
 							}
-//							LOG.info("Index Querying Processing Done");
+							LOG.info("Index Querying Processing Done");
 						}
 						
 					}catch(Exception e){e.printStackTrace();}
@@ -666,6 +660,7 @@ implements ISubgraphWrapup{
 			// CHECK MSSG-PROCESS FORWARD-PROCESS BACKWARD
 			if(getSuperstep()>=1) {
 			
+				LOG.info("Started Query Traversal");
 				// CHECK INCOMING MESSAGE, ADD VERTEX TO APPRT LIST
 				// this is for the partially executed paths, which have been 
 				// forwarded from a different machine
@@ -706,30 +701,6 @@ implements ISubgraphWrapup{
 				/* if last step,end that iteration*/
 				//System.out.println("Reached:" + vertexMessageStep.startVertexId + " Path Size:" + vertexMessageStep.stepsTraversed + "/" + (path.size()-1));
 				if ( vertexMessageStep.stepsTraversed == getSubgraph().getSubgraphValue().path.size()-1 ){
-					// TODO :gather instead of output 
-					//output(partition.getId(), subgraph.getId(), vertexMessageStep.message);
-					// send this as a reduceMessage
-					//if (vertexMessageStep.previousSubgraphId == subgraph.getId()) {
-					//	if ( !resultsMap.containsKey(vertexMessageStep.startVertexId) )
-					//		resultsMap.put(vertexMessageStep.startVertexId, new ResultSet());
-					//	resultsMap.get(vertexMessageStep.startVertexId).forwardResultSet.add(vertexMessageStep.message);
-					//	
-					//}	
-//					else {
-//						forwardOutputToSubgraph(1,vertexMessageStep);
-//						output(partition.getId(), subgraph.getId(), "output();for();"+vertexMessageStep.message);
-//					}
-					
-//					if (!recursivePaths.containsKey(vertexMessageStep.vertexId))
-//					{
-//						ArrayList<RecursivePathMaintained> tempList = new ArrayList<RecursivePathMaintained>();
-//						tempList.add(new RecursivePathMaintained(vertexMessageStep.startVertexId, vertexMessageStep.message,0));
-//						recursivePaths.put( vertexMessageStep.vertexId, tempList);
-//					}
-//					else{
-//						recursivePaths.get(vertexMessageStep.vertexId).add(new RecursivePathMaintained(vertexMessageStep.startVertexId, vertexMessageStep.message,0));
-//					}
-//					System.out.println("Querying Output Path:" + vertexMessageStep.queryId+","+vertexMessageStep.startStep+","+true+","+vertexMessageStep.startVertexId );
 					if(getSubgraph().getSubgraphValue().outputPathMaintainance.containsKey(new OutputPathKey(vertexMessageStep.queryId,vertexMessageStep.startStep,true,vertexMessageStep.startVertexId))){
 						forwardOutputToSubgraph(1,vertexMessageStep);
 					}
@@ -823,7 +794,7 @@ implements ISubgraphWrapup{
 				
 			}
 			
-
+			
 			// TODO: send the messages in Remote vertex list
 			for(VertexMessageSteps stuff: getSubgraph().getSubgraphValue().forwardRemoteVertexList){
 				// send message to all the remote vertices
@@ -877,6 +848,7 @@ implements ISubgraphWrapup{
 		}
 		}
 		
+		LOG.info("Ending Query Traversal");
 		
 		if(getSuperstep()>=3)
 			voteToHalt();
