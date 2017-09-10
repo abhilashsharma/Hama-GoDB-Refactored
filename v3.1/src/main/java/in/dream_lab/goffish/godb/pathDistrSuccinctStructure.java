@@ -593,7 +593,7 @@ implements ISubgraphWrapup{
 						synchronized(queryLock){
 							if(!queryMade){
 								queryMade=true;
-								LOG.info("Querying Index");
+								LOG.info("Querying Index SG:"+ sg.getSubgraphId());
 								hitList=sg.getVertexByProp(currentProperty, (String)currentValue, '@');
 								LOG.info("Querying Done");
 							}

@@ -17,8 +17,11 @@ public class SuccinctSubgraph<S extends Writable, V extends Writable, E extends 
     public Map<Long, Long> remotevertexToSubgraph;
     public K subgraphId;
     S _value;
+    String vertexPath,edgePath;
     public SuccinctSubgraph(K subgraphId, String vPath,String ePath)
     {
+    	vertexPath=ePath;
+    	edgePath=ePath;
     	succinctIndexedVertexFileBuffer = new SuccinctIndexedFileBuffer(vPath, StorageMode.MEMORY_ONLY);
         succinctIndexedEdgeFileBuffer = new SuccinctIndexedFileBuffer(ePath, StorageMode.MEMORY_ONLY);
         this.subgraphId = subgraphId;
@@ -93,6 +96,8 @@ public class SuccinctSubgraph<S extends Writable, V extends Writable, E extends 
   
     public List<Long> getVertexByProp(String name, String value, char delim)
     {
+    	
+    	Log.info("Querying File:" + vertexPath);
     	List<Long> vid = new ArrayList<>();
     	int offset;
     	String record;
