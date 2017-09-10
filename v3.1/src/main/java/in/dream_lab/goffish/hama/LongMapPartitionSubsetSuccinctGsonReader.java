@@ -288,6 +288,7 @@ public class LongMapPartitionSubsetSuccinctGsonReader<S extends Writable, V exte
 //        System.out.println("Setting subgraph id for remote vertex");
         sink.setSubgraphID(remoteSubgraphID);
         remoteVertexToSubgraphMap.put(sink.vertexID.get(), remoteSubgraphID.get());
+        LOG.info("READERMAPSIZE:"+ remoteVertexToSubgraphMap.size());
       }
     }
     
