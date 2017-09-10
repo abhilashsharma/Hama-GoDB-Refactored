@@ -3,6 +3,10 @@ package in.dream_lab.goffish.hama.succinctstructure;
 import edu.berkeley.cs.succinct.buffers.SuccinctIndexedFileBuffer;
 import in.dream_lab.goffish.api.IEdge;
 import in.dream_lab.goffish.api.IVertex;
+import in.dream_lab.goffish.godb.pathDistrSuccinctStructure;
+
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.apache.hadoop.io.BytesWritable;
 import org.apache.hadoop.io.LongWritable;
 import org.apache.hadoop.io.Writable;
@@ -14,7 +18,8 @@ import java.util.List;
  * Created by sandy on 9/9/17.
  */
 public class SuccinctVertex<V extends Writable, E extends Writable, I extends Writable, J extends Writable> implements IVertex<V, E, I, J> {
-    private I vid;
+	public static final Log LOG = LogFactory.getLog(SuccinctVertex.class);
+	private I vid;
     private SuccinctIndexedFileBuffer vbuffer, ebuffer;
     private char delim;
     public SuccinctVertex(I vid, SuccinctIndexedFileBuffer vbuffer, SuccinctIndexedFileBuffer ebuffer, char delim)
@@ -36,11 +41,13 @@ public class SuccinctVertex<V extends Writable, E extends Writable, I extends Wr
         List<IEdge<E, I, J>> localsinks = new ArrayList<>();
         Long searchQuery=((LongWritable)vid).get();
         Integer[] recordID = ebuffer.recordSearchIds(searchQuery.toString().concat("@").getBytes());
+        LOG.info("RecordIDLength:"+ recordID.length);
         for (Integer rid : recordID)
         {
             offset = ebuffer.getRecordOffset(rid);
             record = ebuffer.extractUntil(offset, delim);
             tokens=record.split("\\W");
+            LOG.info("tokenLength:"+ tokens.length);
             // TODO: Implement Better Solution for below FOR loop @Swapnil
             for(int i=3; i < 3 + Integer.parseInt(tokens[2]); i++) {
                 localsinks.add(new SuccinctEdge<E, I, J>((I)new LongWritable(Long.parseLong(tokens[i]))));
