@@ -10,6 +10,7 @@ import org.apache.commons.logging.LogFactory;
 import org.apache.hadoop.io.BytesWritable;
 import org.apache.hadoop.io.LongWritable;
 import org.apache.hadoop.io.Writable;
+import org.apache.hama.commons.math.Tuple;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -18,7 +19,7 @@ import java.util.List;
  * Created by sandy on 9/9/17.
  */
 public class SuccinctVertex<V extends Writable, E extends Writable, I extends Writable, J extends Writable> implements IVertex<V, E, I, J> {
-	public static final Log LOG = LogFactory.getLog(SuccinctVertex.class);
+//	public static final Log LOG = LogFactory.getLog(SuccinctVertex.class);
 	private I vid;
     private SuccinctIndexedFileBuffer vbuffer, ebuffer;
     private char delim;
@@ -33,6 +34,35 @@ public class SuccinctVertex<V extends Writable, E extends Writable, I extends Wr
     {
         return vid;
     }
+    /**
+     * returns both LocalSinkList and RemoteSinkList
+     * @return
+     */
+    public Tuple<List<Long>, List<Long>> getEdges()
+    {
+    	int offset;
+        String[] tokens;
+        String record;
+        List<Long> localSinks = new ArrayList<>();
+        List<Long> remoteSinks = new ArrayList<>();
+        Long searchQuery=((LongWritable)vid).get();
+        Integer[] recordID = ebuffer.recordSearchIds(searchQuery.toString().concat("@").getBytes());
+        for (Integer rid : recordID)
+        {
+            offset = ebuffer.getRecordOffset(rid);
+            record = ebuffer.extractUntil(offset, delim);
+            tokens=record.split("\\W");
+            for(int i=3; i < 3 + Integer.parseInt(tokens[2]); i++) 
+                localSinks.add(Long.parseLong(tokens[i]));
+            for(int i=3 + Integer.parseInt(tokens[2]); i < tokens.length; i++) 
+                remoteSinks.add(Long.parseLong(tokens[i]));
+        }
+        return new Tuple<>(localSinks, remoteSinks);
+    }
+    
+    /**
+     * not being used now obsolete
+     */
     public Iterable<IEdge<E, I, J>> getOutEdges()
     {
         int offset;
@@ -41,13 +71,13 @@ public class SuccinctVertex<V extends Writable, E extends Writable, I extends Wr
         List<IEdge<E, I, J>> localsinks = new ArrayList<>();
         Long searchQuery=((LongWritable)vid).get();
         Integer[] recordID = ebuffer.recordSearchIds(searchQuery.toString().concat("@").getBytes());
-        LOG.info("RecordIDLength:"+ recordID.length);
+//        LOG.info("RecordIDLength:"+ recordID.length);
         for (Integer rid : recordID)
         {
             offset = ebuffer.getRecordOffset(rid);
             record = ebuffer.extractUntil(offset, delim);
             tokens=record.split("\\W");
-            LOG.info("tokenLength:"+ tokens.length);
+//            LOG.info("tokenLength:"+ tokens.length);
             // TODO: Implement Better Solution for below FOR loop @Swapnil
             for(int i=3; i < 3 + Integer.parseInt(tokens[2]); i++) {
                 localsinks.add(new SuccinctEdge<E, I, J>((I)new LongWritable(Long.parseLong(tokens[i]))));
@@ -55,6 +85,11 @@ public class SuccinctVertex<V extends Writable, E extends Writable, I extends Wr
         }
         return localsinks;
     }
+    
+    /**
+     * obsolete
+     * @return
+     */
     public Iterable<IEdge<E, I, J>> getRemoteOutEdges()
     {
         int offset;

@@ -32,6 +32,7 @@ import org.apache.commons.logging.LogFactory;
 import org.apache.hadoop.io.LongWritable;
 import org.apache.hadoop.io.MapWritable;
 import org.apache.hadoop.io.Text;
+import org.apache.hama.commons.math.Tuple;
 import org.apache.lucene.analysis.Analyzer;
 
 import org.apache.lucene.analysis.standard.StandardAnalyzer;
@@ -411,7 +412,7 @@ implements ISubgraphWrapup{
 		Integer step=Integer.parseInt(split[6]);
 		//Recently added line...Reminder
 		step=direction?step-1:step+1;
-		 LOG.info("Joining:"+ queryId+","+step+","+direction+","+endVertexId+"," + getSubgraph().getSubgraphId().get());
+//		 LOG.info("Joining:"+ queryId+","+step+","+direction+","+endVertexId+"," + getSubgraph().getSubgraphId().get());
 		for (RecursivePathMaintained stuff : getSubgraph().getSubgraphValue().recursivePaths.get(new RecursivePathKey(queryId, step, direction,endVertexId))){
 			StringBuilder result = new StringBuilder(split[4]);//partial result
 			//*****Adding partial Result to partialResultCache********
@@ -593,10 +594,10 @@ implements ISubgraphWrapup{
 						{
 							
 								queryMade=true;
-								LOG.info("Querying Index SG:"+ sg.getSubgraphId());
+//								LOG.info("Querying Index SG:"+ sg.getSubgraphId());
 								hitList=sg.getVertexByProp(currentProperty, (String)currentValue, '@');
-								LOG.info("*******Start Vertices********:"+hitList.size());
-								LOG.info("Querying Done");
+//								LOG.info("*******Start Vertices********:"+hitList.size());
+//								LOG.info("Querying Done");
 							
 						}
 						
@@ -605,7 +606,7 @@ implements ISubgraphWrapup{
 					
 						if(hitList.size()>0){
 							for (int i=0;i< hitList.size();i=i+2){
-								LOG.info("Index Querying Processing");
+//								LOG.info("Index Querying Processing");
 								long vid= hitList.get(i+1);
 								if ( getSubgraph().getSubgraphId().get() ==hitList.get(i)){
 //									System.out.println("GOT:"+ vid);
@@ -625,7 +626,7 @@ implements ISubgraphWrapup{
 //									getSubgraph().getSubgraphValue().forwardLocalVertexList.add( new VertexMessageSteps(_vertexId,_message,0) );
 								}
 							}
-							LOG.info("Index Querying Processing Done");
+//							LOG.info("Index Querying Processing Done");
 						}
 						
 					}catch(Exception e){e.printStackTrace();}
@@ -757,10 +758,13 @@ implements ISubgraphWrapup{
 						boolean flag=false;
 						boolean addFlag=false;
 						if ( nextStep.property == null && nextStep.value == null ) {
-							for( IEdge<MapValue, LongWritable, LongWritable> edge: currentVertex.getOutEdges()) {
+							Tuple<List<Long>,List<Long>> edges= currentVertex.getEdges();
+							
+							//iterating over local sinks
+							for( long edge: edges.getFirst()) {
 								//count++;
 //								System.out.println("Traversing edges");
-								Long otherVertex = edge.getSinkVertexId().get();
+								Long otherVertex = edge;
 								StringBuilder _modifiedMessage = new StringBuilder("");
 								_modifiedMessage.append(vertexMessageStep.message).append("-->E:").append("-->V:").append(otherVertex);
 							
@@ -771,11 +775,11 @@ implements ISubgraphWrapup{
 							
 							
 							
-							
-							for( IEdge<MapValue, LongWritable, LongWritable> edge: currentVertex.getRemoteOutEdges()) {
+							//iterating over remote sinks
+							for( long edge: edges.getSecond()) {
 								
 								
-								Long otherVertex = edge.getSinkVertexId().get();
+								Long otherVertex = edge;
 								StringBuilder _modifiedMessage = new StringBuilder("");
 								_modifiedMessage.append(vertexMessageStep.message).append("-->E:").append("-->V:").append(otherVertex);
 							
@@ -789,7 +793,7 @@ implements ISubgraphWrapup{
 									getSubgraph().getSubgraphValue().forwardRemoteVertexList.add(new VertexMessageSteps(vertexMessageStep.queryId,otherVertex,_modifiedMessage.toString(),vertexMessageStep.stepsTraversed+1,vertexMessageStep.vertexId,vertexMessageStep.stepsTraversed+1, vertexMessageStep.previousSubgraphId,vertexMessageStep.previousPartitionId));
 								}
 								
-							}
+							}//remoteoutedges traversal end
 							
 							
 						}
@@ -827,8 +831,6 @@ implements ISubgraphWrapup{
 //				IRemoteVertex<MapValue,MapValue,LongWritable,LongWritable,LongWritable> remoteVertex = (IRemoteVertex<MapValue, MapValue, LongWritable, LongWritable, LongWritable>)getSubgraph().getVertexById(new LongWritable(stuff.vertexId));
 				StringBuilder remoteMessage = new StringBuilder("for();");
 				//remoteMessage.append(String.valueOf(stuff.vertexId.longValue())).append(";").append(stuff.message).append(";").append(stuff.stepsTraversed) ;
-				LOG.info("SinkVertex:"+ stuff.vertexId +" ,MAPSIZE:"+ sg.getMap().size());
-				
 				
 				remoteMessage.append(String.valueOf(stuff.startVertexId)).append(";").append(String.valueOf(stuff.previousSubgraphId)).append(";").append(stuff.previousPartitionId).append(";").append(stuff.vertexId).append(";").append(stuff.stepsTraversed).append(";").append(sg.getMap().get(stuff.vertexId).toString());
 					
@@ -895,7 +897,7 @@ implements ISubgraphWrapup{
 		if(_direction==true){
 			dir=1;
 		}
-		LOG.info("Storing Recursive:" + vertexMessageStep.queryId+","+vertexMessageStep.stepsTraversed+","+_direction+","+vertexMessageStep.vertexId);
+//		LOG.info("Storing Recursive:" + vertexMessageStep.queryId+","+vertexMessageStep.stepsTraversed+","+_direction+","+vertexMessageStep.vertexId);
 		if(!getSubgraph().getSubgraphValue().recursivePaths.containsKey(new RecursivePathKey(vertexMessageStep.queryId,vertexMessageStep.stepsTraversed,_direction,vertexMessageStep.vertexId))){
 			
 			ArrayList<RecursivePathMaintained> tempList = new ArrayList<RecursivePathMaintained>();
