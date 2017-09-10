@@ -96,7 +96,8 @@ public class SuccinctVertex<V extends Writable, E extends Writable, I extends Wr
         int offset;
         String[] tokens;
         String record;
-        Integer[] recordID=vbuffer.recordSearchIds(((BytesWritable)vid).getBytes());
+        Long searchQuery=((LongWritable)vid).get();
+        Integer[] recordID=vbuffer.recordSearchIds(searchQuery.toString().concat("@").getBytes());
         offset = vbuffer.getRecordOffset(recordID[0]);
         record = vbuffer.extractUntil(offset, '|');
         tokens=record.split("\\W");
