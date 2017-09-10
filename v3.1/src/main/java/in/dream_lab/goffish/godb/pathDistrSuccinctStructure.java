@@ -827,6 +827,12 @@ implements ISubgraphWrapup{
 //				IRemoteVertex<MapValue,MapValue,LongWritable,LongWritable,LongWritable> remoteVertex = (IRemoteVertex<MapValue, MapValue, LongWritable, LongWritable, LongWritable>)getSubgraph().getVertexById(new LongWritable(stuff.vertexId));
 				StringBuilder remoteMessage = new StringBuilder("for();");
 				//remoteMessage.append(String.valueOf(stuff.vertexId.longValue())).append(";").append(stuff.message).append(";").append(stuff.stepsTraversed) ;
+				LOG.info("SinkVertex:"+ stuff.vertexId);
+				for (Object entry: sg.getMap().entrySet()) {
+				    Long key = ((Map.Entry<Long, Long>)entry).getKey();
+				    Long value = ((Map.Entry<Long, Long>)entry).getValue();
+				   LOG.info(key +","+ value);
+				}
 				
 				remoteMessage.append(String.valueOf(stuff.startVertexId)).append(";").append(String.valueOf(stuff.previousSubgraphId)).append(";").append(stuff.previousPartitionId).append(";").append(stuff.vertexId).append(";").append(stuff.stepsTraversed).append(";").append(sg.getMap().get(stuff.vertexId).toString());
 					
