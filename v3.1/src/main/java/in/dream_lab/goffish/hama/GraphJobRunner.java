@@ -146,6 +146,7 @@ public final class GraphJobRunner<S extends Writable, V extends Writable, E exte
       BSPPeer<Writable, Writable, Writable, Writable, Message<K, M>> peer)
       throws IOException, SyncException, InterruptedException {
     LOG.info("Graph Loaded");
+    LOG.debug("Partition:" + peer.getPeerIndex() + " Free Memory: " + Runtime.getRuntime().freeMemory() + " Total Memory:" + Runtime.getRuntime().totalMemory());
     peer.sync();
     String initialValue = conf.get(GraphJob.INITIAL_VALUE);
     String initialValueArr[] = initialValue.split(";");

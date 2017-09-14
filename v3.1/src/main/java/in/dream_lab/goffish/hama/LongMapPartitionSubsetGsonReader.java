@@ -103,8 +103,9 @@ public class LongMapPartitionSubsetGsonReader<S extends Writable, V extends Writ
   @Override
   public List<ISubgraph<S, V, E, LongWritable, LongWritable, LongWritable>> getSubgraphs()
       throws IOException, SyncException, InterruptedException {
-          LOG.info("Creating vertices");
+//          LOG.info("Creating vertices");
 
+          LOG.debug("Creating vertices" + " Free Memory: " + Runtime.getRuntime().freeMemory() + " Total Memory:" + Runtime.getRuntime().totalMemory());
     vertexMap = new HashMap<LongWritable, IVertex<V, E, LongWritable, LongWritable>>();
 
     // List of edges.Used to create RemoteVertices
