@@ -1009,7 +1009,7 @@ implements ISubgraphWrapup{
 			//System.out.println("FORWARD LIST:"+forwardLocalVertexList.isEmpty() +" REV LIST:"+revLocalVertexList.isEmpty() + "SGID:" + subgraph.getId() + " PID:" + partition.getId());
 			while(!getSubgraph().getSubgraphValue().forwardLocalVertexList.isEmpty()) {
 				VertexMessageSteps vertexMessageStep = getSubgraph().getSubgraphValue().forwardLocalVertexList.poll();
-				LOG.info("Traversal Memory" + " Free Memory: " + Runtime.getRuntime().freeMemory() + " Total Memory:" + Runtime.getRuntime().totalMemory());
+				LOG.info("Traversal Memory" + " Free Memory: " + Runtime.getRuntime().freeMemory() + " Total Memory:" + Runtime.getRuntime().totalMemory() + " TraversalSteps:" + getSubgraph().getSubgraphValue().forwardLocalVertexList.size());
 				//output(partition.getId(), subgraph.getId(), "FORWARD-LIST");
 				/* if last step,end that iteration*/
 				//System.out.println("Reached:" + vertexMessageStep.startVertexId + " Path Size:" + vertexMessageStep.stepsTraversed + "/" + (path.size()-1));
