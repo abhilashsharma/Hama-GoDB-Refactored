@@ -972,7 +972,7 @@ implements ISubgraphWrapup{
 			
 			// CHECK MSSG-PROCESS FORWARD-PROCESS BACKWARD
 			if(getSuperstep()>=3) {
-			
+				LOG.info("Initial memory" + " Free Memory: " + Runtime.getRuntime().freeMemory() + " Total Memory:" + Runtime.getRuntime().totalMemory());
 				// CHECK INCOMING MESSAGE, ADD VERTEX TO APPRT LIST
 				// this is for the partially executed paths, which have been 
 				// forwarded from a different machine
@@ -1009,6 +1009,7 @@ implements ISubgraphWrapup{
 			//System.out.println("FORWARD LIST:"+forwardLocalVertexList.isEmpty() +" REV LIST:"+revLocalVertexList.isEmpty() + "SGID:" + subgraph.getId() + " PID:" + partition.getId());
 			while(!getSubgraph().getSubgraphValue().forwardLocalVertexList.isEmpty()) {
 				VertexMessageSteps vertexMessageStep = getSubgraph().getSubgraphValue().forwardLocalVertexList.poll();
+				LOG.info("Traversal Memory" + " Free Memory: " + Runtime.getRuntime().freeMemory() + " Total Memory:" + Runtime.getRuntime().totalMemory());
 				//output(partition.getId(), subgraph.getId(), "FORWARD-LIST");
 				/* if last step,end that iteration*/
 				//System.out.println("Reached:" + vertexMessageStep.startVertexId + " Path Size:" + vertexMessageStep.stepsTraversed + "/" + (path.size()-1));
