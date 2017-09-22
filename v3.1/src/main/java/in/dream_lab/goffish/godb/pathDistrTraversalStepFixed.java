@@ -61,20 +61,20 @@ import in.dream_lab.goffish.api.ISubgraphWrapup;
 import in.dream_lab.goffish.api.IVertex;
 import in.dream_lab.goffish.godb.Step.Direction;
 import in.dream_lab.goffish.godb.Step.Type;
-import in.dream_lab.goffish.godb.pathDistrFixed.VertexMessageSteps;
+import in.dream_lab.goffish.godb.pathDistrTraversalStepFixed.VertexMessageSteps;
 
 
 
-public class pathDistrFixed extends
-AbstractSubgraphComputation<pathDistrFixedSubgraphState, MapValue, MapValue, Text, LongWritable, LongWritable, LongWritable> 
+public class pathDistrTraversalStepFixed extends
+AbstractSubgraphComputation<pathDistrTraversalStepFixedSubgraphState, MapValue, MapValue, Text, LongWritable, LongWritable, LongWritable> 
 implements ISubgraphWrapup{
 	
-	public pathDistrFixed(String initMsg) {
+	public pathDistrTraversalStepFixed(String initMsg) {
 		// TODO Auto-generated constructor stub
 		Arguments=initMsg;
 	}
 	
-	public static final Log LOG = LogFactory.getLog(pathDistrFixed.class);
+	public static final Log LOG = LogFactory.getLog(pathDistrTraversalStepFixed.class);
 	
 	int fixedPos;
 	String Arguments=null;
@@ -1008,10 +1008,14 @@ implements ISubgraphWrapup{
 			//output(partition.getId(), subgraph.getId(), getSuperstep()+":"+forwardLocalVertexList.size()+":"+revLocalVertexList.size());
 			// PROCESS FORWARD LIST
 			//System.out.println("FORWARD LIST:"+forwardLocalVertexList.isEmpty() +" REV LIST:"+revLocalVertexList.isEmpty() + "SGID:" + subgraph.getId() + " PID:" + partition.getId());
+				LOG.info("Traversal Memory" + " Free Memory: " + Runtime.getRuntime().freeMemory() + " Total Memory:" + Runtime.getRuntime().totalMemory() + " TraversalSteps:" + getSubgraph().getSubgraphValue().forwardLocalVertexList.size());
 				LinkedList<VertexMessageSteps> nextStepForwardLocalVertexList = new LinkedList<VertexMessageSteps>();
 			while(!getSubgraph().getSubgraphValue().forwardLocalVertexList.isEmpty()) {
 				VertexMessageSteps vertexMessageStep = getSubgraph().getSubgraphValue().forwardLocalVertexList.poll();
+				if(getSubgraph().getSubgraphValue().forwardLocalVertexList.isEmpty()) {
+					getSubgraph().getSubgraphValue().forwardLocalVertexList=nextStepForwardLocalVertexList;
 				LOG.info("Traversal Memory" + " Free Memory: " + Runtime.getRuntime().freeMemory() + " Total Memory:" + Runtime.getRuntime().totalMemory() + " TraversalSteps:" + getSubgraph().getSubgraphValue().forwardLocalVertexList.size());
+				}
 				//output(partition.getId(), subgraph.getId(), "FORWARD-LIST");
 				/* if last step,end that iteration*/
 				//System.out.println("Reached:" + vertexMessageStep.startVertexId + " Path Size:" + vertexMessageStep.stepsTraversed + "/" + (path.size()-1));
@@ -1076,7 +1080,7 @@ implements ISubgraphWrapup{
 								_modifiedMessage.append(vertexMessageStep.message).append("-->E:").append(String.valueOf(edge.getEdgeId().get())).append("-->V:").append(String.valueOf(otherVertex.getVertexId().get()));
 								if ( !otherVertex.isRemote() ) {
 //									System.out.println("Path Till Now:" + _modifiedMessage.toString());
-									getSubgraph().getSubgraphValue().forwardLocalVertexList.add(new VertexMessageSteps(vertexMessageStep.queryId,otherVertex.getVertexId().get(),_modifiedMessage.toString(),vertexMessageStep.stepsTraversed+1, vertexMessageStep.startVertexId,vertexMessageStep.startStep, vertexMessageStep.previousSubgraphId, vertexMessageStep.previousPartitionId));
+									nextStepForwardLocalVertexList.add(new VertexMessageSteps(vertexMessageStep.queryId,otherVertex.getVertexId().get(),_modifiedMessage.toString(),vertexMessageStep.stepsTraversed+1, vertexMessageStep.startVertexId,vertexMessageStep.startStep, vertexMessageStep.previousSubgraphId, vertexMessageStep.previousPartitionId));
 								}
 								else {
 									
@@ -1107,7 +1111,7 @@ implements ISubgraphWrapup{
 									_modifiedMessage.append(vertexMessageStep.message).append("-->E:").append(String.valueOf(edge.getEdgeId().get())).append("-->V:").append(String.valueOf(otherVertex.getVertexId().get()));
 									if ( !otherVertex.isRemote() ) {
 										/* TODO :add the correct value to list*/
-										getSubgraph().getSubgraphValue().forwardLocalVertexList.add(new VertexMessageSteps(vertexMessageStep.queryId,otherVertex.getVertexId().get(),_modifiedMessage.toString(),vertexMessageStep.stepsTraversed+1, vertexMessageStep.startVertexId,vertexMessageStep.startStep, vertexMessageStep.previousSubgraphId, vertexMessageStep.previousPartitionId));
+										nextStepForwardLocalVertexList.add(new VertexMessageSteps(vertexMessageStep.queryId,otherVertex.getVertexId().get(),_modifiedMessage.toString(),vertexMessageStep.stepsTraversed+1, vertexMessageStep.startVertexId,vertexMessageStep.startStep, vertexMessageStep.previousSubgraphId, vertexMessageStep.previousPartitionId));
 									}
 									else {
 										/* TODO :add vertex to forwardRemoteVertexList*/
@@ -1140,7 +1144,7 @@ implements ISubgraphWrapup{
 								_modifiedMessage.append(vertexMessageStep.message).append("<--E:").append(String.valueOf(edgeMap.getValue().EdgeId)).append("<--V:").append(String.valueOf(otherVertexId));
 								if ( !edgeMap.getValue().isRemote ) {
 									/* TODO :add the correct value to list*/
-									getSubgraph().getSubgraphValue().forwardLocalVertexList.add(new VertexMessageSteps(vertexMessageStep.queryId,otherVertexId,_modifiedMessage.toString(),vertexMessageStep.stepsTraversed+1, vertexMessageStep.startVertexId,vertexMessageStep.startStep, vertexMessageStep.previousSubgraphId, vertexMessageStep.previousPartitionId));
+									nextStepForwardLocalVertexList.add(new VertexMessageSteps(vertexMessageStep.queryId,otherVertexId,_modifiedMessage.toString(),vertexMessageStep.stepsTraversed+1, vertexMessageStep.startVertexId,vertexMessageStep.startStep, vertexMessageStep.previousSubgraphId, vertexMessageStep.previousPartitionId));
 								}
 								else{
 								/* TODO :add vertex to forwardRemoteVertexList*/
@@ -1171,7 +1175,7 @@ implements ISubgraphWrapup{
 									_modifiedMessage.append(vertexMessageStep.message).append("<--E:").append(String.valueOf(edgeMap.getValue().EdgeId)).append("<--V:").append(String.valueOf(otherVertexId));
 									if ( !edgeMap.getValue().isRemote ) {
 										/* TODO :add the correct value to list*/
-										getSubgraph().getSubgraphValue().forwardLocalVertexList.add(new VertexMessageSteps(vertexMessageStep.queryId,otherVertexId,_modifiedMessage.toString(),vertexMessageStep.stepsTraversed+1, vertexMessageStep.startVertexId,vertexMessageStep.startStep, vertexMessageStep.previousSubgraphId, vertexMessageStep.previousPartitionId));
+										nextStepForwardLocalVertexList.add(new VertexMessageSteps(vertexMessageStep.queryId,otherVertexId,_modifiedMessage.toString(),vertexMessageStep.stepsTraversed+1, vertexMessageStep.startVertexId,vertexMessageStep.startStep, vertexMessageStep.previousSubgraphId, vertexMessageStep.previousPartitionId));
 									}
 									else{
 							
@@ -1199,7 +1203,7 @@ implements ISubgraphWrapup{
 					/* null predicate*/
 					if( nextStep.property == null && nextStep.value == null ) {
 						/* add appropriate value later*/
-						getSubgraph().getSubgraphValue().forwardLocalVertexList.add(new VertexMessageSteps(vertexMessageStep.queryId,vertexMessageStep.vertexId,vertexMessageStep.message,vertexMessageStep.stepsTraversed+1, vertexMessageStep.startVertexId,vertexMessageStep.startStep, vertexMessageStep.previousSubgraphId, vertexMessageStep.previousPartitionId));
+						nextStepForwardLocalVertexList.add(new VertexMessageSteps(vertexMessageStep.queryId,vertexMessageStep.vertexId,vertexMessageStep.message,vertexMessageStep.stepsTraversed+1, vertexMessageStep.startVertexId,vertexMessageStep.startStep, vertexMessageStep.previousSubgraphId, vertexMessageStep.previousPartitionId));
 						//forwardLocalVertexList.add(vertexMessageStep);
 					}
 					/* filtered vertex*/
@@ -1207,7 +1211,7 @@ implements ISubgraphWrapup{
 //						ISubgraphObjectProperties subgraphProperties = subgraphInstance.getPropertiesForVertex(currentVertex.getId());
 						if ( compareValuesUtil(currentVertex.getValue().get(nextStep.property).toString(), nextStep.value.toString()) ) {
 							/* add appropriate value later*/
-							getSubgraph().getSubgraphValue().forwardLocalVertexList.add(new VertexMessageSteps(vertexMessageStep.queryId,vertexMessageStep.vertexId,vertexMessageStep.message,vertexMessageStep.stepsTraversed+1, vertexMessageStep.startVertexId,vertexMessageStep.startStep, vertexMessageStep.previousSubgraphId, vertexMessageStep.previousPartitionId));
+							nextStepForwardLocalVertexList.add(new VertexMessageSteps(vertexMessageStep.queryId,vertexMessageStep.vertexId,vertexMessageStep.message,vertexMessageStep.stepsTraversed+1, vertexMessageStep.startVertexId,vertexMessageStep.startStep, vertexMessageStep.previousSubgraphId, vertexMessageStep.previousPartitionId));
 							//forwardLocalVertexList.add(vertexMessageStep);
 						}
 					}

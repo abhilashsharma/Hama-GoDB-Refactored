@@ -16,12 +16,12 @@ import in.dream_lab.goffish.hama.GraphJob;
 import in.dream_lab.goffish.hama.LongMapPartitionSubsetGsonReader;
 import in.dream_lab.goffish.hama.NonSplitTextInputFormat;
 
-public class pathDistrFixedJob {
+public class pathDistrTraversalStepFixedJob {
 
 	 public static void main(String args[]) throws IOException,InterruptedException, ClassNotFoundException, ParseException
 	  {
 		  HamaConfiguration conf = new HamaConfiguration();
-		  GraphJob job = new GraphJob(conf, pathDistrFixed.class);
+		  GraphJob job = new GraphJob(conf, pathDistrTraversalStepFixed.class);
 		  job.setJobName("Path Fixed");
 		  job.setInputFormat(TextInputFormat.class);
 		  job.setInputKeyClass(LongWritable.class);
