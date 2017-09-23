@@ -360,8 +360,6 @@ implements ISubgraphWrapup{
                      indexReader  = DirectoryReader.open(new RAMDirectory(vertexDirectory, IOContext.READ));//passing RAM directory to load indexes in memory
                      indexSearcher = new IndexSearcher(indexReader);
              }
-	  
-	  
 	}
 	
 
