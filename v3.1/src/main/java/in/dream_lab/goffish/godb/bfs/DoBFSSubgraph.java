@@ -122,9 +122,13 @@ public class DoBFSSubgraph extends
 		List<Long> rootVertices = state.rootQuerier.queryRootVertices(getSubgraph());
 		if(rootVertices==null){
 		  return new ArrayDeque<>();
+		}else {
+			LOG.info("Querying done:" + rootVertices.size() + " SGID:" + subgraph.getSubgraphId());
 		}
+		
+		
 		int rootCount = rootVertices.size();
-
+		
 		// since every vertex will be visited, preemptively create a map for all
 		// vertices with bitset size set to the number of local root vertices.
 		// Note that as remote root vertices arrive, this BitSet capacity will have
