@@ -162,7 +162,7 @@ public class DoBFSSubgraphSuccinct extends
 			// add root vertex to traversal queue
 			if (state.query.getDepth() > 0) traversalQueue.add(new TraversalStep(sgid, root, root, 0));
 			// updated the visited state for the root vertex in its own visited bitset
-			state.visited.get(root).set(rootBitIndex);
+//			state.visited.get(root).set(rootBitIndex);
 		}
 
 		return traversalQueue;
@@ -370,16 +370,16 @@ public class DoBFSSubgraphSuccinct extends
 				long otherVID = edge;
 
 				// Is other vertex visited?
-				BitSet otherVisited = state.visited.get(otherVID);
-				if(otherVisited==null){
-                                  otherVisited = new BitSet();
-                                  state.visited.put(otherVID, otherVisited);
-                                }
-				if (otherVisited.get(rootBit)) // already visited for this root
-					continue;
-				else
-				  // mark other vertex as visited for this specific root's traversal
-				  otherVisited.set(rootBit);
+//				BitSet otherVisited = state.visited.get(otherVID);
+//				if(otherVisited==null){
+//                                  otherVisited = new BitSet();
+//                                  state.visited.put(otherVID, otherVisited);
+//                                }
+//				if (otherVisited.get(rootBit)) // already visited for this root
+//					continue;
+//				else
+//				  // mark other vertex as visited for this specific root's traversal
+//				  otherVisited.set(rootBit);
 
 				// Not visited...so visit
 				// Add edge to results, add sink to queue if less than depth
