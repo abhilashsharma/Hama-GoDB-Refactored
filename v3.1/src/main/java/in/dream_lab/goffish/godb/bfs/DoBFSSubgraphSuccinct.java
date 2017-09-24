@@ -138,9 +138,9 @@ public class DoBFSSubgraphSuccinct extends
 		// to increase to be equal to the total number of root vertices across all
 		// subgraphs.
 		state.visited = new HashMap<>();
-		for (IVertex<MapValue, MapValue, LongWritable, LongWritable> vertex : subgraph.getVertices()) {
-			state.visited.put(vertex.getVertexId().get(), new BitSet(rootCount));
-		}
+//		for (IVertex<MapValue, MapValue, LongWritable, LongWritable> vertex : subgraph.getVertices()) {
+//			state.visited.put(vertex.getVertexId().get(), new BitSet(rootCount));
+//		}
 
 		// visit each root vertex, set their bit index and value, and init their
 		// results
