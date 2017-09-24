@@ -12,6 +12,7 @@ import java.util.Queue;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.hadoop.io.LongWritable;
+import org.apache.hama.commons.math.Tuple;
 
 import in.dream_lab.goffish.api.AbstractSubgraphComputation;
 import in.dream_lab.goffish.api.IEdge;
@@ -27,6 +28,8 @@ import in.dream_lab.goffish.godb.bfs.BFSMessage.TraversalReader;
 import in.dream_lab.goffish.godb.bfs.BFSMessage.TraversalWriter;
 import in.dream_lab.goffish.godb.util.DataReader;
 import in.dream_lab.goffish.godb.util.DataWriter;
+import in.dream_lab.goffish.hama.succinctstructure.SuccinctSubgraph;
+import in.dream_lab.goffish.hama.succinctstructure.SuccinctVertex;
 
 
 public class DoBFSSubgraphSuccinct extends
@@ -174,6 +177,7 @@ public class DoBFSSubgraphSuccinct extends
 	@Override
 	public void compute(Iterable<IMessage<LongWritable, BFSMessage>> messages) throws IOException {
 
+		SuccinctSubgraph sg=(SuccinctSubgraph)getSubgraph();
 		ISubgraph<BFSState, MapValue, MapValue, LongWritable, LongWritable, LongWritable> subgraph = getSubgraph();
 		long sgid = subgraph.getSubgraphId().get();
 		BFSState state = subgraph.getSubgraphValue();
@@ -350,18 +354,20 @@ public class DoBFSSubgraphSuccinct extends
 			}
 
 			// DO NEXT STEP OF LOCAL BFS FOR VERTEX
-			IVertex<MapValue, MapValue, LongWritable, LongWritable> currentVertex =
-			        subgraph.getVertexById(new LongWritable(step.targetVertex));
+//			IVertex<MapValue, MapValue, LongWritable, LongWritable> currentVertex =
+//			        subgraph.getVertexById(new LongWritable(step.targetVertex));
 
+			SuccinctVertex<MapValue,MapValue,LongWritable,LongWritable> currentVertex = new SuccinctVertex(new LongWritable(step.targetVertex),sg.getVertexBuffer(),sg.getEdgeBuffer(),'|');
 			// get the bit index for the current vertex's BFS root vertex
 			int rootBit = state.rootToBitIndex.get(step.rootVertex);
-
+			Tuple<List<Long>,List<Long>> edges= currentVertex.getEdges();
 			// iterate through adjacent edges
-			for (IEdge<MapValue, LongWritable, LongWritable> edge : currentVertex.getOutEdges()) {
+			for (long edge : edges.getFirst()) {
 
-				IVertex<MapValue, MapValue, LongWritable, LongWritable> otherVertex =
-				        getSubgraph().getVertexById(edge.getSinkVertexId());
-				long otherVID = otherVertex.getVertexId().get();
+//				IVertex<MapValue, MapValue, LongWritable, LongWritable> otherVertex =
+//				        getSubgraph().getVertexById(edge.getSinkVertexId());
+				
+				long otherVID = edge;
 
 				// Is other vertex visited?
 				BitSet otherVisited = state.visited.get(otherVID);
@@ -377,13 +383,12 @@ public class DoBFSSubgraphSuccinct extends
 
 				// Not visited...so visit
 				// Add edge to results, add sink to queue if less than depth
-				if (!otherVertex.isRemote()) { // other vertex is local
 
 					// Root vertex is local. Add edge (source,edge,target) to its results.
 					if (step.rootSubgraph == sgid) {
 						DataWriter resultsWriter = state.results.get(step.rootVertex);
 						resultsWriter.writeLong(step.targetVertex);
-						resultsWriter.writeLong(edge.getEdgeId().get());
+						resultsWriter.writeLong(0);
 						resultsWriter.writeLong(otherVID);
 					} else {
 						// Root vertex is remote. Add to result message for the remote root
@@ -397,7 +402,7 @@ public class DoBFSSubgraphSuccinct extends
 							remoteResultsMap.put(step.rootSubgraph, remoteResults);
 						}
 
-						remoteResults.addResult(step.rootVertex, step.targetVertex, edge.getEdgeId().get(), otherVID);
+						remoteResults.addResult(step.rootVertex, step.targetVertex, 0, otherVID);
 					}
 
 					// if depth has not been reached, add the vertex to the traversal list
@@ -407,7 +412,6 @@ public class DoBFSSubgraphSuccinct extends
 					  queue.add(new TraversalStep(step.rootSubgraph, step.rootVertex, otherVID, step.depth + 1));
 					// else, skip adding. This traversal path has terminated.
 
-				} //remote case removed is removed
 			}
 		} // done with one vertex traversal
 
