@@ -337,7 +337,7 @@ public class DoBFSSubgraph extends
 
 		// ==========================================
 		// DO LOCAL BFS TRAVERSALS
-		long startLocalBFSTimeMillis = System.currentTimeMillis();
+		long startLocalBFSTimeMillis = System.nanoTime();
 
 		TraversalStep step;
 		while ((step = queue.poll()) != null) {
@@ -411,8 +411,8 @@ public class DoBFSSubgraph extends
 			}
 		} // done with one vertex traversal
 
-		state.localBFSTimeMillis += (System.currentTimeMillis() - startLocalBFSTimeMillis);
-		LOG.info("Local BFS Timings SGID "+subgraph.getSubgraphId()+":" + state.localBFSTimeMillis);
+		state.localBFSTimeMillis += (System.nanoTime() - startLocalBFSTimeMillis);
+		LOG.info("Local BFS Timings SGID "+subgraph.getSubgraphId()+":" + (System.nanoTime() - startLocalBFSTimeMillis));
 
 		// ==========================================
 		// SEND RESULTS AND TRAVERSAL MESSAGES
