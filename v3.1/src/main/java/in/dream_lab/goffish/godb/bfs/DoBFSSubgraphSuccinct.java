@@ -278,29 +278,29 @@ public class DoBFSSubgraphSuccinct extends
 						                + stepResult + "; Current Subgraph ID:" + sgid);
 					}
 
-					// get the bit index for the current vertex's BFS root vertex
-					int rootBit;
-					if (state.rootToBitIndex.containsKey(stepResult.rootVertex))
-						rootBit = state.rootToBitIndex.get(stepResult.rootVertex);
-					else {
-						// this subgraph is seeing the remote root vertex's traversal for
-						// the first time
-						rootBit = ++state.lastAssignedBitmaskIndex;
-						state.rootToBitIndex.put(stepResult.rootVertex, rootBit);
-					}
+//					// get the bit index for the current vertex's BFS root vertex
+//					int rootBit;
+//					if (state.rootToBitIndex.containsKey(stepResult.rootVertex))
+//						rootBit = state.rootToBitIndex.get(stepResult.rootVertex);
+//					else {
+//						// this subgraph is seeing the remote root vertex's traversal for
+//						// the first time
+//						rootBit = ++state.lastAssignedBitmaskIndex;
+//						state.rootToBitIndex.put(stepResult.rootVertex, rootBit);
+//					}
 
-					// Is other vertex visited?
-					BitSet otherVisited = state.visited.get(otherVID);
-					if(otherVisited==null){
-					  otherVisited = new BitSet();
-					  state.visited.put(otherVID, otherVisited);
-					}
-					
-					if (otherVisited.get(rootBit)) // already visited for this root
-						continue;
-					else
-					  // mark other vertex as visited for this specific root's traversal
-					  otherVisited.set(rootBit);
+//					// Is other vertex visited?
+//					BitSet otherVisited = state.visited.get(otherVID);
+//					if(otherVisited==null){
+//					  otherVisited = new BitSet();
+//					  state.visited.put(otherVID, otherVisited);
+//					}
+//					
+//					if (otherVisited.get(rootBit)) // already visited for this root
+//						continue;
+//					else
+//					  // mark other vertex as visited for this specific root's traversal
+//					  otherVisited.set(rootBit);
 
 					// Add <source,edge,sink> to results.
 					// NOTE: Here, the target/other vertex is the one being visited, and

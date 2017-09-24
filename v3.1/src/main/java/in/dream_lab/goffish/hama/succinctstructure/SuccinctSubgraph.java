@@ -13,7 +13,7 @@ import org.apache.hadoop.io.Writable;
 import org.mortbay.log.Log;
 
 public class SuccinctSubgraph<S extends Writable, V extends Writable, E extends Writable, I extends Writable, J extends Writable, K extends Writable> implements ISubgraph<S, V, E, I, J, K> {
-    private SuccinctIndexedFileBuffer succinctIndexedVertexFileBuffer,succinctIndexedEdgeFileBuffer;
+  private SuccinctIndexedFileBuffer succinctIndexedVertexFileBuffer,succinctIndexedEdgeFileBuffer;
     public Map<Long, Long> remotevertexToSubgraph;
     public K subgraphId;
     S _value;
@@ -92,7 +92,18 @@ public class SuccinctSubgraph<S extends Writable, V extends Writable, E extends 
      
 	return _value;
     }
-
+    public List<Long> getVertexIDs()
+    {
+    	long size = succinctIndexedVertexFileBuffer.count("#".getBytes());
+    	List<Long> vertices = new ArrayList<>();
+    	Integer offset;
+    	for (int i = 0; i < size; i++) {
+    		
+    		offset = succinctIndexedVertexFileBuffer.getRecordOffset(i);
+    		vertices.add(Long.parseLong(succinctIndexedVertexFileBuffer.extractUntil(offset, '@').split("//w+")[1]));
+    	}
+    	return vertices;	
+    }
   
     public List<Long> getVertexByProp(String name, String value, char delim)
     {
