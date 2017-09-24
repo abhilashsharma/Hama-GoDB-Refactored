@@ -114,11 +114,11 @@ public class IndexedQuerierTopN implements IBFSRootQuerier {
 		synchronized (QUERY_LOCK) {
 			if (!queryMade) {
 				rootVertexWorkerMap = queryRootVerticesIndexed(query.getPropertyName(), query.getPropertyValue());
-				System.out.println("WORKERMAP:"+ rootVertexWorkerMap.size());
+//				System.out.println("WORKERMAP:"+ rootVertexWorkerMap.size());
 				queryMade = true;
 			}
 			// return and delete matches for each root vertex from static result map
-			System.out.println("REMOVINGSGID:" + sgid);
+//			System.out.println("REMOVINGSGID:" + sgid);
 			return rootVertexWorkerMap.remove(sgid);
 		}
 	}
@@ -137,7 +137,7 @@ public class IndexedQuerierTopN implements IBFSRootQuerier {
 
 		Query query;
 		if (val instanceof String) {
-		        System.out.println("Querying:"+ prop + "," + val.toString());
+//		        System.out.println("Querying:"+ prop + "," + val.toString());
 			query = new BooleanQuery();
 			((BooleanQuery) query).add(new TermQuery(new Term(prop, (String) val)), BooleanClause.Occur.MUST);
 		} else if (val instanceof Integer) {
@@ -159,7 +159,7 @@ public class IndexedQuerierTopN implements IBFSRootQuerier {
                           List<Long> rootList = rootVertexMap.get(sgid);
                           if (rootList == null) {
                                   rootList = new ArrayList<>();
-                                  System.out.println("ENTERSGID:" + sgid + "," +  rootVertex);
+//                                  System.out.println("ENTERSGID:" + sgid + "," +  rootVertex);
                                   rootVertexMap.put(sgid, rootList);
                           }
                           rootList.add(rootVertex);
