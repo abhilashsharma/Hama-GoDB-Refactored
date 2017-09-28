@@ -127,7 +127,7 @@ public class SuccinctVertex<V extends Writable, E extends Writable, I extends Wr
         throw new UnsupportedOperationException("We do not set the vertex value");
     }
     public String getPropforVertex(int index)
-    {
+    {	
         int offset;
         String[] tokens;
         String record;
@@ -137,5 +137,18 @@ public class SuccinctVertex<V extends Writable, E extends Writable, I extends Wr
         record = vbuffer.extractUntil(offset, '|');
         tokens=record.split("\\W");
         return tokens[index+1];
+    }
+    
+    public String[] getAllPropforVertex()
+    {
+        int offset;
+        String[] tokens;
+        String record;
+        Long searchQuery=((LongWritable)vid).get();
+        Integer[] recordID=vbuffer.recordSearchIds(searchQuery.toString().concat("@").getBytes());
+        offset = vbuffer.getRecordOffset(recordID[0]);
+        record = vbuffer.extractUntil(offset, '|');
+        tokens=record.split("\\W");
+        return tokens;
     }
 }

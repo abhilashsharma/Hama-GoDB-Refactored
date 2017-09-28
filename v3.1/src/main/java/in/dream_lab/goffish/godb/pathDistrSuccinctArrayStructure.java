@@ -64,21 +64,23 @@ import in.dream_lab.goffish.api.IVertex;
 import in.dream_lab.goffish.godb.Step.Direction;
 import in.dream_lab.goffish.godb.Step.Type;
 import in.dream_lab.goffish.godb.pathDistrSuccinctIndex.VertexMessageSteps;
+import in.dream_lab.goffish.hama.succinctstructure.SuccinctArraySubgraph;
+import in.dream_lab.goffish.hama.succinctstructure.SuccinctArrayVertex;
 import in.dream_lab.goffish.hama.succinctstructure.SuccinctSubgraph;
 import in.dream_lab.goffish.hama.succinctstructure.SuccinctVertex;
 
 
 
-public class pathDistrSuccinctStructure extends
-AbstractSubgraphComputation<pathDistrSubgraphSuccinctStructureState, MapValue, MapValue, Text, LongWritable, LongWritable, LongWritable> 
+public class pathDistrSuccinctArrayStructure extends
+AbstractSubgraphComputation<pathDistrSubgraphSuccinctArrayStructureState, MapValue, MapValue, Text, LongWritable, LongWritable, LongWritable> 
 implements ISubgraphWrapup{
 	
-	public pathDistrSuccinctStructure(String initMsg) {
+	public pathDistrSuccinctArrayStructure(String initMsg) {
 		// TODO Auto-generated constructor stub
 		Arguments=initMsg;
 	}
 	
-	public static final Log LOG = LogFactory.getLog(pathDistrSuccinctStructure.class);
+	public static final Log LOG = LogFactory.getLog(pathDistrSuccinctArrayStructure.class);
 	
 	String Arguments=null;
 	//Required for lucene 
@@ -249,10 +251,15 @@ implements ISubgraphWrapup{
 	private void init(Iterable<IMessage<LongWritable, Text>> messageList){
 		String arguments = Arguments;
 		getSubgraph().getSubgraphValue().Arguments=Arguments;
-		propToIndex.put("patid", 0);
-    	propToIndex.put("country", 1);
-    	propToIndex.put("nclass", 2);
-	
+		//CitPatent Schema
+//		propToIndex.put("patid", 0);
+//    	propToIndex.put("country", 1);
+//    	propToIndex.put("nclass", 2);
+    	
+		propToIndex.put("lang", 0);
+    	propToIndex.put("ind", 1);
+    	propToIndex.put("contr", 2);
+    	propToIndex.put("ispublic", 3);
 		
 	    getSubgraph().getSubgraphValue().path = new ArrayList<Step>();
 		Type previousStepType = Type.EDGE;
@@ -533,7 +540,7 @@ implements ISubgraphWrapup{
 	@Override
 	public void compute(Iterable<IMessage<LongWritable, Text>> messageList) {
 		
-		SuccinctSubgraph sg=(SuccinctSubgraph)getSubgraph();
+		SuccinctArraySubgraph sg=(SuccinctArraySubgraph)getSubgraph();
 //		System.out.println("**********SUPERSTEPS***********:" + getSuperstep() +"Message List Size:" + messageList.size());
 		
 		
@@ -722,7 +729,7 @@ implements ISubgraphWrapup{
 				Step nextStep = getSubgraph().getSubgraphValue().path.get(vertexMessageStep.stepsTraversed+1);
 				
 				
-				SuccinctVertex<MapValue,MapValue,LongWritable,LongWritable> currentVertex = new SuccinctVertex(new LongWritable(vertexMessageStep.vertexId),sg.getVertexBuffer(),sg.getEdgeBuffer(),'|');
+				SuccinctArrayVertex<MapValue,MapValue,LongWritable,LongWritable> currentVertex = new SuccinctArrayVertex(new LongWritable(vertexMessageStep.vertexId),sg.getVertexBufferList(),sg.getEdgeBufferList(),'|');
 				
 				if( nextStep.type == Type.EDGE ) {
 					
@@ -806,12 +813,12 @@ implements ISubgraphWrapup{
 				StringBuilder remoteMessage = new StringBuilder("for();");
 				//remoteMessage.append(String.valueOf(stuff.vertexId.longValue())).append(";").append(stuff.message).append(";").append(stuff.stepsTraversed) ;
 				
-				remoteMessage.append(String.valueOf(stuff.startVertexId)).append(";").append(String.valueOf(stuff.previousSubgraphId)).append(";").append(stuff.previousPartitionId).append(";").append(stuff.vertexId).append(";").append(stuff.stepsTraversed).append(";").append(sg.getMap().get(stuff.vertexId).toString());
+				remoteMessage.append(String.valueOf(stuff.startVertexId)).append(";").append(String.valueOf(stuff.previousSubgraphId)).append(";").append(stuff.previousPartitionId).append(";").append(stuff.vertexId).append(";").append(stuff.stepsTraversed).append(";").append(sg.getRemoteMap().get(stuff.vertexId).toString());
 					
 				remoteMessage.append(";").append(stuff.queryId);
 				Text remoteM = new Text(remoteMessage.toString());
 			
-				sendMessage(new LongWritable((long) sg.getMap().get(stuff.vertexId)),remoteM);
+				sendMessage(new LongWritable((long) sg.getRemoteMap().get(stuff.vertexId)),remoteM);
 
 					
 			}

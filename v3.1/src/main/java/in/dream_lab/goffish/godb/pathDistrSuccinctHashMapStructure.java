@@ -64,21 +64,22 @@ import in.dream_lab.goffish.api.IVertex;
 import in.dream_lab.goffish.godb.Step.Direction;
 import in.dream_lab.goffish.godb.Step.Type;
 import in.dream_lab.goffish.godb.pathDistrSuccinctIndex.VertexMessageSteps;
+import in.dream_lab.goffish.hama.succinctstructure.SuccinctHashMapSubgraph;
 import in.dream_lab.goffish.hama.succinctstructure.SuccinctSubgraph;
 import in.dream_lab.goffish.hama.succinctstructure.SuccinctVertex;
 
 
 
-public class pathDistrSuccinctStructure extends
-AbstractSubgraphComputation<pathDistrSubgraphSuccinctStructureState, MapValue, MapValue, Text, LongWritable, LongWritable, LongWritable> 
+public class pathDistrSuccinctHashMapStructure extends
+AbstractSubgraphComputation<pathDistrSubgraphSuccinctHashMapStructureState, MapValue, MapValue, Text, LongWritable, LongWritable, LongWritable> 
 implements ISubgraphWrapup{
 	
-	public pathDistrSuccinctStructure(String initMsg) {
+	public pathDistrSuccinctHashMapStructure(String initMsg) {
 		// TODO Auto-generated constructor stub
 		Arguments=initMsg;
 	}
 	
-	public static final Log LOG = LogFactory.getLog(pathDistrSuccinctStructure.class);
+	public static final Log LOG = LogFactory.getLog(pathDistrSuccinctHashMapStructure.class);
 	
 	String Arguments=null;
 	//Required for lucene 
@@ -323,8 +324,8 @@ implements ISubgraphWrapup{
 			getSubgraph().getSubgraphValue().queryCostHolder[i] = new Double(0);
 			
 		}
-		getSubgraph().getSubgraphValue().forwardLocalVertexList = new LinkedList<VertexMessageSteps>();
-		getSubgraph().getSubgraphValue().revLocalVertexList = new LinkedList<VertexMessageSteps>();
+		getSubgraph().getSubgraphValue().forwardLocalVertexList = new LinkedList<Tuple<Long,VertexMessageSteps>>();
+		getSubgraph().getSubgraphValue().revLocalVertexList = new LinkedList<Tuple<Long,VertexMessageSteps>>();
 //		inVerticesMap = new HashMap<Long, HashMap<String,LinkedList<Long>>>();
 //		remoteSubgraphMap = new HashMap<Long, Long>();
 //		hueristics=HueristicsLoad.getInstance();//loading this at a different place
@@ -533,7 +534,7 @@ implements ISubgraphWrapup{
 	@Override
 	public void compute(Iterable<IMessage<LongWritable, Text>> messageList) {
 		
-		SuccinctSubgraph sg=(SuccinctSubgraph)getSubgraph();
+		SuccinctHashMapSubgraph sg=(SuccinctHashMapSubgraph)getSubgraph();
 //		System.out.println("**********SUPERSTEPS***********:" + getSuperstep() +"Message List Size:" + messageList.size());
 		
 		
@@ -616,8 +617,8 @@ implements ISubgraphWrapup{
 									Long _vertexId = vid;
 									String _message = "V:"+String.valueOf(_vertexId);
 									
-									
-									  getSubgraph().getSubgraphValue().forwardLocalVertexList.add( new VertexMessageSteps(QueryId,_vertexId,_message, getSubgraph().getSubgraphValue().startPos, _vertexId,getSubgraph().getSubgraphValue().startPos, getSubgraph().getSubgraphId().get(), 0) );
+									Tuple<Long,VertexMessageSteps> t=new Tuple<Long,VertexMessageSteps>(hitList.get(i),new VertexMessageSteps(QueryId,_vertexId,_message, getSubgraph().getSubgraphValue().startPos, _vertexId,getSubgraph().getSubgraphValue().startPos, getSubgraph().getSubgraphId().get(), 0));
+									  getSubgraph().getSubgraphValue().forwardLocalVertexList.add(  t);
 									
 										
 //									getSubgraph().getSubgraphValue().forwardLocalVertexList.add( new VertexMessageSteps(_vertexId,_message,0) );
@@ -684,9 +685,9 @@ implements ISubgraphWrapup{
 							VertexMessageSteps v=processMessage(message) ;
 							if(v!=null){
 								if(new String( message.getMessage().toString() ).contains("rev()") )
-									getSubgraph().getSubgraphValue().revLocalVertexList.add( v );
+									getSubgraph().getSubgraphValue().revLocalVertexList.add(new Tuple<Long,VertexMessageSteps>((Long) sg.getLocalMap().get(v.vertexId) ,v) );
 								else
-									getSubgraph().getSubgraphValue().forwardLocalVertexList.add( v ); 
+									getSubgraph().getSubgraphValue().forwardLocalVertexList.add(new Tuple<Long,VertexMessageSteps>((Long) sg.getLocalMap().get(v.vertexId) ,v) ); 
 							}
 						
 						}
@@ -699,7 +700,9 @@ implements ISubgraphWrapup{
 			// PROCESS FORWARD LIST
 			//System.out.println("FORWARD LIST:"+forwardLocalVertexList.isEmpty() +" REV LIST:"+revLocalVertexList.isEmpty() + "SGID:" + subgraph.getId() + " PID:" + partition.getId());
 			while(!getSubgraph().getSubgraphValue().forwardLocalVertexList.isEmpty()) {
-				VertexMessageSteps vertexMessageStep = getSubgraph().getSubgraphValue().forwardLocalVertexList.poll();
+				
+				Tuple<Long,VertexMessageSteps> t= getSubgraph().getSubgraphValue().forwardLocalVertexList.poll();
+				VertexMessageSteps vertexMessageStep=t.getSecond();
 				//output(partition.getId(), subgraph.getId(), "FORWARD-LIST");
 				/* if last step,end that iteration*/
 				//System.out.println("Reached:" + vertexMessageStep.startVertexId + " Path Size:" + vertexMessageStep.stepsTraversed + "/" + (path.size()-1));
@@ -721,8 +724,9 @@ implements ISubgraphWrapup{
 				
 				Step nextStep = getSubgraph().getSubgraphValue().path.get(vertexMessageStep.stepsTraversed+1);
 				
-				
-				SuccinctVertex<MapValue,MapValue,LongWritable,LongWritable> currentVertex = new SuccinctVertex(new LongWritable(vertexMessageStep.vertexId),sg.getVertexBuffer(),sg.getEdgeBuffer(),'|');
+				Long currentVertexId=vertexMessageStep.vertexId;
+				Long currentSGID=(Long) sg.getLocalMap().get(currentVertexId);
+				SuccinctVertex<MapValue,MapValue,LongWritable,LongWritable> currentVertex = new SuccinctVertex(new LongWritable(currentVertexId),sg.getVertexBuffer(currentSGID),sg.getEdgeBuffer(currentSGID),'|');
 				
 				if( nextStep.type == Type.EDGE ) {
 					
@@ -743,7 +747,7 @@ implements ISubgraphWrapup{
 								_modifiedMessage.append(vertexMessageStep.message).append("-->E:").append("-->V:").append(otherVertex);
 							
 //									System.out.println("Path Till Now:" + _modifiedMessage.toString());
-									getSubgraph().getSubgraphValue().forwardLocalVertexList.add(new VertexMessageSteps(vertexMessageStep.queryId,otherVertex,_modifiedMessage.toString(),vertexMessageStep.stepsTraversed+1, vertexMessageStep.startVertexId,vertexMessageStep.startStep, vertexMessageStep.previousSubgraphId, vertexMessageStep.previousPartitionId));
+									getSubgraph().getSubgraphValue().forwardLocalVertexList.add(new Tuple<Long,VertexMessageSteps>((Long) sg.getLocalMap().get(otherVertex),new VertexMessageSteps(vertexMessageStep.queryId,otherVertex,_modifiedMessage.toString(),vertexMessageStep.stepsTraversed+1, vertexMessageStep.startVertexId,vertexMessageStep.startStep, vertexMessageStep.previousSubgraphId, vertexMessageStep.previousPartitionId)));
 									
 							}//localoutedges traversal end
 							
@@ -764,7 +768,7 @@ implements ISubgraphWrapup{
 								}
 								
 								if(addFlag){
-									getSubgraph().getSubgraphValue().forwardRemoteVertexList.add(new VertexMessageSteps(vertexMessageStep.queryId,otherVertex,_modifiedMessage.toString(),vertexMessageStep.stepsTraversed+1,vertexMessageStep.vertexId,vertexMessageStep.stepsTraversed+1, vertexMessageStep.previousSubgraphId,vertexMessageStep.previousPartitionId));
+									getSubgraph().getSubgraphValue().forwardRemoteVertexList.add(new Tuple<Long,VertexMessageSteps>((Long) sg.getRemoteMap().get(otherVertex),new VertexMessageSteps(vertexMessageStep.queryId,otherVertex,_modifiedMessage.toString(),vertexMessageStep.stepsTraversed+1,vertexMessageStep.vertexId,vertexMessageStep.stepsTraversed+1, vertexMessageStep.previousSubgraphId,vertexMessageStep.previousPartitionId)));
 								}
 								
 							}//remoteoutedges traversal end
@@ -781,14 +785,14 @@ implements ISubgraphWrapup{
 					/* null predicate*/
 					if( nextStep.property == null && nextStep.value == null ) {
 						/* add appropriate value later*/
-						getSubgraph().getSubgraphValue().forwardLocalVertexList.add(new VertexMessageSteps(vertexMessageStep.queryId,vertexMessageStep.vertexId,vertexMessageStep.message,vertexMessageStep.stepsTraversed+1, vertexMessageStep.startVertexId,vertexMessageStep.startStep, vertexMessageStep.previousSubgraphId, vertexMessageStep.previousPartitionId));
+						getSubgraph().getSubgraphValue().forwardLocalVertexList.add(new Tuple<Long,VertexMessageSteps>(currentSGID,new VertexMessageSteps(vertexMessageStep.queryId,vertexMessageStep.vertexId,vertexMessageStep.message,vertexMessageStep.stepsTraversed+1, vertexMessageStep.startVertexId,vertexMessageStep.startStep, vertexMessageStep.previousSubgraphId, vertexMessageStep.previousPartitionId)));
 						//forwardLocalVertexList.add(vertexMessageStep);
 					}
 					/* filtered vertex*/
 					else {
 						if ( compareValuesUtil(String.valueOf(currentVertex.getPropforVertex(propToIndex.get(nextStep.property))), nextStep.value.toString()) ) {
 							/* add appropriate value later*/
-							getSubgraph().getSubgraphValue().forwardLocalVertexList.add(new VertexMessageSteps(vertexMessageStep.queryId,vertexMessageStep.vertexId,vertexMessageStep.message,vertexMessageStep.stepsTraversed+1, vertexMessageStep.startVertexId,vertexMessageStep.startStep, vertexMessageStep.previousSubgraphId, vertexMessageStep.previousPartitionId));
+							getSubgraph().getSubgraphValue().forwardLocalVertexList.add(new Tuple<Long,VertexMessageSteps>(currentSGID,new VertexMessageSteps(vertexMessageStep.queryId,vertexMessageStep.vertexId,vertexMessageStep.message,vertexMessageStep.stepsTraversed+1, vertexMessageStep.startVertexId,vertexMessageStep.startStep, vertexMessageStep.previousSubgraphId, vertexMessageStep.previousPartitionId)));
 							//forwardLocalVertexList.add(vertexMessageStep);
 						}
 					}
@@ -799,19 +803,19 @@ implements ISubgraphWrapup{
 			
 			
 			// TODO: send the messages in Remote vertex list
-			for(VertexMessageSteps stuff: getSubgraph().getSubgraphValue().forwardRemoteVertexList){
+			for(Tuple<Long,VertexMessageSteps> stuff: getSubgraph().getSubgraphValue().forwardRemoteVertexList){
 				// send message to all the remote vertices
-				
+				VertexMessageSteps v = stuff.getSecond();
 //				IRemoteVertex<MapValue,MapValue,LongWritable,LongWritable,LongWritable> remoteVertex = (IRemoteVertex<MapValue, MapValue, LongWritable, LongWritable, LongWritable>)getSubgraph().getVertexById(new LongWritable(stuff.vertexId));
 				StringBuilder remoteMessage = new StringBuilder("for();");
 				//remoteMessage.append(String.valueOf(stuff.vertexId.longValue())).append(";").append(stuff.message).append(";").append(stuff.stepsTraversed) ;
 				
-				remoteMessage.append(String.valueOf(stuff.startVertexId)).append(";").append(String.valueOf(stuff.previousSubgraphId)).append(";").append(stuff.previousPartitionId).append(";").append(stuff.vertexId).append(";").append(stuff.stepsTraversed).append(";").append(sg.getMap().get(stuff.vertexId).toString());
+				remoteMessage.append(String.valueOf(v.startVertexId)).append(";").append(String.valueOf(v.previousSubgraphId)).append(";").append(v.previousPartitionId).append(";").append(v.vertexId).append(";").append(v.stepsTraversed).append(";").append(sg.getRemoteMap().get(v.vertexId).toString());
 					
-				remoteMessage.append(";").append(stuff.queryId);
+				remoteMessage.append(";").append(v.queryId);
 				Text remoteM = new Text(remoteMessage.toString());
 			
-				sendMessage(new LongWritable((long) sg.getMap().get(stuff.vertexId)),remoteM);
+				sendMessage(new LongWritable((long) sg.getRemoteMap().get(v.vertexId)),remoteM);
 
 					
 			}
