@@ -105,7 +105,7 @@ AbstractSubgraphComputation<BFSDistrPropSuccinctSubgraphState, MapValue, MapValu
 		static IndexReader indexReader;
 		static IndexSearcher indexSearcher;
 		static BooleanQuery query;
-		static ScoreDoc[] hits;
+//		static ScoreDoc[] hits;
 		static boolean initDone = false ;
 		static boolean queryMade = false;
 		private static final Object initLock = new Object();
@@ -281,22 +281,22 @@ AbstractSubgraphComputation<BFSDistrPropSuccinctSubgraphState, MapValue, MapValu
 		
   
 		//updated Code to Integer attributes as well
-		private void makeQuery(String prop,Object val) throws IOException{
-			{
-				queryMade = true;
-				if(val.getClass()==String.class){
-				query  = new BooleanQuery();
-				query.add(new TermQuery(new Term(prop, (String)val)), BooleanClause.Occur.MUST);
-				hits =  indexSearcher.search(query,40000).scoreDocs;
-				}
-				else if(val.getClass()==Integer.class)
-				{
-					Query q = NumericRangeQuery.newIntRange(prop,(Integer)val, (Integer)val, true, true);
-					hits =  indexSearcher.search(q,40000).scoreDocs;
-				}
-				
-			}
-		}
+//		private void makeQuery(String prop,Object val) throws IOException{
+//			{
+//				queryMade = true;
+//				if(val.getClass()==String.class){
+//				query  = new BooleanQuery();
+//				query.add(new TermQuery(new Term(prop, (String)val)), BooleanClause.Occur.MUST);
+//				hits =  indexSearcher.search(query,40000).scoreDocs;
+//				}
+//				else if(val.getClass()==Integer.class)
+//				{
+//					Query q = NumericRangeQuery.newIntRange(prop,(Integer)val, (Integer)val, true, true);
+//					hits =  indexSearcher.search(q,40000).scoreDocs;
+//				}
+//				
+//			}
+//		}
 		
 		
 		private void join(IMessage<LongWritable,Text> _message) {
@@ -414,7 +414,7 @@ AbstractSubgraphComputation<BFSDistrPropSuccinctSubgraphState, MapValue, MapValu
 						getSubgraph().getSubgraphValue().startPos=0;
 					LOG.info("Starting Position:" + getSubgraph().getSubgraphValue().startPos);
 					
-					LOG.info("*******Querying done********:"+hits.length);
+					LOG.info("*******Querying done********:"+hitList.size());
 						
 						if(hitList.size()>0){
 							for (int i=0;i<hitList.size();i+=2){
