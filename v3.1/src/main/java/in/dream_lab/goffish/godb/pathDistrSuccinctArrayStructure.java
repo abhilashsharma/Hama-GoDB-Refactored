@@ -255,11 +255,11 @@ implements ISubgraphWrapup{
 //		propToIndex.put("patid", 0);
 //    	propToIndex.put("country", 1);
 //    	propToIndex.put("nclass", 2);
-    	
-		propToIndex.put("lang", 0);
-    	propToIndex.put("ind", 1);
-    	propToIndex.put("contr", 2);
-    	propToIndex.put("ispublic", 3);
+		propToIndex.put("vid", 0);
+		propToIndex.put("lang", 1);
+    	propToIndex.put("ind", 2);
+    	propToIndex.put("contr", 3);
+    	propToIndex.put("ispublic", 4);
 		
 	    getSubgraph().getSubgraphValue().path = new ArrayList<Step>();
 		Type previousStepType = Type.EDGE;
