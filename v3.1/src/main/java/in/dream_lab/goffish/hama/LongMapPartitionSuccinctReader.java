@@ -339,7 +339,8 @@ while ((msg = (Message<LongWritable, LongWritable>) peer.getCurrentMessage()) !=
  
   //TODO:read SubgraphPartitionMap from a file and populate it here   
  String spmFile="/scratch/SynthGraphPart/PartitiontoSubgraphMapping/spmFile"; 
-
+LOG.info("Populating Subgraph to Partition Mapping");
+long start=System.currentTimeMillis();
  FileReader fr = new FileReader(spmFile);
  BufferedReader br = new BufferedReader(fr);
 
@@ -357,8 +358,11 @@ while ((msg = (Message<LongWritable, LongWritable>) peer.getCurrentMessage()) !=
  }
  
  br.close();
+ LOG.info("Populating subgraph to Partition Time:" + (System.currentTimeMillis()-start));
  
 //TODO:Read remoteVertexToSubgraph here and populate the object
+ LOG.info("Populating remote Vertex to Subgraph Mapping");
+ start=System.currentTimeMillis();
  String rvsmFile="/scratch/abhilash/RemoteVertex/rvsmFile" + pseudoPartId; 
 
  FileReader fr1 = new FileReader(rvsmFile);
@@ -378,6 +382,7 @@ while ((msg = (Message<LongWritable, LongWritable>) peer.getCurrentMessage()) !=
  
  br1.close();
  
+ LOG.info("Populating remote vertex data Time:" + (System.currentTimeMillis()-start));
  //TODO: Read localVertexToSubgraph File and populate the object.. NO LONGER REQUIRED
 // String lvsmFile="/home/abhilash/lvsmFile.txt" + pseudoPartId; 
 //
@@ -558,7 +563,7 @@ while ((msg = (Message<LongWritable, LongWritable>) peer.getCurrentMessage()) !=
 //    
 //    br2.close();
     
-   
+   LOG.info("Graph formulation started");
     String vdirectory = "/scratch/abhilash/RGraphVertex"+pseudoPartId;
     File[] vfiles = new File(vdirectory).listFiles();
     Arrays.sort(vfiles);
@@ -613,5 +618,7 @@ while ((msg = (Message<LongWritable, LongWritable>) peer.getCurrentMessage()) !=
       SuccinctArraySubgraph<S, V, E, LongWritable, LongWritable, LongWritable> subgraph = new SuccinctArraySubgraph(logicalsubgraphID,vertexSuccinctBufferList,edgeSuccinctBufferList);
       partition.addSubgraph(subgraph);
 //    sendToAllPartitions(subgraphLocationBroadcast);
+      LOG.info("Graph formulation complete");
   }
+  
 }
