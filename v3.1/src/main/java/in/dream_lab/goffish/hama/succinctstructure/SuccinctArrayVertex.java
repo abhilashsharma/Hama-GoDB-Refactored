@@ -20,6 +20,7 @@ import java.util.List;
  */
 public class SuccinctArrayVertex<V extends Writable, E extends Writable, I extends Writable, J extends Writable> implements IVertex<V, E, I, J> {
 //	public static final Log LOG = LogFactory.getLog(SuccinctVertex.class);
+	public static final Log LOG = LogFactory.getLog(SuccinctArrayVertex.class);
 	private I vid;
     private List<SuccinctIndexedFileBuffer> vbufferList, ebufferList;
     private char delim;
@@ -160,19 +161,27 @@ public class SuccinctArrayVertex<V extends Writable, E extends Writable, I exten
     
     public String[] getAllPropforVertex()
     {
+    	
     	Long searchQuery=((LongWritable)vid).get();
+    	LOG.info("ALLPROP search:" + searchQuery.toString().concat("@").getBytes() );
+    	LOG.info("VBUFFER size:" + vbufferList.size());
     	SuccinctIndexedFileBuffer vbuffer=null;
 		for(SuccinctIndexedFileBuffer vbuf:vbufferList) {
-    		if(vbuf.count(searchQuery.toString().concat("@").getBytes()) ==1) {
+    		if(vbuf.count(searchQuery.toString().concat("@").getBytes()) >0) {
+    			LOG.info("FOUND COUNT > 0");
     			vbuffer=vbuf;
     			break;
     		}
     	}
     	
+		
+		
         int offset;
-        String[] tokens;
+        String[] tokens = null;
         String record;
-        
+        if(vbuffer==null) {
+    	 	return tokens; 
+    	}
         Integer[] recordID=vbuffer.recordSearchIds(searchQuery.toString().concat("@").getBytes());
         offset = vbuffer.getRecordOffset(recordID[0]);
         record = vbuffer.extractUntil(offset, '|');
