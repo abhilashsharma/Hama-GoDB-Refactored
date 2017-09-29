@@ -587,6 +587,7 @@ AbstractSubgraphComputation<BFSDistrPropSuccinctSubgraphState, MapValue, MapValu
 				//remoteMessage.append(String.valueOf(stuff.vertexId.longValue())).append(";").append(stuff.message).append(";").append(stuff.stepsTraversed) ;
 				remoteMessage.append(String.valueOf(stuff.startVertexId)).append(";").append(String.valueOf(stuff.startSubgraphId)).append(";").append(stuff.startPartitionId).append(";").append(stuff.vertexId).append(";").append(stuff.message).append(";").append(stuff.stepsTraversed) ;
 				Text remoteM = new Text(remoteMessage.toString());
+				LOG.info("RemoteVertexToSubgraph Vertex:" + stuff.vertexId + " Subgraph" + (long) sg.remotevertexToSubgraph.get(stuff.vertexId));
 				sendMessage(new LongWritable((long) sg.remotevertexToSubgraph.get(stuff.vertexId)),remoteM);
 //				LOG.info("Sending Remote Message:"+ remoteMessage.toString());
 			}
