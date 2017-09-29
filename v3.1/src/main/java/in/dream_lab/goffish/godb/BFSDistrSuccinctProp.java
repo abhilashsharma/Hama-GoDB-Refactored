@@ -501,7 +501,7 @@ AbstractSubgraphComputation<BFSDistrPropSuccinctSubgraphState, MapValue, MapValu
 					String[] str=currentVertex.getAllPropforVertex();
 				  StringBuilder _modifiedMsg = new StringBuilder("");
                                   _modifiedMsg .append(vertexMessageStep.message).append(str[1]+","+str[2]+","+str[3]+"," + str[4] + "," + str[5]);
-                                  System.out.println("MODIFIEDMSG:" + _modifiedMsg.toString());
+                                 LOG.info("MODIFIEDMSG:" + _modifiedMsg.toString());
 					if (vertexMessageStep.startSubgraphId == getSubgraph().getSubgraphId().get()) {
 						if ( !getSubgraph().getSubgraphValue().resultsMap.containsKey(vertexMessageStep.startVertexId) )
 							getSubgraph().getSubgraphValue().resultsMap.put(vertexMessageStep.startVertexId, new ResultSet());
@@ -555,7 +555,7 @@ AbstractSubgraphComputation<BFSDistrPropSuccinctSubgraphState, MapValue, MapValu
 							if(count==0){
 							 
 				                                _modifiedMsg.append(vertexMessageStep.message).append(str[1]+","+str[2]+","+str[3]+"," + str[4] + "," + str[5]);
-				                                System.out.println("MODIFIEDMSG:" + _modifiedMsg.toString());
+				                                LOG.info("MODIFIEDMSG:" + _modifiedMsg.toString());
 				                                vertexMessageStep = new VertexMessageSteps(vertexMessageStep.vertexId, _modifiedMsg.toString(), vertexMessageStep.stepsTraversed, vertexMessageStep.startVertexId, vertexMessageStep.startSubgraphId, vertexMessageStep.startPartitionId);
 				                                
 //								if(vertexMessageStep.startSubgraphId!=getSubgraph().getSubgraphId().get()){

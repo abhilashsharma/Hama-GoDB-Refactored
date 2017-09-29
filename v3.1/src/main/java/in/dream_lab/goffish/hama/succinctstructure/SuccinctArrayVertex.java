@@ -43,12 +43,12 @@ public class SuccinctArrayVertex<V extends Writable, E extends Writable, I exten
     {	
     	SuccinctIndexedFileBuffer ebuffer = null;
     	Long searchQuery=((LongWritable)vid).get();
-    	LOG.info("GETEDGES search:" + searchQuery.toString().concat("@") );
-    	LOG.info("EBUFFER size:" + ebufferList.size());
+//    	LOG.info("GETEDGES search:" + searchQuery.toString().concat("@") );
+//    	LOG.info("EBUFFER size:" + ebufferList.size());
     	for(SuccinctIndexedFileBuffer ebuf:ebufferList) {
     		long count = ebuf.count(searchQuery.toString().concat("@").getBytes());
     		if(count > 0) {
-    			LOG.info("FOUND COUNT to be:" +count);
+//    			LOG.info("FOUND COUNT to be:" +count);
     			ebuffer=ebuf;
     			break;
     		}
@@ -61,7 +61,7 @@ public class SuccinctArrayVertex<V extends Writable, E extends Writable, I exten
         List<Long> localSinks = new ArrayList<>();
         List<Long> remoteSinks = new ArrayList<>();
         if(ebuffer==null) {
-        	LOG.info("Returning null edge buffer");
+//        	LOG.info("Returning null edge buffer");
     	 	return new Tuple<>(localSinks, remoteSinks); 
     	}
         Integer[] recordID = ebuffer.recordSearchIds(searchQuery.toString().concat("@").getBytes());
@@ -172,13 +172,13 @@ public class SuccinctArrayVertex<V extends Writable, E extends Writable, I exten
     {
     	
     	Long searchQuery=((LongWritable)vid).get();
-    	LOG.info("ALLPROP search:" + searchQuery.toString().concat("@") );
-    	LOG.info("VBUFFER size:" + vbufferList.size());
+//    	LOG.info("ALLPROP search:" + searchQuery.toString().concat("@") );
+//    	LOG.info("VBUFFER size:" + vbufferList.size());
     	SuccinctIndexedFileBuffer vbuffer=null;
 		for(SuccinctIndexedFileBuffer vbuf:vbufferList) {
 			long count=vbuf.count(searchQuery.toString().concat("@").getBytes());
     		if( count>0) {
-    			LOG.info("FOUND COUNT to be:" +count);
+//    			LOG.info("FOUND COUNT to be:" +count);
     			vbuffer=vbuf;
     			break;
     		}
@@ -190,7 +190,7 @@ public class SuccinctArrayVertex<V extends Writable, E extends Writable, I exten
         String[] tokens = null;
         String record;
         if(vbuffer==null) {
-        	LOG.info("Returning null vertex buffer");
+//        	LOG.info("Returning null vertex buffer");
     	 	return tokens; 
     	}
         Integer[] recordID=vbuffer.recordSearchIds(searchQuery.toString().concat("@").getBytes());
