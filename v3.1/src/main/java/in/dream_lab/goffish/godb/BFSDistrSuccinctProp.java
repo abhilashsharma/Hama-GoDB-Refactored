@@ -526,12 +526,16 @@ AbstractSubgraphComputation<BFSDistrPropSuccinctSubgraphState, MapValue, MapValu
 							//local edges
 							long count=0;
 							Tuple<List<Long>,List<Long>> edges= currentVertex.getEdges(); 
+							if((edges.getFirst().size() + edges.getSecond().size()) > 17) {
+								//skipping this vertex if out degree greater than 17
+								continue;
+							}
 							for( long edge: edges.getFirst() ) {
 								count ++;
 								long otherVertex = edge;
 								StringBuilder _modifiedMessage = new StringBuilder("");
 								_modifiedMessage.append(vertexMessageStep.message).append(str[1]+","+str[2]+","+str[3]+"," + str[4] + "," + str[5]).append("-->V:");
-							
+								LOG.info("MODIFIEDMSG:" + _modifiedMsg.toString());
 									/* TODO :add the correct value to list*/
 //									if(!visitedVertices.contains(otherVertex.getId()))
 									getSubgraph().getSubgraphValue().forwardLocalVertexList.add(new VertexMessageSteps(otherVertex,_modifiedMessage.toString(),vertexMessageStep.stepsTraversed+1, vertexMessageStep.startVertexId, vertexMessageStep.startSubgraphId, vertexMessageStep.startPartitionId));
