@@ -330,7 +330,7 @@ while ((msg = (Message<LongWritable, LongWritable>) peer.getCurrentMessage()) !=
   .getControlInfo()).getExtraInfo();
 
   Iterator<BytesWritable> mIter=remoteMessage.iterator();  
-	
+		
   Integer logicalPartitionId=Ints.fromByteArray(mIter.next().getBytes());
   Integer peerIndex = Ints.fromByteArray(mIter.next().getBytes());
   logicalToPeerMapping.put(logicalPartitionId, peerIndex);

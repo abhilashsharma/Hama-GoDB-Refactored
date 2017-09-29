@@ -422,7 +422,7 @@ AbstractSubgraphComputation<BFSDistrPropSuccinctSubgraphState, MapValue, MapValu
 								long vid= hitList.get(i+1);
 //							
 									Long _vertexId = vid;
-									String _message = "V:"+String.valueOf(_vertexId);
+									String _message = "V:";
 									
 									getSubgraph().getSubgraphValue().forwardLocalVertexList.add( new VertexMessageSteps(_vertexId,_message, getSubgraph().getSubgraphValue().startPos, _vertexId, getSubgraph().getSubgraphId().get(), 0) );//TODO: remove storing of partition id
 										
