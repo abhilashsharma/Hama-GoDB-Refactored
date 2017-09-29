@@ -363,24 +363,24 @@ long start=System.currentTimeMillis();
 //TODO:Read remoteVertexToSubgraph here and populate the object
  LOG.info("Populating remote Vertex to Subgraph Mapping");
  start=System.currentTimeMillis();
- String rvsmFile="/scratch/abhilash/RemoteVertex/rvsmFile" + pseudoPartId; 
-
- FileReader fr1 = new FileReader(rvsmFile);
- BufferedReader br1 = new BufferedReader(fr1);
-
-
- while ((sCurrentLine = br1.readLine()) != null) {
-	 String pData = sCurrentLine.substring(4, sCurrentLine.length()-2);
-	 String[] data= pData.split(",\\s+");
-	 
-	
-	 for(String tuple:data) {
-		 String[] rtuple=tuple.substring(1, tuple.length()-1).split(",");
-		 remoteVertexToSubgraphMap.put(Long.parseLong(rtuple[0]), Long.parseLong(rtuple[1]));
-	 }
- }
- 
- br1.close();
+// String rvsmFile="/scratch/abhilash/RemoteVertex/rvsmFile" + pseudoPartId; 
+//
+// FileReader fr1 = new FileReader(rvsmFile);
+// BufferedReader br1 = new BufferedReader(fr1);
+//
+//
+// while ((sCurrentLine = br1.readLine()) != null) {
+//	 String pData = sCurrentLine.substring(4, sCurrentLine.length()-2);
+//	 String[] data= pData.split(",\\s+");
+//	 
+//	
+//	 for(String tuple:data) {
+//		 String[] rtuple=tuple.substring(1, tuple.length()-1).split(",");
+//		 remoteVertexToSubgraphMap.put(Long.parseLong(rtuple[0]), Long.parseLong(rtuple[1]));
+//	 }
+// }
+// 
+// br1.close();
  
  LOG.info("Populating remote vertex data Time:" + (System.currentTimeMillis()-start));
  //TODO: Read localVertexToSubgraph File and populate the object.. NO LONGER REQUIRED
