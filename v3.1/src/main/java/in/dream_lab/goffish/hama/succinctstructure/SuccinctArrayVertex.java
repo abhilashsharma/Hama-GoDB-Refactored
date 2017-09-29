@@ -45,8 +45,9 @@ public class SuccinctArrayVertex<V extends Writable, E extends Writable, I exten
     	Long searchQuery=((LongWritable)vid).get();
 //    	LOG.info("GETEDGES search:" + searchQuery.toString().concat("@") );
 //    	LOG.info("EBUFFER size:" + ebufferList.size());
+    	String wholeQuery="#"+searchQuery.toString().concat("@");
     	for(SuccinctIndexedFileBuffer ebuf:ebufferList) {
-    		long count = ebuf.count(searchQuery.toString().concat("@").getBytes());
+    		long count = ebuf.count(wholeQuery.getBytes());
     		if(count > 0) {
 //    			LOG.info("FOUND COUNT to be:" +count);
     			ebuffer=ebuf;
@@ -64,7 +65,7 @@ public class SuccinctArrayVertex<V extends Writable, E extends Writable, I exten
 //        	LOG.info("Returning null edge buffer");
     	 	return new Tuple<>(localSinks, remoteSinks); 
     	}
-        Integer[] recordID = ebuffer.recordSearchIds(searchQuery.toString().concat("@").getBytes());
+        Integer[] recordID = ebuffer.recordSearchIds(wholeQuery.getBytes());
         for (Integer rid : recordID)
         {
             offset = ebuffer.getRecordOffset(rid);
@@ -149,9 +150,10 @@ public class SuccinctArrayVertex<V extends Writable, E extends Writable, I exten
     public String getPropforVertex(int index)
     {	
     	Long searchQuery=((LongWritable)vid).get();
+    	String wholeQuery="#"+searchQuery.toString().concat("@");
     	SuccinctIndexedFileBuffer vbuffer=null;
 		for(SuccinctIndexedFileBuffer vbuf:vbufferList) {
-    		if(vbuf.count(searchQuery.toString().concat("@").getBytes()) ==1) {
+    		if(vbuf.count(wholeQuery.getBytes()) >0) {
     			vbuffer=vbuf;
     			break;
     		}
@@ -160,8 +162,11 @@ public class SuccinctArrayVertex<V extends Writable, E extends Writable, I exten
         int offset;
         String[] tokens;
         String record;
-        
-        Integer[] recordID=vbuffer.recordSearchIds(searchQuery.toString().concat("@").getBytes());
+        if(vbuffer==null) {
+//        	LOG.info("Returning null vertex buffer");
+    	 	return null; 
+    	}
+        Integer[] recordID=vbuffer.recordSearchIds(wholeQuery.getBytes());
         offset = vbuffer.getRecordOffset(recordID[0]);
         record = vbuffer.extractUntil(offset, '|');
         tokens=record.split("\\W");
@@ -172,11 +177,12 @@ public class SuccinctArrayVertex<V extends Writable, E extends Writable, I exten
     {
     	
     	Long searchQuery=((LongWritable)vid).get();
+    	String wholeQuery="#"+searchQuery.toString().concat("@");
 //    	LOG.info("ALLPROP search:" + searchQuery.toString().concat("@") );
 //    	LOG.info("VBUFFER size:" + vbufferList.size());
     	SuccinctIndexedFileBuffer vbuffer=null;
 		for(SuccinctIndexedFileBuffer vbuf:vbufferList) {
-			long count=vbuf.count(searchQuery.toString().concat("@").getBytes());
+			long count=vbuf.count(wholeQuery.getBytes());
     		if( count>0) {
 //    			LOG.info("FOUND COUNT to be:" +count);
     			vbuffer=vbuf;
@@ -193,7 +199,7 @@ public class SuccinctArrayVertex<V extends Writable, E extends Writable, I exten
 //        	LOG.info("Returning null vertex buffer");
     	 	return tokens; 
     	}
-        Integer[] recordID=vbuffer.recordSearchIds(searchQuery.toString().concat("@").getBytes());
+        Integer[] recordID=vbuffer.recordSearchIds(wholeQuery.getBytes());
         offset = vbuffer.getRecordOffset(recordID[0]);
         record = vbuffer.extractUntil(offset, '|');
         tokens=record.split("\\W");

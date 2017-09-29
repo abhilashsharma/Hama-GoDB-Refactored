@@ -319,9 +319,9 @@ public class LongMapPartitionSuccinctReader<S extends Writable, V extends Writab
     
  peer.sync();
  
- //Receiving Back
+ //Receiving Back..hacking pseudo partitionid as subgraphid
  
- HashMap<Integer,Integer> logicalToPeerMapping= new HashMap<Integer,Integer>();
+ Map<K,Integer> logicalToPeerMapping= new HashMap<K,Integer>();
 Message<LongWritable, LongWritable> msg;
 //Receiving 1 message per partition
 while ((msg = (Message<LongWritable, LongWritable>) peer.getCurrentMessage()) != null) {
@@ -333,54 +333,56 @@ while ((msg = (Message<LongWritable, LongWritable>) peer.getCurrentMessage()) !=
 		
   Integer logicalPartitionId=Ints.fromByteArray(mIter.next().getBytes());
   Integer peerIndex = Ints.fromByteArray(mIter.next().getBytes());
-  logicalToPeerMapping.put(logicalPartitionId, peerIndex);
+  logicalToPeerMapping.put((K)new LongWritable(logicalPartitionId.longValue()), peerIndex);
+
 }
  
+subgraphPartitionMap=logicalToPeerMapping;
  
-  //TODO:read SubgraphPartitionMap from a file and populate it here   
- String spmFile="/scratch/SynthGraphPart/PartitiontoSubgraphMapping/spmFile"; 
-LOG.info("Populating Subgraph to Partition Mapping");
+  //TODO:read SubgraphPartitionMap from a file and populate it here   ... removed because of a hack... FIXME
+// String spmFile="/scratch/SynthGraphPart/PartitiontoSubgraphMapping/spmFile"; 
+//LOG.info("Populating Subgraph to Partition Mapping");
 long start=System.currentTimeMillis();
- FileReader fr = new FileReader(spmFile);
- BufferedReader br = new BufferedReader(fr);
-
- String sCurrentLine;
-
- while ((sCurrentLine = br.readLine()) != null) {
-	 String pData = sCurrentLine.substring(1, sCurrentLine.length()-1);
-	 String data[]=pData.split(",");
-	 int pid=Integer.parseInt(data[0]);
-	 String sdata=data[1].substring(1, data[1].length()-1);
-	 String subArray[]=sdata.split(",");
-	 for(String subgraph:subArray) {
-		 subgraphPartitionMap.put((K)new LongWritable(Long.parseLong(subgraph)), logicalToPeerMapping.get(pid));
-	 }
- }
- 
- br.close();
+// FileReader fr = new FileReader(spmFile);
+// BufferedReader br = new BufferedReader(fr);
+//
+// String sCurrentLine;
+//
+// while ((sCurrentLine = br.readLine()) != null) {
+//	 String pData = sCurrentLine.substring(1, sCurrentLine.length()-1);
+//	 String data[]=pData.split(",");
+//	 int pid=Integer.parseInt(data[0]);
+//	 String sdata=data[1].substring(1, data[1].length()-1);
+//	 String subArray[]=sdata.split(",");
+//	 for(String subgraph:subArray) {
+//		 subgraphPartitionMap.put((K)new LongWritable(Long.parseLong(subgraph)), logicalToPeerMapping.get(pid));
+//	 }
+// }
+// 
+// br.close();
  LOG.info("Populating subgraph to Partition Time:" + (System.currentTimeMillis()-start));
  
 //TODO:Read remoteVertexToSubgraph here and populate the object
  LOG.info("Populating remote Vertex to Subgraph Mapping");
  start=System.currentTimeMillis();
-// String rvsmFile="/scratch/abhilash/RemoteVertex/rvsmFile" + pseudoPartId; 
-//
-// FileReader fr1 = new FileReader(rvsmFile);
-// BufferedReader br1 = new BufferedReader(fr1);
-//
-//
-// while ((sCurrentLine = br1.readLine()) != null) {
-//	 String pData = sCurrentLine.substring(4, sCurrentLine.length()-2);
-//	 String[] data= pData.split(",\\s+");
-//	 
-//	
-//	 for(String tuple:data) {
-//		 String[] rtuple=tuple.substring(1, tuple.length()-1).split(",");
-//		 remoteVertexToSubgraphMap.put(Long.parseLong(rtuple[0]), Long.parseLong(rtuple[1]));
-//	 }
-// }
-// 
-// br1.close();
+ String rvsmFile="/scratch/abhilash/RemoteVertex/rvsmFile" + pseudoPartId; 
+
+ FileReader fr1 = new FileReader(rvsmFile);
+ BufferedReader br1 = new BufferedReader(fr1);
+String sCurrentLine=null;
+
+ while ((sCurrentLine = br1.readLine()) != null) {
+	 String pData = sCurrentLine.substring(4, sCurrentLine.length()-2);
+	 String[] data= pData.split(",\\s+");
+	 
+	
+	 for(String tuple:data) {
+		 String[] rtuple=tuple.substring(1, tuple.length()-1).split(",");
+		 remoteVertexToSubgraphMap.put(Long.parseLong(rtuple[1]), Long.parseLong(rtuple[0]));
+	 }
+ }
+ 
+ br1.close();
  
  LOG.info("Populating remote vertex data Time:" + (System.currentTimeMillis()-start));
  //TODO: Read localVertexToSubgraph File and populate the object.. NO LONGER REQUIRED
@@ -614,8 +616,8 @@ long start=System.currentTimeMillis();
       controlInfo.addextraInfo(subgraphIDbytes); 
      
     }//component loop ends
-      
-      SuccinctArraySubgraph<S, V, E, LongWritable, LongWritable, LongWritable> subgraph = new SuccinctArraySubgraph(logicalsubgraphID,vertexSuccinctBufferList,edgeSuccinctBufferList);
+      LongWritable pid = new LongWritable(pseudoPartId);
+      SuccinctArraySubgraph<S, V, E, LongWritable, LongWritable, LongWritable> subgraph = new SuccinctArraySubgraph(pid,vertexSuccinctBufferList,edgeSuccinctBufferList);
       partition.addSubgraph(subgraph);
 //    sendToAllPartitions(subgraphLocationBroadcast);
       LOG.info("Graph formulation complete");
