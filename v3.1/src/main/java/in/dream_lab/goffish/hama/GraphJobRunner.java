@@ -426,11 +426,11 @@ public final class GraphJobRunner<S extends Writable, V extends Writable, E exte
     ControlMessage controlInfo = new ControlMessage();
     controlInfo.setTransmissionType(IControlMessage.TransmissionType.NORMAL);
     msg.setControlInfo(controlInfo);
-    LOG.info("RUNNERSubgraphToPartitionMapping:" + subgraphID + "," + subgraphPartitionMap);
+//    LOG.info("RUNNERSubgraphToPartitionMapping:" + subgraphID + "," + subgraphPartitionMap);
     
-    for(Entry<K, Integer> entry:subgraphPartitionMap.entrySet()) {
-   	 LOG.info("SPMAP:"+ entry.getKey().toString() + "," + entry.getValue().toString());
-    }
+//    for(Entry<K, Integer> entry:subgraphPartitionMap.entrySet()) {
+//   	 LOG.info("SPMAP:"+ entry.getKey().toString() + "," + entry.getValue().toString());
+//    }
     sendMessage(peer.getPeerName(subgraphPartitionMap.get(subgraphID)), msg);
   }
 

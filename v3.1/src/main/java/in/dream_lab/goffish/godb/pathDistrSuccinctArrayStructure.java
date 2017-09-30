@@ -1075,25 +1075,32 @@ implements ISubgraphWrapup{
 	    queryEnd=true;
 	  LOG.info("Ending Query Execution");
 	  }
+	  long resultSetSize=0;
 		for(Map.Entry<Long, ResultSet> entry: getSubgraph().getSubgraphValue().resultsMap.entrySet()) {
 			if (!entry.getValue().revResultSet.isEmpty())
 				for(String partialRevPath: entry.getValue().revResultSet) {
 					if (!entry.getValue().forwardResultSet.isEmpty())
 						for(String partialForwardPath: entry.getValue().forwardResultSet) {
 							LOG.info("ResultSetBothNotEmpty:" +partialRevPath+partialForwardPath);
+							resultSetSize++;
 							//output(partition.getId(), subgraph.getId(), partialRevPath+partialForwardPath); 
 						}
 					else{
 						LOG.info("ResultSetForwardEmpty:" +partialRevPath);
+						resultSetSize++;
 						//output(partition.getId(), subgraph.getId(), partialRevPath);
 					}
 				}
 			else
 				for(String partialForwardPath: entry.getValue().forwardResultSet) {
 					LOG.info("ResultSetReverseEmpty:" +partialForwardPath);
+					resultSetSize++;
 					//output(partition.getId(), subgraph.getId(), partialForwardPath); 
 				}
 		}
+		 if(resultSetSize!=0){
+	          LOG.info("ResultSetSize:" + resultSetSize);
+	          }
 	LOG.info("Cumulative Result Collection:" +  getSubgraph().getSubgraphValue().resultCollectionTime);	
 		clear();
 	}
