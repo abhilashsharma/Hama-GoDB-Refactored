@@ -539,7 +539,7 @@ implements ISubgraphWrapup{
 	
 	@Override
 	public void compute(Iterable<IMessage<LongWritable, Text>> messageList) {
-		
+		LOG.info("Compute Starts");
 		SuccinctArraySubgraph sg=(SuccinctArraySubgraph)getSubgraph();
 //		System.out.println("**********SUPERSTEPS***********:" + getSuperstep() +"Message List Size:" + messageList.size());
 		
@@ -610,7 +610,7 @@ implements ISubgraphWrapup{
 							
 						}
 						
-//					System.out.println("Starting Position:" + getSubgraph().getSubgraphValue().startPos +"  Query min Cost:" + minCost + "   Path Size:" + getSubgraph().getSubgraphValue().path.size());	
+					System.out.println("Starting Vertices:" +hitList.size());	
 					
 					
 						if(hitList.size()>0){
@@ -859,7 +859,7 @@ implements ISubgraphWrapup{
 		}
 		
 		LOG.info("Ending Query Traversal");
-		
+		LOG.info("Compute Ends");
 		if(getSuperstep()>=1)
 			voteToHalt();
 	}
@@ -1099,7 +1099,7 @@ implements ISubgraphWrapup{
 				}
 		}
 		 if(resultSetSize!=0){
-	          LOG.info("ResultSetSize:" + resultSetSize);
+	          LOG.info(Arguments+"$ResultSetSize:" + resultSetSize);
 	          }
 	LOG.info("Cumulative Result Collection:" +  getSubgraph().getSubgraphValue().resultCollectionTime);	
 		clear();
