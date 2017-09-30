@@ -592,37 +592,47 @@ String sCurrentLine=null;
 //      ConstructSuccinctFile.construct("/home/abhilash/SuccinctSubgraphFiles/Sub"+subgraphID.get() + "edgeData", "/home/abhilash/SuccinctSubgraphFiles/Sub"+subgraphID.get() + "edgeData.succinct");
     	String vertexPath=vfiles[i].getAbsolutePath();
     	LOG.info("Vertex Succinct Path:" + vertexPath);
-    	String edgePath=efiles[i].getAbsolutePath();
-    	LOG.info("Edge Succinct Path:" + edgePath);
+//    	String edgePath=efiles[i].getAbsolutePath();
+//    	LOG.info("Edge Succinct Path:" + edgePath);
     	SuccinctIndexedFileBuffer succinctIndexedVertexFileBuffer = new SuccinctIndexedFileBuffer(vertexPath, StorageMode.MEMORY_ONLY);
-        SuccinctIndexedFileBuffer succinctIndexedEdgeFileBuffer = new SuccinctIndexedFileBuffer(edgePath, StorageMode.MEMORY_ONLY);
+//        SuccinctIndexedFileBuffer succinctIndexedEdgeFileBuffer = new SuccinctIndexedFileBuffer(edgePath, StorageMode.MEMORY_ONLY);
     	
 //        String partFile=vfiles[i].getName().split("Vertex")[0];
 
         	vertexSuccinctBufferList.add( succinctIndexedVertexFileBuffer);
-        	edgeSuccinctBufferList.add( succinctIndexedEdgeFileBuffer);
-        
-//      Subgraph<S, V, E, LongWritable, LongWritable, LongWritable> classicSubgraph = new Subgraph<S, V, E, LongWritable, LongWritable, LongWritable>(
-//              peer.getPeerIndex(), subgraphID);
-          
-
-//          for (IVertex<V, E, LongWritable, LongWritable> vertex : component) {
-////            classicSubgraph.addVertex(vertex);
-//            
-//            // Dont add remote vertices to the VertexSubgraphMap as remote vertex subgraphID is unknown
-//            if (!vertex.isRemote()) {
-//              vertexSubgraphMap.put(vertex.getVertexId(), subgraph.getSubgraphId());
-//            }        
-//          }
-
-      
-      
+//        	edgeSuccinctBufferList.add( succinctIndexedEdgeFileBuffer);
       
 //      classicPartition.addSubgraph(classicSubgraph);
-      byte subgraphIDbytes[] = Longs.toByteArray(subgraphID.get());
-      controlInfo.addextraInfo(subgraphIDbytes); 
-     
+//      byte subgraphIDbytes[] = Longs.toByteArray(subgraphID.get());
+//      controlInfo.addextraInfo(subgraphIDbytes); 
+//     
     }//component loop ends
+    
+    
+    for (int i=0;i <efiles.length;i++ ) {
+//    LongWritable subgraphID = new LongWritable(
+//            subgraphCount++ | (((long) pseudoPartId) << 32));
+      //Reads a partition 
+      //TODO:remove hard coding later
+//      ConstructSuccinctFile.construct("/home/abhilash/SuccinctSubgraphFiles/Sub"+subgraphID.get() + "VertexData", "/home/abhilash/SuccinctSubgraphFiles/Sub"+subgraphID.get() + "VertexData.succinct");
+//      ConstructSuccinctFile.construct("/home/abhilash/SuccinctSubgraphFiles/Sub"+subgraphID.get() + "edgeData", "/home/abhilash/SuccinctSubgraphFiles/Sub"+subgraphID.get() + "edgeData.succinct");
+//    	String vertexPath=vfiles[i].getAbsolutePath();
+//    	LOG.info("Vertex Succinct Path:" + vertexPath);
+    	String edgePath=efiles[i].getAbsolutePath();
+    	LOG.info("Edge Succinct Path:" + edgePath);
+//    	SuccinctIndexedFileBuffer succinctIndexedVertexFileBuffer = new SuccinctIndexedFileBuffer(vertexPath, StorageMode.MEMORY_ONLY);
+        SuccinctIndexedFileBuffer succinctIndexedEdgeFileBuffer = new SuccinctIndexedFileBuffer(edgePath, StorageMode.MEMORY_ONLY);
+    	
+//        String partFile=vfiles[i].getName().split("Vertex")[0];
+
+//        	vertexSuccinctBufferList.add( succinctIndexedVertexFileBuffer);
+        	edgeSuccinctBufferList.add( succinctIndexedEdgeFileBuffer);
+      
+//      classicPartition.addSubgraph(classicSubgraph);
+//      byte subgraphIDbytes[] = Longs.toByteArray(subgraphID.get());
+//      controlInfo.addextraInfo(subgraphIDbytes); 
+//     
+    }
       LongWritable pid = new LongWritable(pseudoPartId);
       SuccinctArraySubgraph<S, V, E, LongWritable, LongWritable, LongWritable> subgraph = new SuccinctArraySubgraph(pid,vertexSuccinctBufferList,edgeSuccinctBufferList);
       partition.addSubgraph(subgraph);
