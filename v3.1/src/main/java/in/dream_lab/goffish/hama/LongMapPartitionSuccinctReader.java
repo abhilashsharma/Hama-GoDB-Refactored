@@ -35,6 +35,7 @@ import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Queue;
 import java.util.Set;
 import java.util.regex.Pattern;
@@ -52,6 +53,8 @@ import org.apache.hama.bsp.BSPPeerImpl;
 import org.apache.hama.bsp.sync.SyncException;
 import org.apache.hama.commons.util.KeyValuePair;
 import org.apache.hama.util.ReflectionUtils;
+import org.apache.tools.ant.taskdefs.PathConvert.MapEntry;
+
 import com.google.gson.*;
 
 import edu.berkeley.cs.succinct.StorageMode;
@@ -338,7 +341,11 @@ while ((msg = (Message<LongWritable, LongWritable>) peer.getCurrentMessage()) !=
 }
  
 subgraphPartitionMap=logicalToPeerMapping;
+ LOG.info("SubgraphToPartitionMapping:");
  
+ for(Entry<K, Integer> entry:subgraphPartitionMap.entrySet()) {
+	 LOG.info("SPMAP:"+ entry.getKey().toString() + "," + entry.getValue().toString());
+ }
   //TODO:read SubgraphPartitionMap from a file and populate it here   ... removed because of a hack... FIXME
 // String spmFile="/scratch/SynthGraphPart/PartitiontoSubgraphMapping/spmFile"; 
 //LOG.info("Populating Subgraph to Partition Mapping");
