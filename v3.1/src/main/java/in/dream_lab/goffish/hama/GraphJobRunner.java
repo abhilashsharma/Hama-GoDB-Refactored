@@ -25,6 +25,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.Map.Entry;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.Executors;
 import java.util.concurrent.RejectedExecutionHandler;
@@ -425,6 +426,11 @@ public final class GraphJobRunner<S extends Writable, V extends Writable, E exte
     ControlMessage controlInfo = new ControlMessage();
     controlInfo.setTransmissionType(IControlMessage.TransmissionType.NORMAL);
     msg.setControlInfo(controlInfo);
+    LOG.info("RUNNERSubgraphToPartitionMapping:" + subgraphID + "," + subgraphPartitionMap);
+    
+    for(Entry<K, Integer> entry:subgraphPartitionMap.entrySet()) {
+   	 LOG.info("SPMAP:"+ entry.getKey().toString() + "," + entry.getValue().toString());
+    }
     sendMessage(peer.getPeerName(subgraphPartitionMap.get(subgraphID)), msg);
   }
 

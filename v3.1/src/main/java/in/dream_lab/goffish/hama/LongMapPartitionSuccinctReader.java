@@ -336,11 +336,11 @@ while ((msg = (Message<LongWritable, LongWritable>) peer.getCurrentMessage()) !=
 		
   Integer logicalPartitionId=Ints.fromByteArray(mIter.next().getBytes());
   Integer peerIndex = Ints.fromByteArray(mIter.next().getBytes());
-  logicalToPeerMapping.put((K)new LongWritable(logicalPartitionId.longValue()), peerIndex);
+  subgraphPartitionMap.put((K)new LongWritable(logicalPartitionId.longValue()), peerIndex);
 
 }
  
-subgraphPartitionMap=logicalToPeerMapping;
+//subgraphPartitionMap=logicalToPeerMapping;
  LOG.info("SubgraphToPartitionMapping:");
  
  for(Entry<K, Integer> entry:subgraphPartitionMap.entrySet()) {
@@ -584,8 +584,7 @@ String sCurrentLine=null;
     LongWritable logicalsubgraphID = new LongWritable(
             subgraphCount++ | (((long) pseudoPartId) << 32));
     for (int i=0;i <vfiles.length;i++ ) {
-    LongWritable subgraphID = new LongWritable(
-            subgraphCount++ | (((long) pseudoPartId) << 32));
+  
       //Reads a partition 
       //TODO:remove hard coding later
 //      ConstructSuccinctFile.construct("/home/abhilash/SuccinctSubgraphFiles/Sub"+subgraphID.get() + "VertexData", "/home/abhilash/SuccinctSubgraphFiles/Sub"+subgraphID.get() + "VertexData.succinct");
