@@ -817,7 +817,7 @@ implements ISubgraphWrapup{
 					
 				remoteMessage.append(";").append(stuff.queryId);
 				Text remoteM = new Text(remoteMessage.toString());
-				LOG.info("RemoteMap:" + (long)sg.getRemoteMap().get(stuff.vertexId) + "," +stuff.vertexId);
+//				LOG.info("RemoteMap:" + (long)sg.getRemoteMap().get(stuff.vertexId) + "," +stuff.vertexId);
 				sendMessage(new LongWritable((long) sg.getRemoteMap().get(stuff.vertexId)),remoteM);
 
 					
