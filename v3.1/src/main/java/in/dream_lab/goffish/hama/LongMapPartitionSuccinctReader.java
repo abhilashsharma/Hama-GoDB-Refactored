@@ -379,7 +379,7 @@ long start=System.currentTimeMillis();
 String sCurrentLine=null;
 
  while ((sCurrentLine = br1.readLine()) != null) {
-	 String pData = sCurrentLine.substring(4, sCurrentLine.length()-2);
+	 String pData = sCurrentLine.substring(5, sCurrentLine.length()-2);
 	 String[] data= pData.split(",\\s+");
 	 
 
