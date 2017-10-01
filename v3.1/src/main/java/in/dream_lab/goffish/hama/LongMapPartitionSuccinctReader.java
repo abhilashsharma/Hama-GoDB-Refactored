@@ -382,11 +382,19 @@ String sCurrentLine=null;
 	 String pData = sCurrentLine.substring(4, sCurrentLine.length()-2);
 	 String[] data= pData.split(",\\s+");
 	 
+
+		
 	
 	 for(String tuple:data) {
+		 try {
 		 String[] rtuple=tuple.substring(1, tuple.length()-1).split(",");
 		 remoteVertexToSubgraphMap.put(Long.parseLong(rtuple[1]), Long.parseLong(rtuple[0]));
+		 
+		 }catch(Exception e) {
+			 LOG.info("Exception in Line:"+sCurrentLine+"  Exception:" + e.getMessage());
+		 }
 	 }
+	
  }
  
  br1.close();
