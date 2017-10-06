@@ -362,7 +362,7 @@ AbstractSubgraphComputation<MetaGraphDistrSubgraphState, MapValue, MapValue, Tex
 	      remoteMapStr+=entry.getKey() + "," + entry.getValue();
 	  }
 	  LOG.info("SGID:" + getSubgraph().getSubgraphId().get() + ":" + getSubgraph().getLocalVertexCount() + ":" + totalRemoteEdgeCount + ":" + remoteMapStr);
-	  
+	voteToHalt();  
   }
   
   
