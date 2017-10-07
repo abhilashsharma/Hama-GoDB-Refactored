@@ -351,7 +351,9 @@ AbstractSubgraphComputation<MetaGraphDistrSubgraphState, MapValue, MapValue, Tex
 		  if(count==null) {
 			  count=0l;
 		  }
-		  remoteSGEdgeCountMap.put(remoteVertex.getSubgraphId().get(), count+1);
+		  count++;
+//		  LOG.info("REMOTEPARTIAL:"+ remoteVertex.getSubgraphId().get()+","+count);
+		  remoteSGEdgeCountMap.put(remoteVertex.getSubgraphId().get(), count);
 		  totalRemoteEdgeCount++;
 	  }
 	  
@@ -359,7 +361,7 @@ AbstractSubgraphComputation<MetaGraphDistrSubgraphState, MapValue, MapValue, Tex
 	  
 	  for (Entry<Long, Long> entry : remoteSGEdgeCountMap.entrySet())
 	  {
-	      remoteMapStr+=entry.getKey() + "," + entry.getValue();
+	      remoteMapStr+=","+entry.getKey() + "," + entry.getValue();
 	  }
 	  LOG.info("SGID:" + getSubgraph().getSubgraphId().get() + ":" + getSubgraph().getLocalVertexCount() + ":" + totalRemoteEdgeCount + ":" + remoteMapStr);
 	voteToHalt();  
@@ -387,40 +389,8 @@ AbstractSubgraphComputation<MetaGraphDistrSubgraphState, MapValue, MapValue, Tex
 	@Override
 	public void wrapup() {
 		//Writing results back
-
-	    if(!queryEnd){
-	        queryEnd=true;
-	        LOG.info("Ending Query Execution");
-	    }
-	  
-		
-		
-		for(Map.Entry<Long, ResultSet> entry: getSubgraph().getSubgraphValue().resultsMap.entrySet()) {
-			if (!entry.getValue().revResultSet.isEmpty())
-				for(String partialRevPath: entry.getValue().revResultSet) {
-					if (!entry.getValue().forwardResultSet.isEmpty())
-						for(String partialForwardPath: entry.getValue().forwardResultSet) {
-							LOG.info("ResultSet:" +partialRevPath+partialForwardPath);
-							//output(partition.getId(), subgraph.getId(), partialRevPath+partialForwardPath); 
-						}
-					else{
-						LOG.info("ResultSet:" +partialRevPath);
-						//output(partition.getId(), subgraph.getId(), partialRevPath);
-					}
-				}
-			else
-				for(String partialForwardPath: entry.getValue().forwardResultSet) {
-					LOG.info("ResultSet:" +partialForwardPath);
-					//output(partition.getId(), subgraph.getId(), partialForwardPath); 
-				}
-		}
-		
-		
-//		LOG.info("SetSize:" + getSubgraph().getSubgraphValue().resultsMap.size());
-		LOG.info("Cumulative Result Collection:" + getSubgraph().getSubgraphValue().resultCollectionTime);
-		
 		//clearing Subgraph Value for next query
-		clear();
+//		clear();
 	}
 
 
