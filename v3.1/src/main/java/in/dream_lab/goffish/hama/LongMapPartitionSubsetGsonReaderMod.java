@@ -262,7 +262,7 @@ public class LongMapPartitionSubsetGsonReaderMod<S extends Writable, V extends W
         controlInfo.addextraInfo(subgraphIDbytes);
       }
       if (hasAVertex) {
-        peer.send(peer.getPeerName(sinkPartition.intValue()),
+        peer.send(peer.getPeerName(sinkPartition.intValue()),	
             (Message<K, M>) subgraphIDReply);
       }
     }
@@ -358,7 +358,7 @@ public class LongMapPartitionSubsetGsonReaderMod<S extends Writable, V extends W
           0);//dummy value as edgeid is not used
       //fix this
       //same format as vertex
-      String[] eprop= edgeValues.get(2).toString().split(Pattern.quote("$"));
+//      String[] eprop= edgeValues.get(2).toString().split(Pattern.quote("$"));
 //      MapWritable edgeMap=new MapWritable();
 //      for(int i=0;i<eprop.length;i++){
 //        String[] map=eprop[i].split(Pattern.quote(":"));
