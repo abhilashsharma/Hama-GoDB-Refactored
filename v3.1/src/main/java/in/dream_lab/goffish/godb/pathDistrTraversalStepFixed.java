@@ -1008,13 +1008,13 @@ implements ISubgraphWrapup{
 			//output(partition.getId(), subgraph.getId(), getSuperstep()+":"+forwardLocalVertexList.size()+":"+revLocalVertexList.size());
 			// PROCESS FORWARD LIST
 			//System.out.println("FORWARD LIST:"+forwardLocalVertexList.isEmpty() +" REV LIST:"+revLocalVertexList.isEmpty() + "SGID:" + subgraph.getId() + " PID:" + partition.getId());
-				LOG.info("Traversal Memory" + " Free Memory: " + Runtime.getRuntime().freeMemory() + " Total Memory:" + Runtime.getRuntime().totalMemory() + " TraversalSteps:" + getSubgraph().getSubgraphValue().forwardLocalVertexList.size());
+				LOG.info("SGID:" + getSubgraph().getSubgraphId()+" Traversal Memory" + " Free Memory: " + Runtime.getRuntime().freeMemory() + " Total Memory:" + Runtime.getRuntime().totalMemory() + " TraversalSteps:" + getSubgraph().getSubgraphValue().forwardLocalVertexList.size() + "," + getSuperstep());
 				LinkedList<VertexMessageSteps> nextStepForwardLocalVertexList = new LinkedList<VertexMessageSteps>();
 			while(!getSubgraph().getSubgraphValue().forwardLocalVertexList.isEmpty()) {
 				VertexMessageSteps vertexMessageStep = getSubgraph().getSubgraphValue().forwardLocalVertexList.poll();
 				if(getSubgraph().getSubgraphValue().forwardLocalVertexList.isEmpty()) {
 					getSubgraph().getSubgraphValue().forwardLocalVertexList=nextStepForwardLocalVertexList;
-				LOG.info("Traversal Memory" + " Free Memory: " + Runtime.getRuntime().freeMemory() + " Total Memory:" + Runtime.getRuntime().totalMemory() + " TraversalSteps:" + getSubgraph().getSubgraphValue().forwardLocalVertexList.size());
+				LOG.info("SGID:" + getSubgraph().getSubgraphId() +" Traversal Memory" + " Free Memory: " + Runtime.getRuntime().freeMemory() + " Total Memory:" + Runtime.getRuntime().totalMemory() + " TraversalSteps:" + getSubgraph().getSubgraphValue().forwardLocalVertexList.size() + "," + getSuperstep());
 				}
 				//output(partition.getId(), subgraph.getId(), "FORWARD-LIST");
 				/* if last step,end that iteration*/
