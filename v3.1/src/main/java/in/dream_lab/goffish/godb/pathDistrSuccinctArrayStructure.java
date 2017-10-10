@@ -804,7 +804,7 @@ implements ISubgraphWrapup{
 				
 			}
 			
-			LOG.info("Sending Remote Messages");
+			LOG.info("Sending Remote Messages:" + getSubgraph().getSubgraphValue().forwardRemoteVertexList.size() + "," + getSubgraph().getSubgraphValue().revRemoteVertexList.size());
 			// TODO: send the messages in Remote vertex list
 			for(VertexMessageSteps stuff: getSubgraph().getSubgraphValue().forwardRemoteVertexList){
 				// send message to all the remote vertices
