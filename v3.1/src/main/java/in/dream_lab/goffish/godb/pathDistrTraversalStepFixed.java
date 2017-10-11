@@ -1008,12 +1008,12 @@ implements ISubgraphWrapup{
 			//output(partition.getId(), subgraph.getId(), getSuperstep()+":"+forwardLocalVertexList.size()+":"+revLocalVertexList.size());
 			// PROCESS FORWARD LIST
 			//System.out.println("FORWARD LIST:"+forwardLocalVertexList.isEmpty() +" REV LIST:"+revLocalVertexList.isEmpty() + "SGID:" + subgraph.getId() + " PID:" + partition.getId());
-				long[] count1=new long[getSubgraph().getSubgraphValue().path.size()];//assuming default is zero
+				long[] count=new long[getSubgraph().getSubgraphValue().path.size()];//assuming default is zero
 				String countStr1="";
 				for(VertexMessageSteps v: getSubgraph().getSubgraphValue().forwardLocalVertexList) {
-					count1[v.stepsTraversed]++;
+					count[v.stepsTraversed]++;
 				}
-				for(long c:count1) {
+				for(long c:count) {
 					countStr1+=","+c;
 				}
 				LOG.info("SGID:" + getSubgraph().getSubgraphId()+" Traversal Memory" + " Free Memory: " + Runtime.getRuntime().freeMemory() + " Total Memory:" + Runtime.getRuntime().totalMemory() + " TraversalSteps:" + countStr1 + ":" +getSubgraph().getSubgraphValue().forwardLocalVertexList.size()+"," + getSuperstep());
@@ -1021,12 +1021,9 @@ implements ISubgraphWrapup{
 			while(!getSubgraph().getSubgraphValue().forwardLocalVertexList.isEmpty()) {
 				VertexMessageSteps vertexMessageStep = getSubgraph().getSubgraphValue().forwardLocalVertexList.poll();
 				if(getSubgraph().getSubgraphValue().forwardLocalVertexList.isEmpty()) {
+					count[vertexMessageStep.stepsTraversed]++;
 					getSubgraph().getSubgraphValue().forwardLocalVertexList=nextStepForwardLocalVertexList;
-					long[] count=new long[getSubgraph().getSubgraphValue().path.size()];//assuming default is zero
 					String countStr="";
-					for(VertexMessageSteps v: getSubgraph().getSubgraphValue().forwardLocalVertexList) {
-						count[v.stepsTraversed]++;
-					}
 					for(long c:count) {
 						countStr+=","+c;
 					}
@@ -1076,7 +1073,7 @@ implements ISubgraphWrapup{
 				}
 				
 				Step nextStep = getSubgraph().getSubgraphValue().path.get(vertexMessageStep.stepsTraversed+1);
-				
+				count[vertexMessageStep.stepsTraversed]++;
 				
 				IVertex<MapValue, MapValue, LongWritable, LongWritable> currentVertex = getSubgraph().getVertexById(new LongWritable(vertexMessageStep.vertexId));
 				
