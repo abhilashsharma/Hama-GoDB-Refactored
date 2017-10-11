@@ -1016,7 +1016,7 @@ implements ISubgraphWrapup{
 				for(long c:count1) {
 					countStr1+=","+c;
 				}
-				LOG.info("SGID:" + getSubgraph().getSubgraphId()+" Traversal Memory" + " Free Memory: " + Runtime.getRuntime().freeMemory() + " Total Memory:" + Runtime.getRuntime().totalMemory() + " TraversalSteps:" + countStr1 + ":" + getSuperstep());
+				LOG.info("SGID:" + getSubgraph().getSubgraphId()+" Traversal Memory" + " Free Memory: " + Runtime.getRuntime().freeMemory() + " Total Memory:" + Runtime.getRuntime().totalMemory() + " TraversalSteps:" + countStr1 + ":" +getSubgraph().getSubgraphValue().forwardLocalVertexList.size()+"," + getSuperstep());
 				LinkedList<VertexMessageSteps> nextStepForwardLocalVertexList = new LinkedList<VertexMessageSteps>();
 			while(!getSubgraph().getSubgraphValue().forwardLocalVertexList.isEmpty()) {
 				VertexMessageSteps vertexMessageStep = getSubgraph().getSubgraphValue().forwardLocalVertexList.poll();
@@ -1030,7 +1030,7 @@ implements ISubgraphWrapup{
 					for(long c:count) {
 						countStr+=","+c;
 					}
-				LOG.info("SGID:" + getSubgraph().getSubgraphId() +" Traversal Memory" + " Free Memory: " + Runtime.getRuntime().freeMemory() + " Total Memory:" + Runtime.getRuntime().totalMemory() + " TraversalSteps:" + countStr + ":" + getSuperstep());
+				LOG.info("SGID:" + getSubgraph().getSubgraphId() +" Traversal Memory" + " Free Memory: " + Runtime.getRuntime().freeMemory() + " Total Memory:" + Runtime.getRuntime().totalMemory() + " TraversalSteps:" + countStr + ":" +getSubgraph().getSubgraphValue().forwardLocalVertexList.size()+"," + getSuperstep());
 				}
 				//output(partition.getId(), subgraph.getId(), "FORWARD-LIST");
 				/* if last step,end that iteration*/
