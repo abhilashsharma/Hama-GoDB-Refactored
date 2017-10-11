@@ -1008,13 +1008,29 @@ implements ISubgraphWrapup{
 			//output(partition.getId(), subgraph.getId(), getSuperstep()+":"+forwardLocalVertexList.size()+":"+revLocalVertexList.size());
 			// PROCESS FORWARD LIST
 			//System.out.println("FORWARD LIST:"+forwardLocalVertexList.isEmpty() +" REV LIST:"+revLocalVertexList.isEmpty() + "SGID:" + subgraph.getId() + " PID:" + partition.getId());
-				LOG.info("SGID:" + getSubgraph().getSubgraphId()+" Traversal Memory" + " Free Memory: " + Runtime.getRuntime().freeMemory() + " Total Memory:" + Runtime.getRuntime().totalMemory() + " TraversalSteps:" + getSubgraph().getSubgraphValue().forwardLocalVertexList.size() + "," + getSuperstep());
+				long[] count1=new long[getSubgraph().getSubgraphValue().path.size()];//assuming default is zero
+				String countStr1="";
+				for(VertexMessageSteps v: getSubgraph().getSubgraphValue().forwardLocalVertexList) {
+					count1[v.stepsTraversed]++;
+				}
+				for(long c:count1) {
+					countStr1+=","+c;
+				}
+				LOG.info("SGID:" + getSubgraph().getSubgraphId()+" Traversal Memory" + " Free Memory: " + Runtime.getRuntime().freeMemory() + " Total Memory:" + Runtime.getRuntime().totalMemory() + " TraversalSteps:" + countStr1 + ":" + getSuperstep());
 				LinkedList<VertexMessageSteps> nextStepForwardLocalVertexList = new LinkedList<VertexMessageSteps>();
 			while(!getSubgraph().getSubgraphValue().forwardLocalVertexList.isEmpty()) {
 				VertexMessageSteps vertexMessageStep = getSubgraph().getSubgraphValue().forwardLocalVertexList.poll();
 				if(getSubgraph().getSubgraphValue().forwardLocalVertexList.isEmpty()) {
 					getSubgraph().getSubgraphValue().forwardLocalVertexList=nextStepForwardLocalVertexList;
-				LOG.info("SGID:" + getSubgraph().getSubgraphId() +" Traversal Memory" + " Free Memory: " + Runtime.getRuntime().freeMemory() + " Total Memory:" + Runtime.getRuntime().totalMemory() + " TraversalSteps:" + getSubgraph().getSubgraphValue().forwardLocalVertexList.size() + "," + getSuperstep());
+					long[] count=new long[getSubgraph().getSubgraphValue().path.size()];//assuming default is zero
+					String countStr="";
+					for(VertexMessageSteps v: getSubgraph().getSubgraphValue().forwardLocalVertexList) {
+						count[v.stepsTraversed]++;
+					}
+					for(long c:count) {
+						countStr+=","+c;
+					}
+				LOG.info("SGID:" + getSubgraph().getSubgraphId() +" Traversal Memory" + " Free Memory: " + Runtime.getRuntime().freeMemory() + " Total Memory:" + Runtime.getRuntime().totalMemory() + " TraversalSteps:" + countStr + ":" + getSuperstep());
 				}
 				//output(partition.getId(), subgraph.getId(), "FORWARD-LIST");
 				/* if last step,end that iteration*/
