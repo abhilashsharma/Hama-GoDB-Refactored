@@ -115,13 +115,14 @@ public class SuccinctArraySubgraph<S extends Writable, V extends Writable, E ext
     	Integer offset;
     	String v;
     	long start;
+    	Log.info("getVertxIDs");
     	for (int i = 0; i < size; i++) {
     	    start = System.nanoTime();	
     		offset = succinctIndexedVertexFileBuffer.getRecordOffset(i);
-    		Log.info("Record offset lookup: "+ (System.nanoTime() - start) + " ns");
+    		Log.info("Lookup record offset(vertex): "+ (System.nanoTime() - start) + " ns\n"+"Size: "+offset.toString().length());
     		start = System.nanoTime();
     		v = succinctIndexedVertexFileBuffer.extractUntil(offset, '@');
-    		Log.info("ExtractUntil: "+(System.nanoTime() - start) + " ns");
+    		Log.info("Extract until(vertex): "+(System.nanoTime() - start) + " ns");
     		vertices.add(Long.parseLong(v.split("//w+")[1]));
     	}
     	return vertices;	
@@ -132,21 +133,24 @@ public class SuccinctArraySubgraph<S extends Writable, V extends Writable, E ext
     {
     	long start = System.nanoTime();
     	List<Long> vid = new ArrayList<>();
+    	Log.info("getVertexByProp");
     	for(SuccinctIndexedFileBuffer succinctIndexedVertexFileBuffer:vertexSuccinctBufferList) {
-    	int offset;
+    	Integer offset;
     	String record;
     	String[] tokens;
     	long startFine = System.nanoTime();
     	Integer[] recordID = succinctIndexedVertexFileBuffer.recordSearchIds(value.getBytes());
-    	Log.info("Lookup record id: "+ (System.nanoTime() - startFine)+ " ns");
-    	for (Integer rid : recordID)
+    	Log.info("Lookup record id(vertex): "+ (System.nanoTime() - startFine)+ " ns");
+    	for (int i = 0; i< recordID.length; i++)
+            Log.info("Size : "+recordID[i].toString().length());
+            for (Integer rid : recordID)
     	{
     		startFine = System.nanoTime();
     		offset = succinctIndexedVertexFileBuffer.getRecordOffset(rid);
-    		Log.info("Record offset lookup: " + (System.nanoTime() - startFine) + " ns");
+    		Log.info("Lookup record offset(vertex): " + (System.nanoTime() - startFine) + " ns\n"+"Size: "+offset.toString().length());
     		startFine = System.nanoTime();
     		record = succinctIndexedVertexFileBuffer.extractUntil(offset, delim);
-    		Log.info("ExtractUntil: "+(System.nanoTime() - startFine) + " ns");
+    		Log.info("Extract until(vertex): "+(System.nanoTime() - startFine) + " ns");
     		tokens=record.split("\\W");
     		for(int i=0;i<tokens.length;i++) {
     			vid.add(Long.parseLong(tokens[i]));

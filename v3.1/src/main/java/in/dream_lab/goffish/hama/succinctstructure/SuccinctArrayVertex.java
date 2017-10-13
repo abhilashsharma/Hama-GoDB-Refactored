@@ -15,6 +15,8 @@ import org.apache.hama.commons.math.Tuple;
 import java.util.ArrayList;
 import java.util.List;
 
+import static in.dream_lab.goffish.hama.succinctstructure.SuccinctArraySubgraph.Log;
+
 /**
  * Created by sandy on 9/9/17.
  */
@@ -40,7 +42,8 @@ public class SuccinctArrayVertex<V extends Writable, E extends Writable, I exten
      * @return
      */
     public Tuple<List<Long>, List<Long>> getEdges()
-    {	
+    {
+        Log.info("getEdges");
     	SuccinctIndexedFileBuffer ebuffer = null;
     	Long searchQuery=((LongWritable)vid).get();
 //    	LOG.info("GETEDGES search:" + searchQuery.toString().concat("@") );
@@ -55,7 +58,7 @@ public class SuccinctArrayVertex<V extends Writable, E extends Writable, I exten
     		}
     	}
     	
-    	int offset;
+    	Integer offset;
         String[] tokens;
         
         String record;
@@ -67,15 +70,17 @@ public class SuccinctArrayVertex<V extends Writable, E extends Writable, I exten
     	}
         long start = System.nanoTime();
         Integer[] recordID = ebuffer.recordSearchIds(wholeQuery.getBytes());
-        LOG.info("Lookup record id: " + (System.nanoTime() - start) + " ns");
+        LOG.info("Lookup record id(edge): " + (System.nanoTime() - start) + " ns");
+        for (int i = 0; i< recordID.length; i++)
+            Log.info("Size : "+recordID[i].toString().length());
         for (Integer rid : recordID)
         {
         	start = System.nanoTime();
             offset = ebuffer.getRecordOffset(rid);
-            LOG.info("Record offset lookup: " + (System.nanoTime() - start) + " ns");
+            LOG.info("Lookup record offset(edge): " + (System.nanoTime() - start) + " ns\n"+"Size: "+offset.toString().length());
             start = System.nanoTime();
             record = ebuffer.extractUntil(offset, delim);
-            LOG.info("ExtractUntil: " + (System.nanoTime() - start) + " ns");
+            LOG.info("Extract until(edge): " + (System.nanoTime() - start) + " ns");
             tokens=record.split("\\W");
             for(int i=3; i < 3 + Integer.parseInt(tokens[2]); i++) 
                 localSinks.add(Long.parseLong(tokens[i]));
@@ -154,7 +159,8 @@ public class SuccinctArrayVertex<V extends Writable, E extends Writable, I exten
         throw new UnsupportedOperationException("We do not set the vertex value");
     }
     public String getPropforVertex(int index)
-    {	
+    {
+        Log.info("getPropforVertex");
     	Long searchQuery=((LongWritable)vid).get();
     	String wholeQuery="#"+searchQuery.toString().concat("@");
     	SuccinctIndexedFileBuffer vbuffer=null;
@@ -165,7 +171,7 @@ public class SuccinctArrayVertex<V extends Writable, E extends Writable, I exten
     		}
     	}
     	
-        int offset;
+        Integer offset;
         String[] tokens;
         String record;
         if(vbuffer==null) {
@@ -174,13 +180,15 @@ public class SuccinctArrayVertex<V extends Writable, E extends Writable, I exten
     	}
         long start = System.nanoTime();
         Integer[] recordID=vbuffer.recordSearchIds(wholeQuery.getBytes());
-        LOG.info("Lookup record id: " + (System.nanoTime() - start) + " ns");
+        LOG.info("Lookup record id(vertex): " + (System.nanoTime() - start) + " ns");
+        for (int i = 0; i< recordID.length; i++)
+            Log.info("Size : "+recordID[i].toString().length());
         start = System.nanoTime();
         offset = vbuffer.getRecordOffset(recordID[0]);
-        LOG.info("Record offset lookup: " + (System.nanoTime() - start) + " ns");
+        LOG.info("Lookup record offset(vertex): " + (System.nanoTime() - start) + " ns\n"+"Size: "+offset.toString().length());
         start = System.nanoTime();
         record = vbuffer.extractUntil(offset, '|');
-        LOG.info("ExtractUntil: " + (System.nanoTime() - start) + " ns");
+        LOG.info("Extract until(vertex): " + (System.nanoTime() - start) + " ns");
         tokens=record.split("\\W");
         return tokens[index+1];
     }
