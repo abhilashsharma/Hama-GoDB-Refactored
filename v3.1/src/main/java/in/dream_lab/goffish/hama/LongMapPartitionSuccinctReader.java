@@ -581,10 +581,10 @@ String sCurrentLine=null;
 //    br2.close();
     
    LOG.info("Graph formulation started");
-    String vdirectory = "/scratch/abhilash12P/RGraphVertex"+pseudoPartId;
+    String vdirectory = "/scratch/abhilash/RGraphVertex"+pseudoPartId;
     File[] vfiles = new File(vdirectory).listFiles();
     Arrays.sort(vfiles);
-    String edirectory = "/scratch/abhilash12P/RGraphEdge"+pseudoPartId;
+    String edirectory = "/scratch/abhilash/RGraphEdge"+pseudoPartId;
     File[] efiles = new File(edirectory).listFiles();
     Arrays.sort(efiles);
     List<SuccinctIndexedFileBuffer> vertexSuccinctBufferList = new ArrayList<SuccinctIndexedFileBuffer>();
