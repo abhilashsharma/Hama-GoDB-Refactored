@@ -372,7 +372,7 @@ long start=System.currentTimeMillis();
 //TODO:Read remoteVertexToSubgraph here and populate the object
  LOG.info("Populating remote Vertex to Subgraph Mapping");
  start=System.currentTimeMillis();
- String rvsmFile="/scratch/abhilash12P/RemoteVertex/rvsmFile" + pseudoPartId; 
+ String rvsmFile="/scratch/abhilash8P/RemoteVertex/rvsmFile" + pseudoPartId; 
 
  FileReader fr1 = new FileReader(rvsmFile);
  BufferedReader br1 = new BufferedReader(fr1);
@@ -581,10 +581,10 @@ String sCurrentLine=null;
 //    br2.close();
     
    LOG.info("Graph formulation started");
-    String vdirectory = "/scratch/abhilash12P/RGraphVertex"+pseudoPartId;
+    String vdirectory = "/scratch/abhilash8P/RGraphVertex"+pseudoPartId;
     File[] vfiles = new File(vdirectory).listFiles();
     Arrays.sort(vfiles);
-    String edirectory = "/scratch/abhilash12P/RGraphEdge"+pseudoPartId;
+    String edirectory = "/scratch/abhilash8P/RGraphEdge"+pseudoPartId;
     File[] efiles = new File(edirectory).listFiles();
     Arrays.sort(efiles);
     List<SuccinctIndexedFileBuffer> vertexSuccinctBufferList = new ArrayList<SuccinctIndexedFileBuffer>();
