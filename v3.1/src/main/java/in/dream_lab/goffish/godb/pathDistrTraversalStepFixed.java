@@ -1018,7 +1018,6 @@ implements ISubgraphWrapup{
 				if(getSubgraph().getSubgraphValue().forwardLocalVertexList.isEmpty()) {
 					count[vertexMessageStep.stepsTraversed]++;
 					getSubgraph().getSubgraphValue().forwardLocalVertexList=nextStepForwardLocalVertexList;
-					LOG.info("COUNT:" + getSubgraph().getSubgraphValue().forwardLocalVertexList.size());
 					String countStr="";
 					for(long c:count) {
 						countStr+=","+c;
@@ -1416,11 +1415,6 @@ implements ISubgraphWrapup{
 					
 				}
 				
-				String countStr="";
-				for(long c:count) {
-					countStr+=","+c;
-				}
-			LOG.info("SGID:" + getSubgraph().getSubgraphId() +" Traversal Memory" + " Free Memory: " + Runtime.getRuntime().freeMemory() + " Total Memory:" + Runtime.getRuntime().totalMemory() + " TraversalSteps:" + countStr + ":" +getSubgraph().getSubgraphValue().forwardLocalVertexList.size()+"," + getSuperstep());
 			}
 
 			// TODO: send the messages in Remote vertex list
@@ -1482,6 +1476,15 @@ implements ISubgraphWrapup{
 			}
 			
 			getSubgraph().getSubgraphValue().outputList.clear();
+			
+			
+			//printing traversal data for analysis
+
+			String countStr="";
+			for(long c:count) {
+				countStr+=","+c;
+			}
+		LOG.info("SGID:" + getSubgraph().getSubgraphId() +" Traversal Memory" + " Free Memory: " + Runtime.getRuntime().freeMemory() + " Total Memory:" + Runtime.getRuntime().totalMemory() + " TraversalSteps:" + countStr + ":" +getSubgraph().getSubgraphValue().forwardLocalVertexList.size()+"," + getSuperstep());
 		}
 		}
 		
