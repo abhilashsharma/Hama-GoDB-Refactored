@@ -119,24 +119,68 @@ AbstractSubgraphComputation<BFSDistrSubgraphState, MapValue, MapValue, Text, Lon
 //		 
 //		 
 //		 LOG.info("SGID:" + getSubgraph().getSubgraphId() + "," + vertexMatch + "," + outDegree);
-		 long vertexMatch=0;
+		 //Degree distribution of US
+//		 long vertexMatch=0;
+//		 String prop="country";
+//		 String value="US";
+//		 for(IVertex<MapValue, MapValue, LongWritable, LongWritable> v: getSubgraph().getLocalVertices()) {
+//			 
+//			 if(v.getValue().get(prop).equals(value)) {
+//				 vertexMatch++;
+//				 long count=0;
+//				 for(IEdge<MapValue, LongWritable, LongWritable> edge:v.getOutEdges()) {
+//					 count++;
+//					 
+//				 }
+//				 LOG.info("DegreeDistr:" + count);
+//			 }
+//		 
+//		 
+//		 }
+		 //Degree distribution of US in path query involving BG->US
+		 String prop1="country";
+		 String value1="BG";
 		 String prop="country";
 		 String value="US";
+		 
+		 List<IVertex<MapValue, MapValue, LongWritable, LongWritable>> queueUS=new ArrayList<>();
+
+		 //BG step
 		 for(IVertex<MapValue, MapValue, LongWritable, LongWritable> v: getSubgraph().getLocalVertices()) {
-			 
-			 if(v.getValue().get(prop).equals(value)) {
-				 vertexMatch++;
-				 long count=0;
-				 for(IEdge<MapValue, LongWritable, LongWritable> edge:v.getOutEdges()) {
-					 count++;
-					 
+		 
+		 if(v.getValue().get(prop1).equals(value1)) {
+
+			 for(IEdge<MapValue, LongWritable, LongWritable> edge:v.getOutEdges()) {
+				 IVertex<MapValue, MapValue, LongWritable, LongWritable> Vertex=getSubgraph().getVertexById(edge.getSinkVertexId());
+				 if(!Vertex.isRemote()) {
+					 if(Vertex.getValue().get(prop).equals(value)) {
+						 queueUS.add(Vertex);
+					 }
 				 }
-				 LOG.info("DegreeDistr:" + count);
+				 
 			 }
-		 
-		 
+//			 LOG.info("DegreeDistr:" + count);
 		 }
-	  }
+	 
+	 
+	 }
+		 
+		//US step 
+		 for(IVertex<MapValue, MapValue, LongWritable, LongWritable> v: queueUS) {
+		 
+		 if(v.getValue().get(prop).equals(value)) {
+			 long count=0;
+			 for(IEdge<MapValue, LongWritable, LongWritable> edge:v.getOutEdges()) {
+				 count++;
+				 
+			 }
+			 LOG.info("DegreeDistr:" + count);
+		 }
+	 }
+		 
+		 
+		 voteToHalt();
+	  }//compute ends
 	 
 	 
   
