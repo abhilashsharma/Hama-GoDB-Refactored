@@ -103,22 +103,39 @@ AbstractSubgraphComputation<BFSDistrSubgraphState, MapValue, MapValue, Text, Lon
 	 @Override
 	  public void compute(Iterable<IMessage<LongWritable, Text>> messages)
 	      throws IOException {
-		 long outDegree=0;
+//		 long outDegree=0;
+//		 long vertexMatch=0;
+//		 String prop="country";
+//		 String value="BG";
+//		 for(IVertex<MapValue, MapValue, LongWritable, LongWritable> v: getSubgraph().getLocalVertices()) {
+//			 
+//			 if(v.getValue().get(prop).equals(value)) {
+//				 vertexMatch++;
+//				 for(IEdge<MapValue, LongWritable, LongWritable> edge:v.getOutEdges()) {
+//					 outDegree++;
+//				 }
+//			 }
+//		 }
+//		 
+//		 
+//		 LOG.info("SGID:" + getSubgraph().getSubgraphId() + "," + vertexMatch + "," + outDegree);
 		 long vertexMatch=0;
 		 String prop="country";
-		 String value="BG";
+		 String value="US";
 		 for(IVertex<MapValue, MapValue, LongWritable, LongWritable> v: getSubgraph().getLocalVertices()) {
 			 
 			 if(v.getValue().get(prop).equals(value)) {
 				 vertexMatch++;
+				 long count=0;
 				 for(IEdge<MapValue, LongWritable, LongWritable> edge:v.getOutEdges()) {
-					 outDegree++;
+					 count++;
+					 
 				 }
+				 LOG.info("DegreeDistr:" + count);
 			 }
+		 
+		 
 		 }
-		 
-		 
-		 LOG.info("SGID:" + getSubgraph().getSubgraphId() + "," + vertexMatch + "," + outDegree);
 	  }
 	 
 	 
