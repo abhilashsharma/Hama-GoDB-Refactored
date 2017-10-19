@@ -1008,6 +1008,7 @@ implements ISubgraphWrapup{
 			//output(partition.getId(), subgraph.getId(), getSuperstep()+":"+forwardLocalVertexList.size()+":"+revLocalVertexList.size());
 			// PROCESS FORWARD LIST
 			//System.out.println("FORWARD LIST:"+forwardLocalVertexList.isEmpty() +" REV LIST:"+revLocalVertexList.isEmpty() + "SGID:" + subgraph.getId() + " PID:" + partition.getId());
+				long[] hopTime=new long[getSubgraph().getSubgraphValue().path.size()];
 				long[] count=new long[getSubgraph().getSubgraphValue().path.size()];//assuming default is zero
 				String countStr1="";
 			
@@ -1066,9 +1067,10 @@ implements ISubgraphWrapup{
 						
 					continue;
 				}
-				
+				long startTime=System.currentTimeMillis();
 				Step nextStep = getSubgraph().getSubgraphValue().path.get(vertexMessageStep.stepsTraversed+1);
 				count[vertexMessageStep.stepsTraversed]++;
+				
 				
 				IVertex<MapValue, MapValue, LongWritable, LongWritable> currentVertex = getSubgraph().getVertexById(new LongWritable(vertexMessageStep.vertexId));
 				
@@ -1225,6 +1227,9 @@ implements ISubgraphWrapup{
 					}
 					
 				}
+				long endTime=System.currentTimeMillis();
+				hopTime[vertexMessageStep.stepsTraversed]+=(startTime-endTime);
+						
 				
 			}
 			
@@ -1414,6 +1419,7 @@ implements ISubgraphWrapup{
 					}
 					
 				}
+			
 				
 			}
 
@@ -1485,6 +1491,14 @@ implements ISubgraphWrapup{
 				countStr+=","+c;
 			}
 		LOG.info("SGID:" + getSubgraph().getSubgraphId() +" Traversal Memory" + " Free Memory: " + Runtime.getRuntime().freeMemory() + " Total Memory:" + Runtime.getRuntime().totalMemory() + " TraversalSteps:" + countStr + ":" +getSubgraph().getSubgraphValue().forwardLocalVertexList.size()+"," + getSuperstep());
+		
+		String timeStr="";
+		for(long t:hopTime) {
+			timeStr+=","+t;
+		}
+		System.gc();
+	LOG.info("SGID:" + getSubgraph().getSubgraphId() +" Traversal Memory" + " Free Memory: " + Runtime.getRuntime().freeMemory() + " Total Memory:" + Runtime.getRuntime().totalMemory() + " TraversalTimeSteps:" + timeStr + ":" + getSuperstep());
+	
 		}
 		}
 		
