@@ -1012,7 +1012,7 @@ implements ISubgraphWrapup{
 				long[] count=new long[getSubgraph().getSubgraphValue().path.size()];//assuming default is zero
 				String countStr1="";
 			
-				LOG.info("SGID:" + getSubgraph().getSubgraphId()+" Traversal Memory" + " Free Memory: " + Runtime.getRuntime().freeMemory() + " Total Memory:" + Runtime.getRuntime().totalMemory() + " TraversalSteps:" + countStr1 + ":" +getSubgraph().getSubgraphValue().forwardLocalVertexList.size()+"," + getSuperstep());
+//				LOG.info("SGID:" + getSubgraph().getSubgraphId()+" Traversal Memory" + " Free Memory: " + Runtime.getRuntime().freeMemory() + " Total Memory:" + Runtime.getRuntime().totalMemory() + " TraversalSteps:" + countStr1 + ":" +getSubgraph().getSubgraphValue().forwardLocalVertexList.size()+"," + getSuperstep());
 				LinkedList<VertexMessageSteps> nextStepForwardLocalVertexList = new LinkedList<VertexMessageSteps>();
 			while(!getSubgraph().getSubgraphValue().forwardLocalVertexList.isEmpty()) {
 				VertexMessageSteps vertexMessageStep = getSubgraph().getSubgraphValue().forwardLocalVertexList.poll();
@@ -1023,7 +1023,7 @@ implements ISubgraphWrapup{
 					for(long c:count) {
 						countStr+=","+c;
 					}
-				LOG.info("SGID:" + getSubgraph().getSubgraphId() +" Traversal Memory" + " Free Memory: " + Runtime.getRuntime().freeMemory() + " Total Memory:" + Runtime.getRuntime().totalMemory() + " TraversalSteps:" + countStr + ":" +getSubgraph().getSubgraphValue().forwardLocalVertexList.size()+"," + getSuperstep());
+//				LOG.info("SGID:" + getSubgraph().getSubgraphId() +" Traversal Memory" + " Free Memory: " + Runtime.getRuntime().freeMemory() + " Total Memory:" + Runtime.getRuntime().totalMemory() + " TraversalSteps:" + countStr + ":" +getSubgraph().getSubgraphValue().forwardLocalVertexList.size()+"," + getSuperstep());
 				}
 				//output(partition.getId(), subgraph.getId(), "FORWARD-LIST");
 				/* if last step,end that iteration*/
@@ -1067,7 +1067,7 @@ implements ISubgraphWrapup{
 						
 					continue;
 				}
-				long startTime=System.currentTimeMillis();
+				long startTime=System.nanoTime();
 				Step nextStep = getSubgraph().getSubgraphValue().path.get(vertexMessageStep.stepsTraversed+1);
 				count[vertexMessageStep.stepsTraversed]++;
 				
@@ -1227,8 +1227,8 @@ implements ISubgraphWrapup{
 					}
 					
 				}
-				long endTime=System.currentTimeMillis();
-				hopTime[vertexMessageStep.stepsTraversed]+=(startTime-endTime);
+				long endTime=System.nanoTime();
+				hopTime[vertexMessageStep.stepsTraversed]+=(endTime-startTime);
 						
 				
 			}
