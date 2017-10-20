@@ -141,16 +141,15 @@ public class SuccinctArraySubgraph<S extends Writable, V extends Writable, E ext
     	long startFine = System.nanoTime();
     	Integer[] recordID = succinctIndexedVertexFileBuffer.recordSearchIds(value.getBytes());
     	Log.info("Lookup record id(vertex): "+ (System.nanoTime() - startFine)+ " ns");
-    	for (int i = 0; i< recordID.length; i++)
-            Log.info("Size : "+recordID[i].toString().length());
-            for (Integer rid : recordID)
-    	{
+    	for (Integer rid : recordID)
+    	 {
     		startFine = System.nanoTime();
     		offset = succinctIndexedVertexFileBuffer.getRecordOffset(rid);
-    		Log.info("Lookup record offset(vertex): " + (System.nanoTime() - startFine) + " ns\n"+"Size: "+offset.toString().length());
+    		Log.info("Lookup record offset(vertex): " + (System.nanoTime() - startFine) + " ns");
     		startFine = System.nanoTime();
     		record = succinctIndexedVertexFileBuffer.extractUntil(offset, delim);
     		Log.info("Extract until(vertex): "+(System.nanoTime() - startFine) + " ns");
+    		Log.info("# Extracted Bytes: " + record.length());
     		tokens=record.split("\\W");
     		for(int i=0;i<tokens.length;i++) {
     			vid.add(Long.parseLong(tokens[i]));

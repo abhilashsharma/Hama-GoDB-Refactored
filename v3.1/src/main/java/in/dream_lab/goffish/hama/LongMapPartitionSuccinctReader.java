@@ -115,6 +115,7 @@ public class LongMapPartitionSuccinctReader<S extends Writable, V extends Writab
   
   public static final Log LOG = LogFactory.getLog(LongMapPartitionSuccinctReader.class);
   Integer pseudoPartId=null;
+  String dataDir=null;
   @Override
   public List<ISubgraph<S, V, E, LongWritable, LongWritable, LongWritable>> getSubgraphs()
       throws IOException, SyncException, InterruptedException {
@@ -126,7 +127,9 @@ public class LongMapPartitionSuccinctReader<S extends Writable, V extends Writab
     
     KeyValuePair<Writable, Writable> pair;
     pair=peer.readNext();
-    pseudoPartId=Integer.parseInt(pair.getValue().toString());
+    String[] temp=pair.getValue().toString().split(";");
+    pseudoPartId=Integer.parseInt(temp[0]);
+    dataDir=temp[1];
     
 //Json creation of vertices... not required for succinct reader    
 //    while ((pair = peer.readNext()) != null) {
@@ -372,7 +375,7 @@ long start=System.currentTimeMillis();
 //TODO:Read remoteVertexToSubgraph here and populate the object
  LOG.info("Populating remote Vertex to Subgraph Mapping");
  start=System.currentTimeMillis();
- String rvsmFile="/scratch/abhilash/RemoteVertex/rvsmFile" + pseudoPartId; 
+ String rvsmFile= dataDir + "RemoteVertex/rvsmFile" + pseudoPartId; 
 
  FileReader fr1 = new FileReader(rvsmFile);
  BufferedReader br1 = new BufferedReader(fr1);
@@ -581,10 +584,10 @@ String sCurrentLine=null;
 //    br2.close();
     
    LOG.info("Graph formulation started");
-    String vdirectory = "/scratch/abhilash/RGraphVertex"+pseudoPartId;
+    String vdirectory = dataDir+"RGraphVertex"+pseudoPartId;
     File[] vfiles = new File(vdirectory).listFiles();
     Arrays.sort(vfiles);
-    String edirectory = "/scratch/abhilash/RGraphEdge"+pseudoPartId;
+    String edirectory = dataDir+"RGraphEdge"+pseudoPartId;
     File[] efiles = new File(edirectory).listFiles();
     Arrays.sort(efiles);
     List<SuccinctIndexedFileBuffer> vertexSuccinctBufferList = new ArrayList<SuccinctIndexedFileBuffer>();

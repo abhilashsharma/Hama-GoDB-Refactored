@@ -71,16 +71,15 @@ public class SuccinctArrayVertex<V extends Writable, E extends Writable, I exten
         long start = System.nanoTime();
         Integer[] recordID = ebuffer.recordSearchIds(wholeQuery.getBytes());
         LOG.info("Lookup record id(edge): " + (System.nanoTime() - start) + " ns");
-        for (int i = 0; i< recordID.length; i++)
-            Log.info("Size : "+recordID[i].toString().length());
         for (Integer rid : recordID)
         {
         	start = System.nanoTime();
             offset = ebuffer.getRecordOffset(rid);
-            LOG.info("Lookup record offset(edge): " + (System.nanoTime() - start) + " ns\n"+"Size: "+offset.toString().length());
+            LOG.info("Lookup record offset(edge): " + (System.nanoTime() - start) + " ns");
             start = System.nanoTime();
             record = ebuffer.extractUntil(offset, delim);
-            LOG.info("Extract until(edge): " + (System.nanoTime() - start) + " ns");
+            LOG.info("Extract until(edge): " + (System.nanoTime() - start) + " ns" );
+            LOG.info("# Extracted Bytes: " + record.length());
             tokens=record.split("\\W");
             for(int i=3; i < 3 + Integer.parseInt(tokens[2]); i++) 
                 localSinks.add(Long.parseLong(tokens[i]));
@@ -180,15 +179,14 @@ public class SuccinctArrayVertex<V extends Writable, E extends Writable, I exten
     	}
         long start = System.nanoTime();
         Integer[] recordID=vbuffer.recordSearchIds(wholeQuery.getBytes());
-        LOG.info("Lookup record id(vertex): " + (System.nanoTime() - start) + " ns");
-        for (int i = 0; i< recordID.length; i++)
-            Log.info("Size : "+recordID[i].toString().length());
+        LOG.info("Lookup record id(property): " + (System.nanoTime() - start) + " ns");
         start = System.nanoTime();
         offset = vbuffer.getRecordOffset(recordID[0]);
-        LOG.info("Lookup record offset(vertex): " + (System.nanoTime() - start) + " ns\n"+"Size: "+offset.toString().length());
+        LOG.info("Lookup record offset(property): " + (System.nanoTime() - start) + " ns");
         start = System.nanoTime();
         record = vbuffer.extractUntil(offset, '|');
-        LOG.info("Extract until(vertex): " + (System.nanoTime() - start) + " ns");
+        LOG.info("Extract until(property): " + (System.nanoTime() - start) + " ns");
+        LOG.info("# Extracted Bytes: " + record.length());
         tokens=record.split("\\W");
         return tokens[index+1];
     }
