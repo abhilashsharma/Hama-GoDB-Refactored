@@ -107,23 +107,26 @@ public class SuccinctArraySubgraph<S extends Writable, V extends Writable, E ext
      
 	return _value;
     }
-    //TODO:Change This
+    //TODO:Change This..DONE
     public List<Long> getVertexIDs()
     {
-    	long size = succinctIndexedVertexFileBuffer.count("#".getBytes());
+    	
     	List<Long> vertices = new ArrayList<>();
-    	Integer offset;
-    	String v;
-    	long start;
-    	Log.info("getVertxIDs");
-    	for (int i = 0; i < size; i++) {
-    	    start = System.nanoTime();	
-    		offset = succinctIndexedVertexFileBuffer.getRecordOffset(i);
-    		Log.info("Lookup record offset(vertex): "+ (System.nanoTime() - start) + " ns\n"+"Size: "+offset.toString().length());
-    		start = System.nanoTime();
-    		v = succinctIndexedVertexFileBuffer.extractUntil(offset, '@');
-    		Log.info("Extract until(vertex): "+(System.nanoTime() - start) + " ns");
-    		vertices.add(Long.parseLong(v.split("//w+")[1]));
+    	for(SuccinctIndexedFileBuffer succinctIndexedVertexFileBuffer:vertexSuccinctBufferList) {
+	    	long size = succinctIndexedVertexFileBuffer.count("#".getBytes());
+	    	Integer offset;
+	    	String v;
+	    	long start;
+	    	Log.info("getVertxIDs");
+	    	for (int i = 0; i < size; i++) {
+	    	    start = System.nanoTime();	
+	    		offset = succinctIndexedVertexFileBuffer.getRecordOffset(i);
+	    		Log.info("Lookup record offset(vertex): "+ (System.nanoTime() - start) + " ns\n"+"Size: "+offset.toString().length());
+	    		start = System.nanoTime();
+	    		v = succinctIndexedVertexFileBuffer.extractUntil(offset, '@');
+	    		Log.info("Extract until(vertex): "+(System.nanoTime() - start) + " ns");
+	    		vertices.add(Long.parseLong(v.split("//w+")[1]));
+	    	}
     	}
     	return vertices;	
     }
