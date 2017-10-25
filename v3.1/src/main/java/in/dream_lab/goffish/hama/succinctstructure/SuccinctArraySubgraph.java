@@ -126,7 +126,7 @@ public class SuccinctArraySubgraph<S extends Writable, V extends Writable, E ext
 	    		v = succinctIndexedVertexFileBuffer.extractUntil(offset, '@');
 	    		Log.info("VFORMAT:" +v);
 	    		Log.info("Extract until(vertex): "+(System.nanoTime() - start) + " ns");
-	    		vertices.add(Long.parseLong(v.split("//w+")[1]));
+	    		vertices.add(Long.parseLong(v.split("#")[1]));
 	    	}
     	}
     	return vertices;	
