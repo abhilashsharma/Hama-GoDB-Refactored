@@ -108,6 +108,9 @@ AbstractSubgraphComputation<BFSDistrSubgraphState, MapValue, MapValue, Text, Lon
 		  
 		  SuccinctArrayVertex<MapValue,MapValue,LongWritable,LongWritable> currentVertex = new SuccinctArrayVertex(new LongWritable(vertex),sg.getVertexBufferList(),sg.getEdgeBufferList(),'|');
 		  String[] Properties=currentVertex.getAllPropforVertex();
+		  for(String p:Properties) {
+			  LOG.info("getAllProp:" +p);
+		  }
 		  LOG.info("PROP:" + sg.getSubgraphId()+ "#" + vertex+ "@" + Properties[0] + "$" + Properties[1] + "^" + Properties[2] + "*" + Properties[4] + "|");
 		  
 	  }
