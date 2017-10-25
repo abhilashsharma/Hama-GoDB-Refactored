@@ -103,11 +103,12 @@ AbstractSubgraphComputation<BFSDistrSubgraphState, MapValue, MapValue, Text, Lon
   public void compute(Iterable<IMessage<LongWritable,Text>> messages) {
     
 	  SuccinctArraySubgraph sg= (SuccinctArraySubgraph)getSubgraph();
-	  for(Object vertex:sg.getVertexIDs()) {
-		  Long v=(Long)vertex;
-		  SuccinctArrayVertex<MapValue,MapValue,LongWritable,LongWritable> currentVertex = new SuccinctArrayVertex(new LongWritable(v),sg.getVertexBufferList(),sg.getEdgeBufferList(),'|');
+	  List<Long> vertList=sg.getVertexIDs();
+	  for(Long vertex:vertList) {
+		  
+		  SuccinctArrayVertex<MapValue,MapValue,LongWritable,LongWritable> currentVertex = new SuccinctArrayVertex(new LongWritable(vertex),sg.getVertexBufferList(),sg.getEdgeBufferList(),'|');
 		  String[] Properties=currentVertex.getAllPropforVertex();
-		  LOG.info("PROP:" + sg.getSubgraphId()+ "#" + v+ "@" + Properties[0] + "$" + Properties[1] + "^" + Properties[2] + "*" + Properties[4] + "|");
+		  LOG.info("PROP:" + sg.getSubgraphId()+ "#" + vertex+ "@" + Properties[0] + "$" + Properties[1] + "^" + Properties[2] + "*" + Properties[4] + "|");
 		  
 	  }
 
