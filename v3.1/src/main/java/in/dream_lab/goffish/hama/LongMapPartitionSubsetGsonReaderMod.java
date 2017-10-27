@@ -350,10 +350,15 @@ public class LongMapPartitionSubsetGsonReaderMod<S extends Writable, V extends W
 
     List<IEdge<E, LongWritable, LongWritable>> _adjList = new ArrayList<IEdge<E, LongWritable, LongWritable>>();
     JsonArray edgeList = (JsonArray) JSONInput.get(2);
+    
     for (Object edgeInfo : edgeList) {
       JsonArray edgeValues = ((JsonArray) edgeInfo).getAsJsonArray();
+      try {
       LongWritable sinkID = new LongWritable(
-          Long.valueOf(edgeValues.get(0).toString()));
+          Long.valueOf(edgeValues.get(0).toString()));}
+      catch(Exception e) {
+    	  throw new Exception("Edge Parsing Exception:" + edgeValues.toString());
+      }
       LongWritable edgeID = new LongWritable(
           0);//dummy value as edgeid is not used
       //fix this
