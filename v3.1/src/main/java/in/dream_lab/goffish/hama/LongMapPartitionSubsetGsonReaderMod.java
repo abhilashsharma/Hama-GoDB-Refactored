@@ -383,8 +383,8 @@ public class LongMapPartitionSubsetGsonReaderMod<S extends Writable, V extends W
       edge.setValue(null);
       _adjList.add(edge);
       }
-      catch(Exception e) {
-    	 LOG.info("Edge Parsing Exception:" + edgeValues.toString());
+      catch(IndexOutOfBoundsException e) {
+    	throw new IndexOutOfBoundsException("Edge Parsing Exception:" + edgeValues.toString());
       }
       
     }
