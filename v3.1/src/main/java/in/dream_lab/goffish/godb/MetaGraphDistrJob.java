@@ -21,6 +21,7 @@ import in.dream_lab.goffish.hama.GraphJob;
 
 import in.dream_lab.goffish.hama.LongMapPartitionSubsetGsonReader;
 import in.dream_lab.goffish.hama.LongMapPartitionSubsetGsonReaderMod;
+import in.dream_lab.goffish.hama.LongMapPartitionSubsetGsonReaderSynth;
 import in.dream_lab.goffish.hama.NonSplitTextInputFormat;
 
 public class MetaGraphDistrJob {
@@ -44,7 +45,7 @@ public class MetaGraphDistrJob {
 		  job.setSubgraphValueClass(MetaGraphDistrSubgraphState.class);
 		  /* Reader configuration */
 		    job.setInputFormat(NonSplitTextInputFormat.class);
-		    job.setInputReaderClass(LongMapPartitionSubsetGsonReaderMod.class);//LongMapPartitionSubsetGsonReader
+		    job.setInputReaderClass(LongMapPartitionSubsetGsonReaderSynth.class);//LongMapPartitionSubsetGsonReader
 		  
 		  //job.setSubgraphComputeClass(SubgraphComputeReduce.class);
 		  job.waitForCompletion(true);

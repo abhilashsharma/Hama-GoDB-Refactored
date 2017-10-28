@@ -67,13 +67,13 @@ import in.dream_lab.goffish.api.IRemoteVertex;
 /*
  * 
  * First Line contains PseudoPid
- * [srcid, srcvalue, [[sinkid1], [sinkid2] ... ]] 
+ * [srcid, srcvalue, [[sinkid1,edgeid1,edgevalue1], [sinkid2,edgeid2,edgevalue2] ... ]] 
  * PseudoPid is considered for all vertices in file
  * 
  * This Reader only subset of the properties
  */
 
-public class LongMapPartitionSubsetGsonReaderMod<S extends Writable, V extends Writable, E extends Writable, K extends Writable, M extends Writable>
+public class LongMapPartitionSubsetGsonReaderSynth<S extends Writable, V extends Writable, E extends Writable, K extends Writable, M extends Writable>
     implements
     IReader<Writable, Writable, Writable, Writable, S, V, E, LongWritable, LongWritable, LongWritable> {
 
@@ -86,19 +86,19 @@ public class LongMapPartitionSubsetGsonReaderMod<S extends Writable, V extends W
   private Set<String> edgePropertySet=new HashSet<String>();
   
   JsonParser GsonParser = new JsonParser();
-  public LongMapPartitionSubsetGsonReaderMod(
+  public LongMapPartitionSubsetGsonReaderSynth(
       BSPPeer<Writable, Writable, Writable, Writable, Message<K, M>> peer,
               Map<K, Integer> subgraphPartitionMap) {
     this.peer = peer;
     this.subgraphPartitionMap = subgraphPartitionMap;
     this.conf = peer.getConfiguration();
     this.vertexSubgraphMap = new HashMap<LongWritable, LongWritable>();
-    this.vertexPropertySet.add("vid");
-    this.vertexPropertySet.add("contr");
-//    this.vertexPropertySet.add("country");
+//    this.vertexPropertySet.add("patid");
+//    this.vertexPropertySet.add("nclass");
+    this.vertexPropertySet.add("country");
   }
   
-  public static final Log LOG = LogFactory.getLog(LongMapPartitionSubsetGsonReaderMod.class);
+  public static final Log LOG = LogFactory.getLog(LongMapPartitionSubsetGsonReaderSynth.class);
   Integer pseudoPartId=null;
   @Override
   public List<ISubgraph<S, V, E, LongWritable, LongWritable, LongWritable>> getSubgraphs()
@@ -262,7 +262,7 @@ public class LongMapPartitionSubsetGsonReaderMod<S extends Writable, V extends W
         controlInfo.addextraInfo(subgraphIDbytes);
       }
       if (hasAVertex) {
-        peer.send(peer.getPeerName(sinkPartition.intValue()),	
+        peer.send(peer.getPeerName(sinkPartition.intValue()),
             (Message<K, M>) subgraphIDReply);
       }
     }
@@ -350,22 +350,16 @@ public class LongMapPartitionSubsetGsonReaderMod<S extends Writable, V extends W
 
     List<IEdge<E, LongWritable, LongWritable>> _adjList = new ArrayList<IEdge<E, LongWritable, LongWritable>>();
     JsonArray edgeList = (JsonArray) JSONInput.get(2);
-    
     for (Object edgeInfo : edgeList) {
       JsonArray edgeValues = ((JsonArray) edgeInfo).getAsJsonArray();
-      try {
-    	  LongWritable sinkID=null;
-    	  if(edgeValues.size() > 0) {
-    		  		   sinkID = new LongWritable(
-    				  Long.valueOf(edgeValues.get(0).toString()));
- 
-    	  }
-    	  else { 
-    		  continue;
-    		  }
-    	  
+      LongWritable sinkID =null;
+      if(edgeValues.size()>0) {
+          sinkID = new LongWritable(
+          Long.valueOf(edgeValues.get(0).toString()));
+      }
+      else continue;
       LongWritable edgeID = new LongWritable(
-          0);//dummy value as edgeid is not used
+         0);
       //fix this
       //same format as vertex
 //      String[] eprop= edgeValues.get(2).toString().split(Pattern.quote("$"));
@@ -389,10 +383,6 @@ public class LongMapPartitionSubsetGsonReaderMod<S extends Writable, V extends W
 //      E edgeValue = (E) edgeMap;
       edge.setValue(null);
       _adjList.add(edge);
-      }
-      catch(IndexOutOfBoundsException e) {
-    	throw new IndexOutOfBoundsException("Edge Parsing Exception:" + edgeValues.toString());
-      }
       
     }
   
