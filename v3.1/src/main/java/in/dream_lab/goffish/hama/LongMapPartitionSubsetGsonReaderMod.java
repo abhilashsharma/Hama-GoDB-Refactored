@@ -118,7 +118,7 @@ public class LongMapPartitionSubsetGsonReaderMod<S extends Writable, V extends W
       String StringJSONInput = pair.getValue().toString();
       
       
-        LongVertex<V, E, LongWritable, LongWritable> vertex = createVertex(
+        Vertex<V, E, LongWritable, LongWritable> vertex = createVertex(
             StringJSONInput);
         vertexMap.put(vertex.getVertexId(), vertex);
         //_edges.addAll(vertex.getOutEdges());
@@ -316,10 +316,10 @@ public class LongMapPartitionSubsetGsonReaderMod<S extends Writable, V extends W
   }
   
   @SuppressWarnings("unchecked")
-  LongVertex<V, E, LongWritable, LongWritable> createVertex(String JSONString) {
+  Vertex<V, E, LongWritable, LongWritable> createVertex(String JSONString) {
     JsonArray JSONInput = GsonParser.parse(JSONString).getAsJsonArray();
 
-    Long sourceID = new Long(
+    LongWritable sourceID = new LongWritable(
         Long.valueOf(JSONInput.get(0).toString()));
     assert (vertexMap.get(sourceID) == null);
     
@@ -354,13 +354,13 @@ public class LongMapPartitionSubsetGsonReaderMod<S extends Writable, V extends W
     for (Object edgeInfo : edgeList) {
       JsonArray edgeValues = ((JsonArray) edgeInfo).getAsJsonArray();
       try {
-    	  Long sinkID=null;
+    	  LongWritable sinkID=null;
     	  if(edgeValues.size() > 0) {
-    		  		   sinkID = new Long(
+    		  		   sinkID = new LongWritable(
     				  Long.valueOf(edgeValues.get(0).toString()));
     	  }
     	  else continue;
-      Integer edgeID = new Integer(
+      LongWritable edgeID = new LongWritable(
           0);//dummy value as edgeid is not used
       //fix this
       //same format as vertex
@@ -379,7 +379,7 @@ public class LongMapPartitionSubsetGsonReaderMod<S extends Writable, V extends W
         
 //      }
       
-      LongEdge<E, LongWritable, LongWritable> edge = new LongEdge<E, LongWritable, LongWritable>(
+      Edge<E, LongWritable, LongWritable> edge = new Edge<E, LongWritable, LongWritable>(
           edgeID, sinkID);
       
 //      E edgeValue = (E) edgeMap;
@@ -392,7 +392,7 @@ public class LongMapPartitionSubsetGsonReaderMod<S extends Writable, V extends W
       
     }
   
-    LongVertex<V, E, LongWritable, LongWritable> vertex = new LongVertex<V, E, LongWritable, LongWritable>(
+    Vertex<V, E, LongWritable, LongWritable> vertex = new Vertex<V, E, LongWritable, LongWritable>(
         sourceID,_adjList);
     vertex.setValue(vertexValue);
     return vertex; 
