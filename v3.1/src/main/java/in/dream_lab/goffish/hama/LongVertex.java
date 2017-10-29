@@ -32,25 +32,25 @@ public class LongVertex<V extends Writable, E extends Writable, I extends Writab
     implements IVertex<V, E, I, J> {
 
   private List<IEdge<E, I, J>> _adjList;
-  private Long vertexID;
+  private long vertexID;
   private V _value;
 
   LongVertex() {
     _adjList = new ArrayList<IEdge<E, I, J>>();
   }
 
-  LongVertex(Long ID) {
+  LongVertex(long ID) {
     this();
     vertexID = ID;
   }
 
-  LongVertex(Long Id, Iterable<IEdge<E, I, J>> edges) {
+  LongVertex(long Id, Iterable<IEdge<E, I, J>> edges) {
     this(Id);
     for (IEdge<E, I, J> e : edges)
       _adjList.add(e);
   }
 
-  void setVertexID(Long vertexID) {
+  void setVertexID(long vertexID) {
     this.vertexID = vertexID;
   }
 
@@ -90,6 +90,7 @@ public class LongVertex<V extends Writable, E extends Writable, I extends Writab
   @SuppressWarnings("rawtypes")
   @Override
   public boolean equals(Object o) {
-    return (this.vertexID).equals(((IVertex) o).getVertexId());
+    return (new LongWritable(this.vertexID)).equals(((IVertex) o).getVertexId());
+//    return this.vertexID== ((IVertex)o).getVertexId()
   }
 }

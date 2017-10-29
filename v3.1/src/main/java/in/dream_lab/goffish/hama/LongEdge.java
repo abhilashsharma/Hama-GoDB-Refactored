@@ -26,15 +26,15 @@ public class LongEdge<E extends Writable, I extends Writable, J extends Writable
     implements IEdge<E, I, J> {
 
   private E _value;
-  private Integer edgeID;
-  private Long _sink;
+  private long edgeID;
+  private long _sink;
 
-  LongEdge(Integer id, Long sinkID) {
+  LongEdge(long id, long sinkID) {
     edgeID = id;
     _sink = sinkID;
   }
 
-  void setSinkID(Long sinkID) {
+  void setSinkID(long sinkID) {
     _sink = sinkID;
   }
 
