@@ -197,16 +197,18 @@ public class LongMapPartitionSubsetGsonReaderSynthlong<S extends Writable, V ext
      * Message format being sent:
      * partitionID remotevertex1 remotevertex2 ...
      */
-//    int n=0;
+    long n=0;
     byte partitionIDbytes[] = Ints.toByteArray(peer.getPeerIndex());
     controlInfo.addextraInfo(partitionIDbytes);
     for (IVertex<V, E, LongWritable, LongWritable> v : vertexMap.values()) {
       if (v instanceof RemoteVertex) {
-//        n++;
+        n++;
         byte vertexIDbytes[] = Longs.toByteArray(v.getVertexId().get());
         controlInfo.addextraInfo(vertexIDbytes);
+        if(n%1000000==0) {
         LOG.info("Remote Vertex Messaging Free Memory:" + Runtime.getRuntime().freeMemory()+"," + vertexIDbytes.length);
         LOG.info("Total Memory:" + Runtime.getRuntime().totalMemory());
+        }
       }
     }
     
