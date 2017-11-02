@@ -918,6 +918,7 @@ implements ISubgraphWrapup{
 //					System.out.println("*******Querying done********:"+hits.length);
 					
 						if(hits.length>0){
+							LOG.info("Processing Initial Vertices Returned");
 							for (int i=0;i<hits.length;i++){
 								Document doc = indexSearcher.doc(hits[i].doc);
 								if ( Long.valueOf(doc.get("subgraphid")) == getSubgraph().getSubgraphId().get() ){
@@ -937,6 +938,7 @@ implements ISubgraphWrapup{
 //									getSubgraph().getSubgraphValue().forwardLocalVertexList.add( new VertexMessageSteps(_vertexId,_message,0) );
 								}
 							}
+							LOG.info("Processing Initial Vertices Done");
 						}
 						
 					}catch(Exception e){e.printStackTrace();}
