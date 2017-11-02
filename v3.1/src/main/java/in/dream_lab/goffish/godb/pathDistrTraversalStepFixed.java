@@ -908,7 +908,9 @@ implements ISubgraphWrapup{
 					try{
 						synchronized(queryLock){
 							if(!queryMade){
+								LOG.info("Querying Lucene Index");
 								makeQuery(currentProperty,currentValue);
+								LOG.info("Querying Lucene Done");
 							}
 						}
 						
