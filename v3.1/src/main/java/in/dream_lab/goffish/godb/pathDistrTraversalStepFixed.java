@@ -1498,8 +1498,8 @@ implements ISubgraphWrapup{
 		for(long t:hopTime) {
 			timeStr+=","+t;
 		}
-		System.gc();
-	LOG.info("SGID:" + getSubgraph().getSubgraphId() +" Traversal Memory" + " Free Memory: " + Runtime.getRuntime().freeMemory() + " Total Memory:" + Runtime.getRuntime().totalMemory() + " TraversalTimeSteps:" + timeStr + ":" + getSuperstep());
+//		System.gc();
+//	LOG.info("SGID:" + getSubgraph().getSubgraphId() +" Traversal Memory" + " Free Memory: " + Runtime.getRuntime().freeMemory() + " Total Memory:" + Runtime.getRuntime().totalMemory() + " TraversalTimeSteps:" + timeStr + ":" + getSuperstep());
 	
 		}
 		}
