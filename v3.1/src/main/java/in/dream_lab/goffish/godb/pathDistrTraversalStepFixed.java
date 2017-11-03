@@ -523,6 +523,7 @@ implements ISubgraphWrapup{
 	@Override
 	public void compute(Iterable<IMessage<LongWritable, Text>> messageList) {
 		
+		LOG.info("Compute Starts");
 		
 //		System.out.println("**********SUPERSTEPS***********:" + getSuperstep() +"Message List Size:" + messageList.size());
 		
@@ -686,6 +687,7 @@ implements ISubgraphWrapup{
 		
 		// RUNTIME FUNCTIONALITITES 
 		{
+	
 			// COMPUTE-LOAD-INIT
 			if(getSuperstep()==3){
 			        if(!queryStart){
@@ -974,7 +976,7 @@ implements ISubgraphWrapup{
 				
 			}
 			
-			
+		LOG.info("Traversal Started");
 			// CHECK MSSG-PROCESS FORWARD-PROCESS BACKWARD
 			if(getSuperstep()>=3) {
 				LOG.info("Initial memory" + " Free Memory: " + Runtime.getRuntime().freeMemory() + " Total Memory:" + Runtime.getRuntime().totalMemory());
@@ -1427,6 +1429,7 @@ implements ISubgraphWrapup{
 				
 			}
 
+			LOG.info("Sending Messages");
 			// TODO: send the messages in Remote vertex list
 			for(VertexMessageSteps stuff: getSubgraph().getSubgraphValue().forwardRemoteVertexList){
 				// send message to all the remote vertices
@@ -1506,7 +1509,7 @@ implements ISubgraphWrapup{
 		}
 		}
 		
-		
+		LOG.info("Traversal Ends");
 		if(getSuperstep()>=3)
 			voteToHalt();
 	}
