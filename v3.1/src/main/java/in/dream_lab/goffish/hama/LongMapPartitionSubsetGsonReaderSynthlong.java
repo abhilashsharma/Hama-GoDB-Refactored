@@ -184,7 +184,7 @@ public class LongMapPartitionSubsetGsonReaderSynthlong<S extends Writable, V ext
     for(ISubgraph<S, V, E, LongWritable, LongWritable, LongWritable> sg:partition.getSubgraphs()) {
 //    	LOG.info("SGID," + sg.getSubgraphId()+ "," + sg.getLocalVertexCount()+","+sg.getVertexCount());
     	for(IVertex<V, E, LongWritable, LongWritable> v:sg.getLocalVertices()) {
-    		LOG.info(sg.getSubgraphId()+","+ v.getVertexId());
+    		LOG.info("SGVID:" + sg.getSubgraphId()+","+ v.getVertexId());
     	}
     }
     
