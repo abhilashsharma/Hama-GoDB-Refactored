@@ -21,6 +21,7 @@ package in.dream_lab.goffish.hama;
 
 
 import java.io.IOException;
+import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
@@ -181,13 +182,16 @@ public class LongMapPartitionSubsetGsonReaderSynthlong<S extends Writable, V ext
     LOG.info("Free Memory:" + Runtime.getRuntime().freeMemory());
     LOG.info("Total Memory:" + Runtime.getRuntime().totalMemory());
     
+
+    PrintWriter writer = new PrintWriter("/scratch/abhilash/SubgraphVertexMapping/VertexMapping" + pseudoPartId, "UTF-8");
     for(ISubgraph<S, V, E, LongWritable, LongWritable, LongWritable> sg:partition.getSubgraphs()) {
 //    	LOG.info("SGID," + sg.getSubgraphId()+ "," + sg.getLocalVertexCount()+","+sg.getVertexCount());
     	for(IVertex<V, E, LongWritable, LongWritable> v:sg.getLocalVertices()) {
-    		LOG.info("SGVID:" + sg.getSubgraphId()+","+ v.getVertexId());
+    		writer.println("SGVID:" + sg.getSubgraphId()+","+ v.getVertexId());
     	}
     }
-    
+    writer.flush();
+    writer.close();
     peer.sync();//dummpy sync to end it here
     /*
      * Ask Remote vertices to send their subgraph IDs. Requires 2 supersteps
