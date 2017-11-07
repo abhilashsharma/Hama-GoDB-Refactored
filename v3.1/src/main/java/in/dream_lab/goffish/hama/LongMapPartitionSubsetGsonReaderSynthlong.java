@@ -182,9 +182,13 @@ public class LongMapPartitionSubsetGsonReaderSynthlong<S extends Writable, V ext
     LOG.info("Total Memory:" + Runtime.getRuntime().totalMemory());
     
     for(ISubgraph<S, V, E, LongWritable, LongWritable, LongWritable> sg:partition.getSubgraphs()) {
-    	LOG.info("SGID," + sg.getSubgraphId()+ "," + sg.getLocalVertexCount()+","+sg.getVertexCount());
+//    	LOG.info("SGID," + sg.getSubgraphId()+ "," + sg.getLocalVertexCount()+","+sg.getVertexCount());
+    	for(IVertex<V, E, LongWritable, LongWritable> v:sg.getLocalVertices()) {
+    		LOG.info(sg.getSubgraphId()+","+ v.getVertexId());
+    	}
     }
     
+    peer.sync();//dummpy sync to end it here
     /*
      * Ask Remote vertices to send their subgraph IDs. Requires 2 supersteps
      * because the graph is directed
