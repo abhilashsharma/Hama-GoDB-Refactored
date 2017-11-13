@@ -233,8 +233,8 @@ AbstractSubgraphComputation<NetworkDistrSubgraphState, MapValue, MapValue, Text,
 		
 		}
 	}
-	
-	voteToHalt();
+	if(getSuperstep()>0)
+		voteToHalt();
   	
   }
   
