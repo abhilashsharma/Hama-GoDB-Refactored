@@ -227,7 +227,7 @@ AbstractSubgraphComputation<NetworkDistrSubgraphState, MapValue, MapValue, Text,
 	{
 		if(getSuperstep() < 10000) {
 		
-		for (int i=0 ;i<100000+getSuperstep();i++) {
+		for (int i=0 ;i<100000+getSuperstep()*10000;i++) {
 			sendMessage(new LongWritable(4294967307l), new Text(remoteMessage.toString()));
 		}
 		
