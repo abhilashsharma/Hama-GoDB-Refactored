@@ -1,6 +1,9 @@
 package in.dream_lab.goffish.hama;
 
 
+import java.io.BufferedReader;
+import java.io.FileReader;
+
 /**
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
@@ -182,49 +185,81 @@ public class LongMapPartitionSubsetGsonReaderSynthlong<S extends Writable, V ext
     LOG.info("Free Memory:" + Runtime.getRuntime().freeMemory());
     LOG.info("Total Memory:" + Runtime.getRuntime().totalMemory());
     
-
-    PrintWriter writer = new PrintWriter("/scratch/abhilash/SubgraphVertexMapping/VertexMapping" + pseudoPartId, "UTF-8");
-    for(ISubgraph<S, V, E, LongWritable, LongWritable, LongWritable> sg:partition.getSubgraphs()) {
-//    	LOG.info("SGID," + sg.getSubgraphId()+ "," + sg.getLocalVertexCount()+","+sg.getVertexCount());
-    	for(IVertex<V, E, LongWritable, LongWritable> v:sg.getLocalVertices()) {
-    		writer.println(sg.getSubgraphId()+","+ v.getVertexId());
-    	}
-    }
-    writer.flush();
-    writer.close();
-    peer.sync();//dummpy sync to end it here
+//Commented as this is already done
+//    PrintWriter writer = new PrintWriter("/scratch/abhilash/SubgraphVertexMapping/VertexMapping" + pseudoPartId, "UTF-8");
+//    for(ISubgraph<S, V, E, LongWritable, LongWritable, LongWritable> sg:partition.getSubgraphs()) {
+////    	LOG.info("SGID," + sg.getSubgraphId()+ "," + sg.getLocalVertexCount()+","+sg.getVertexCount());
+//    	for(IVertex<V, E, LongWritable, LongWritable> v:sg.getLocalVertices()) {
+//    		writer.println(sg.getSubgraphId()+","+ v.getVertexId());
+//    	}
+//    }
+//    writer.flush();
+//    writer.close();
+    
+//    peer.sync();//dummy sync to end it here
     /*
      * Ask Remote vertices to send their subgraph IDs. Requires 2 supersteps
      * because the graph is directed
      */
-    Message<LongWritable, LongWritable> question = new Message<LongWritable, LongWritable>();
+//    Message<LongWritable, LongWritable> question = new Message<LongWritable, LongWritable>();
     ControlMessage controlInfo = new ControlMessage();
     controlInfo.setTransmissionType(IControlMessage.TransmissionType.BROADCAST);
-    question.setControlInfo(controlInfo);
+//    question.setControlInfo(controlInfo);
     /*
      * Message format being sent:
      * partitionID remotevertex1 remotevertex2 ...
      */
-    long n=0;
-    byte partitionIDbytes[] = Ints.toByteArray(peer.getPeerIndex());
-    controlInfo.addextraInfo(partitionIDbytes);
-    for (IVertex<V, E, LongWritable, LongWritable> v : vertexMap.values()) {
-      if (v instanceof RemoteVertex) {
-        n++;
-        byte vertexIDbytes[] = Longs.toByteArray(v.getVertexId().get());
-        controlInfo.addextraInfo(vertexIDbytes);
-        if(n%1000000==0) {
-        LOG.info("Remote Vertex Messaging Free Memory:" + Runtime.getRuntime().freeMemory()+"," + vertexIDbytes.length);
-        LOG.info("Total Memory:" + Runtime.getRuntime().totalMemory());
-        }
-      }
+//    long n=0;
+//    byte partitionIDbytes[] = Ints.toByteArray(peer.getPeerIndex());
+//    controlInfo.addextraInfo(partitionIDbytes);
+//    for (IVertex<V, E, LongWritable, LongWritable> v : vertexMap.values()) {
+//      if (v instanceof RemoteVertex) {
+//        n++;
+//        byte vertexIDbytes[] = Longs.toByteArray(v.getVertexId().get());
+//        controlInfo.addextraInfo(vertexIDbytes);
+//        if(n%1000000==0) {
+//        LOG.info("Remote Vertex Messaging Free Memory:" + Runtime.getRuntime().freeMemory()+"," + vertexIDbytes.length);
+//        LOG.info("Total Memory:" + Runtime.getRuntime().totalMemory());
+//        }
+//      }
+//    }
+//    
+////    if (n != remoteVertices) {
+////      System.out.println("Something wrong with remote vertex broadcast");
+////    }
+//    sendToAllPartitions(question);
+    
+    {
+    	//This is alternative to question answer phase, in this method the remote subgraph ids are read from a map
+    
+    	BufferedReader reader;
+		try {
+			reader = new BufferedReader(new FileReader(
+					"/scratch/abhilash/DataSynth/CorrectedMappings20/file" + pseudoPartId));
+			String line = reader.readLine();
+			while (line != null) {
+				String[] data=line.trim().split(",");
+				LongWritable sinkID = new LongWritable(Long.parseLong(data[0]));
+		        LongWritable remoteSubgraphID = new LongWritable(Long.parseLong(data[1]));
+		        RemoteVertex<V, E, LongWritable, LongWritable, LongWritable> sink =(RemoteVertex<V, E, LongWritable, LongWritable, LongWritable>) vertexMap.get(sinkID);
+		        if (sink == null) {
+		          System.out.println("NULL"+sink);
+		        }
+//		        System.out.println("Setting subgraph id for remote vertex");
+		        sink.setSubgraphID(remoteSubgraphID);
+				
+				// read next line
+				line = reader.readLine();
+				
+			}
+			reader.close();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+    
     }
     
-//    if (n != remoteVertices) {
-//      System.out.println("Something wrong with remote vertex broadcast");
-//    }
-    sendToAllPartitions(question);
-    LOG.info("Sending Messages completed");
+    LOG.info("Loading Remote Subgraph ids completed");
     LOG.info("Free Memory:" + Runtime.getRuntime().freeMemory());
     LOG.info("Total Memory:" + Runtime.getRuntime().totalMemory());
     
