@@ -241,13 +241,19 @@ public class LongMapPartitionSubsetGsonReaderSynthlong<S extends Writable, V ext
 				String[] data=line.trim().split(",");
 				LongWritable sinkID = new LongWritable(Long.parseLong(data[0]));
 		        LongWritable remoteSubgraphID = new LongWritable(Long.parseLong(data[1]));
-		        RemoteVertex<V, E, LongWritable, LongWritable, LongWritable> sink =(RemoteVertex<V, E, LongWritable, LongWritable, LongWritable>) vertexMap.get(sinkID);
-		        if (sink == null) {
-		          System.out.println("NULL"+sink);
-		        }
-//		        System.out.println("Setting subgraph id for remote vertex");
-		        sink.setSubgraphID(remoteSubgraphID);
+//		        RemoteVertex<V, E, LongWritable, LongWritable, LongWritable> sink =(RemoteVertex<V, E, LongWritable, LongWritable, LongWritable>) vertexMap.get(sinkID);
+//		        if (sink == null) {
+//		          System.out.println("NULL"+sink);
+//		        }
+////		        System.out.println("Setting subgraph id for remote vertex");
+//		        sink.setSubgraphID(remoteSubgraphID);
 				
+				Object sink = vertexMap.get(sinkID);
+			
+				if(sink instanceof IRemoteVertex) {
+					RemoteVertex<V, E, LongWritable, LongWritable, LongWritable> sinkVertex =(RemoteVertex<V, E, LongWritable, LongWritable, LongWritable>) vertexMap.get(sinkID);
+					sinkVertex.setSubgraphID(remoteSubgraphID);
+				}
 				// read next line
 				line = reader.readLine();
 				
