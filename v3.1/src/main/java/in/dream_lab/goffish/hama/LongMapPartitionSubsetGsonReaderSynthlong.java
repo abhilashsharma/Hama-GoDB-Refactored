@@ -406,7 +406,7 @@ public class LongMapPartitionSubsetGsonReaderSynthlong<S extends Writable, V ext
 //        LOG.info("HashMap:" + map[0] + "," + map[2]);
         if(vertexPropertySet.contains(map[0])){
           
-            vertexValueMap.put(map[0], map[2]);
+            vertexValueMap.put(map[0].intern(), map[2].intern());
 //            LOG.info("Entered HashMap:" + map[0] + "," + map[2]);
         }
         
