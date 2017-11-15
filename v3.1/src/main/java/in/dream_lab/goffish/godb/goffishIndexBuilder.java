@@ -394,7 +394,7 @@ import org.apache.lucene.document.Field;
 /*     */           
 /* 449 */           synchronized (initLock) {
 /* 450 */             if (!stored) {
-			LOG.info("Storing INDEX");
+						  LOG.info("Storing INDEX");
 ///* 451 */               storeIndexedFields();
 /*     */             }
 /*     */           }
