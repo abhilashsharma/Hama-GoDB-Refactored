@@ -14,6 +14,7 @@ import org.apache.hama.bsp.TextOutputFormat;
 
 import in.dream_lab.goffish.hama.GraphJob;
 import in.dream_lab.goffish.hama.LongMapPartitionSubsetGsonReader;
+import in.dream_lab.goffish.hama.LongMapPartitionSubsetGsonReaderSynthlong;
 import in.dream_lab.goffish.hama.NonSplitTextInputFormat;
 
 public class pathDistrJob {
@@ -36,7 +37,7 @@ public class pathDistrJob {
 		  job.setInitialInput(readArgsFromFile(args[2]));
 		  job.setSubgraphValueClass(pathDistrSubgraphState.class);
 		  job.setInputFormat(NonSplitTextInputFormat.class);
-		  job.setInputReaderClass(LongMapPartitionSubsetGsonReader.class);
+		  job.setInputReaderClass(LongMapPartitionSubsetGsonReaderSynthlong.class);
 		  
 		  //job.setSubgraphComputeClass(SubgraphComputeReduce.class);
 		  job.waitForCompletion(true);

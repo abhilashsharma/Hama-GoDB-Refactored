@@ -20,7 +20,7 @@ import com.sun.tools.javac.util.List;
 import in.dream_lab.goffish.hama.GraphJob;
 
 import in.dream_lab.goffish.hama.LongMapPartitionSubsetGsonReader;
-
+import in.dream_lab.goffish.hama.LongMapPartitionSubsetGsonReaderSynthlong;
 import in.dream_lab.goffish.hama.NonSplitTextInputFormat;
 
 public class SerializeFullHeuJob {
@@ -44,7 +44,7 @@ public class SerializeFullHeuJob {
 		  job.setSubgraphValueClass(pathDistrSubgraphState.class);
 		  /* Reader configuration */
 		    job.setInputFormat(NonSplitTextInputFormat.class);
-		    job.setInputReaderClass(LongMapPartitionSubsetGsonReader.class);
+		    job.setInputReaderClass(LongMapPartitionSubsetGsonReaderSynthlong.class);
 		  
 		  //job.setSubgraphComputeClass(SubgraphComputeReduce.class);
 		  job.waitForCompletion(true);
