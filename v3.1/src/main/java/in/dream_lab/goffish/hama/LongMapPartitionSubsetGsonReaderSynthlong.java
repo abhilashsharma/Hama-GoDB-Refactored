@@ -98,10 +98,10 @@ public class LongMapPartitionSubsetGsonReaderSynthlong<S extends Writable, V ext
     this.conf = peer.getConfiguration();
     this.vertexSubgraphMap = new HashMap<LongWritable, LongWritable>();
     this.vertexPropertySet.add("vid");
-    this.vertexPropertySet.add("Language");
-    this.vertexPropertySet.add("Industry");
+//    this.vertexPropertySet.add("Language");
+//    this.vertexPropertySet.add("Industry");
     this.vertexPropertySet.add("Contributors");
-    this.vertexPropertySet.add("IsPublic");
+//    this.vertexPropertySet.add("IsPublic");
   }
   
   public static final Log LOG = LogFactory.getLog(LongMapPartitionSubsetGsonReaderSynthlong.class);
