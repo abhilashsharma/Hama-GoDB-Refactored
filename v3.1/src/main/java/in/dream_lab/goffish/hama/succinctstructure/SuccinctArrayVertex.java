@@ -49,14 +49,20 @@ public class SuccinctArrayVertex<V extends Writable, E extends Writable, I exten
 //    	LOG.info("GETEDGES search:" + searchQuery.toString().concat("@") );
 //    	LOG.info("EBUFFER size:" + ebufferList.size());
     	String wholeQuery="#"+searchQuery.toString().concat("@");
+    	long countStart=System.nanoTime();
+    	int iteration=0;
     	for(SuccinctIndexedFileBuffer ebuf:ebufferList) {
+    		iteration++;
     		long count = ebuf.count(wholeQuery.getBytes());
     		if(count > 0) {
 //    			LOG.info("FOUND COUNT to be:" +count);
     			ebuffer=ebuf;
     			break;
     		}
+    		
     	}
+    	
+    	LOG.info("Count(Edge): " + (System.nanoTime()-countStart) + " " + iteration);
     	
     	Integer offset;
         String[] tokens;
@@ -70,7 +76,7 @@ public class SuccinctArrayVertex<V extends Writable, E extends Writable, I exten
     	}
         long start = System.nanoTime();
         Integer[] recordID = ebuffer.recordSearchIds(wholeQuery.getBytes());
-        LOG.info("Lookup record id(edge): " + (System.nanoTime() - start) + " ns");
+        LOG.info("Lookup record id(edge): " + (System.nanoTime() - start) + " ns " + recordID.length);
         for (Integer rid : recordID)
         {
         	start = System.nanoTime();
@@ -163,12 +169,17 @@ public class SuccinctArrayVertex<V extends Writable, E extends Writable, I exten
     	Long searchQuery=((LongWritable)vid).get();
     	String wholeQuery="#"+searchQuery.toString().concat("@");
     	SuccinctIndexedFileBuffer vbuffer=null;
+    	long countStart=System.nanoTime();
+    	int iteration=0;
 		for(SuccinctIndexedFileBuffer vbuf:vbufferList) {
+			iteration++;
     		if(vbuf.count(wholeQuery.getBytes()) >0) {
     			vbuffer=vbuf;
     			break;
     		}
     	}
+		LOG.info("Count(Vertex): " + (System.nanoTime()-countStart) + " " + iteration);
+		
     	
         Integer offset;
         String[] tokens;
