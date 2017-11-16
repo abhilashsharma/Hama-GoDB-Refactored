@@ -145,8 +145,8 @@ import org.apache.lucene.document.Field;
 /* 182 */       initLucene = true;
 /*     */       long pseudoPid=getSubgraph().getSubgraphId().get() >> 32;
 
-/* 184 */       vertexIndexDir = new File(this.basePath + "/index/Partition"+pseudoPid+"/vertexIndex");
-/* 185 */       edgeIndexDir = new File(this.basePath + "/index/Partition"+pseudoPid+"/edgeIndex");
+/* 184 */       vertexIndexDir = new File("/data/abhilash" + "/index/Partition"+pseudoPid+"/vertexIndex");
+/* 185 */       edgeIndexDir = new File("/data/abhilash" + "/index/Partition"+pseudoPid+"/edgeIndex");
 /*     */       
 /* 187 */       vertexDirectory = FSDirectory.open(vertexIndexDir);
 /* 188 */       edgeDirectory = FSDirectory.open(edgeIndexDir);
