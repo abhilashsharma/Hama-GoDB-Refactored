@@ -183,7 +183,17 @@ public class LongMapPartitionSubsetGsonReaderSynthLongRemoteLong<S extends Writa
     
     
     formSubgraphs(partition, vertexMap.values());
-    LOG.info("Forming subgraphs completed");
+    long sgCount=0;
+    long maxSize=0;
+    for(ISubgraph<S, V, E, LongWritable, LongWritable, LongWritable> sg :partition.getSubgraphs()) {
+    	if(sg.getLocalVertexCount() > maxSize) {
+    		maxSize=sg.getLocalVertexCount();
+    		
+    	}
+    	sgCount++;
+    }
+    
+    LOG.info("Forming subgraphs completed:" + sgCount + "," + maxSize);
     LOG.info("Free Memory:" + Runtime.getRuntime().freeMemory());
     LOG.info("Total Memory:" + Runtime.getRuntime().totalMemory());
     

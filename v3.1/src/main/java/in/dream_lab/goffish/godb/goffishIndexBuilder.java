@@ -68,7 +68,7 @@ import org.apache.lucene.document.Field;
 /*     */   
 /*     */ 
 /*  56 */   private static final Object initLock = new Object();
-/*     */   
+/*     */   private static final Object cleanLock = new Object();
 /*     */ 
 /*  59 */   private String basePath = ConfigFile.basePath;
 /*     */   
@@ -283,7 +283,8 @@ import org.apache.lucene.document.Field;
 /* 341 */     stored = true;
 /*     */     try
 /*     */     {
-/* 344 */       File file = new File(this.basePath + "/index/Partition"+pseudoPid+"/vertexIndexes");
+				//this.basePath
+/* 344 */       File file = new File("/data/abhilash" + "/index/Partition"+pseudoPid+"/vertexIndexes");
 /* 345 */       if (!file.exists()) {
 /* 346 */         file.createNewFile();
 /*     */       }
@@ -299,7 +300,7 @@ import org.apache.lucene.document.Field;
 /*     */     
 /*     */     try
 /*     */     {
-/* 360 */       File file = new File(this.basePath + "/index/Partition"+pseudoPid+"/edgeIndexes");
+/* 360 */       File file = new File("/data/abhilash" + "/index/Partition"+pseudoPid+"/edgeIndexes");
 /* 361 */       if (!file.exists()) {
 /* 362 */         file.createNewFile();
 /*     */       }
@@ -412,9 +413,11 @@ import org.apache.lucene.document.Field;
 /*     */     
 /* 466 */     if (getSuperstep() == 1)
 /*     */     {
-/* 468 */       if ((this.getSubgraph().getSubgraphId().get() == 1) && 
-/* 469 */         (!cleanedUp)) {
-/* 470 */         clean();
+///* 468 */       if ((this.getSubgraph().getSubgraphId().get() == 1) && 
+///* 469 */         (!cleanedUp))
+				synchronized(cleanLock) {
+					if(!cleanedUp)
+/* 470 */         		clean();
 /*     */       }
 /*     */     }
 /*     */     
@@ -443,8 +446,10 @@ import org.apache.lucene.document.Field;
 @Override
 public void wrapup() {
   // TODO Auto-generated method stub
-  
-} }
+	
+} 
+
+}
 
 
 /* Location:              /media/nitin/Storage_Volume/Nitin/Programming/Programs/NITIN-2015-MAJOR_PROJECT_IISc/index.jar!/edu/usc/goffish/gopher/sample/goffishIndexBuilder.class
