@@ -888,16 +888,16 @@ implements ISubgraphWrapup{
 				// LOAD START VERTICES
 				{
 				       
-					Double minCost = getSubgraph().getSubgraphValue().queryCostHolder[getSubgraph().getSubgraphValue().startPos];
-					boolean queryPossible = true;
-					for (int i = 0; i < getSubgraph().getSubgraphValue().queryCostHolder.length ; i++) {
-						if ( getSubgraph().getSubgraphValue().queryCostHolder[i]!=0 && getSubgraph().getSubgraphValue().queryCostHolder[i]!=-1 && getSubgraph().getSubgraphValue().queryCostHolder[i] < minCost ){
-							minCost=getSubgraph().getSubgraphValue().queryCostHolder[i];
-							getSubgraph().getSubgraphValue().startPos = i;
-						}
-						if( getSubgraph().getSubgraphValue().queryCostHolder[i]==-1 )
-							queryPossible = false;
-					}
+//					Double minCost = getSubgraph().getSubgraphValue().queryCostHolder[getSubgraph().getSubgraphValue().startPos];
+//					boolean queryPossible = true;
+//					for (int i = 0; i < getSubgraph().getSubgraphValue().queryCostHolder.length ; i++) {
+//						if ( getSubgraph().getSubgraphValue().queryCostHolder[i]!=0 && getSubgraph().getSubgraphValue().queryCostHolder[i]!=-1 && getSubgraph().getSubgraphValue().queryCostHolder[i] < minCost ){
+//							minCost=getSubgraph().getSubgraphValue().queryCostHolder[i];
+//							getSubgraph().getSubgraphValue().startPos = i;
+//						}
+//						if( getSubgraph().getSubgraphValue().queryCostHolder[i]==-1 )
+//							queryPossible = false;
+//					}
 					
 					String currentProperty = null;
 					Object currentValue = null;
