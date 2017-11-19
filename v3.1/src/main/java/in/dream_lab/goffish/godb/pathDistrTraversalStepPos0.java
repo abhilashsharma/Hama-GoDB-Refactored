@@ -523,7 +523,7 @@ implements ISubgraphWrapup{
 	@Override
 	public void compute(Iterable<IMessage<LongWritable, Text>> messageList) {
 		
-		LOG.info("Compute Starts");
+//		LOG.info("Compute Starts");
 		
 //		System.out.println("**********SUPERSTEPS***********:" + getSuperstep() +"Message List Size:" + messageList.size());
 		
@@ -551,145 +551,13 @@ implements ISubgraphWrapup{
 					
 				}
 			}
-			
-	
-			else if (getSuperstep()==1) {
-				// GATHER HEURISTICS FROM OTHER SUBGRAPHS
-				
-
-			//INEDGES COMMENTED	
-//				if(getSubgraph().getSubgraphValue().InEdges==null){
-//                                //Logic to Accumulate inedges
-//				  getSubgraph().getSubgraphValue().InEdges=new HashMap<Long,HashMap<Long,EdgeAttr>>();  
-//				time=System.currentTimeMillis();
-//			
-//				
-//				String m="";
-//				
-//				for(IVertex<MapValue, MapValue, LongWritable, LongWritable> sourceVertex:getSubgraph().getLocalVertices())
-//		        	for(IEdge<MapValue, LongWritable, LongWritable> edge : sourceVertex.getOutEdges()) {
-//		        		
-//		        		IVertex<MapValue, MapValue, LongWritable, LongWritable> sinkVertex=getSubgraph().getVertexById(edge.getSinkVertexId());
-//	        		//if sink vertex is not remote then add inedge to appropriate data structure, otherwise send source value to remote partition
-//	        		if(!sinkVertex.isRemote())
-//	        		{
-//	        			if(getSubgraph().getSubgraphValue().InEdges.containsKey(sinkVertex.getVertexId().get()))
-//	        			{
-//	        			   	if(!getSubgraph().getSubgraphValue().InEdges.get(sinkVertex.getVertexId().get()).containsKey(sourceVertex.getVertexId().get()))
-//	        			   	{
-//	        			   		
-//	        			   		
-////	        			   		ISubgraphObjectProperties subgraphProperties = subgraphInstance.getPropertiesForEdge(edge.getId());
-//	        			   		EdgeAttr attr= new EdgeAttr("relation","null" /*subgraphProperties.getValue("relation").toString()*/,edge.getEdgeId().get(),false,null);
-//	        			   		getSubgraph().getSubgraphValue().InEdges.get(sinkVertex.getVertexId().get()).put(sourceVertex.getVertexId().get(), attr);
-//	        			   		//System.out.println("Accumulation inedge for edge "+ edge.getId() + " Value " + subgraphProperties.getValue("relation").toString() );
-//	        			   	}
-//	        				
-//	        			}
-//	        			else
-//	        			{
-////	        				ISubgraphObjectProperties subgraphProperties = subgraphInstance.getPropertiesForEdge(edge.getId());
-//	    			   		EdgeAttr attr= new EdgeAttr("relation", "null"/*subgraphProperties.getValue("relation").toString()*/,edge.getEdgeId().get(),false,null);      				
-//	    			   		getSubgraph().getSubgraphValue().InEdges.put(sinkVertex.getVertexId().get(), new HashMap<Long,EdgeAttr>());
-//	    			   		getSubgraph().getSubgraphValue().InEdges.get(sinkVertex.getVertexId().get()).put(sourceVertex.getVertexId().get(), attr);
-//	    			   		//System.out.println("Accumulation inedge for edge "+ edge.getId() + " Value " + subgraphProperties.getValue("relation").toString() );
-//	    			   		
-//	        			}
-//	        			
-//	        			//System.out.println(edge.getSource().getId() + " -->" + edge.getSink().getId());
-//	        		}
-//	        		else
-//	        		{ //send message to remote partition
-//	        		
-//	        		//TODO: generalize this for all attributes
-//	        			IRemoteVertex<MapValue,MapValue,LongWritable,LongWritable,LongWritable> remoteVertex = (IRemoteVertex<MapValue, MapValue, LongWritable, LongWritable, LongWritable>)sinkVertex;
-//	        			remoteVertex.getSubgraphId().get();
-//	        		if(!getSubgraph().getSubgraphValue().MessagePacking.containsKey(remoteVertex.getSubgraphId().get()))
-//	        			getSubgraph().getSubgraphValue().MessagePacking.put(remoteVertex.getSubgraphId().get(),new StringBuilder("#|" + sourceVertex.getVertexId().get()  + "|" + sinkVertex.getVertexId().get() + "|" + "relation" + ":"  +"null" /*subgraphProperties.getValue("relation").toString()*/+"|" + edge.getEdgeId().get()+"|" + getSubgraph().getSubgraphId().get() + "|" +0));
-//	        		else{
-//	        			getSubgraph().getSubgraphValue().MessagePacking.get(remoteVertex.getSubgraphId().get()).append("$").append("#|").append(sourceVertex.getVertexId().get()).
-//	        								append("|").append(sinkVertex.getVertexId().get()).
-//	        								append("|").append("relation").append(":").append("null" /*subgraphProperties.getValue("relation").toString()*/).
-//	        								append("|").append(edge.getEdgeId().get()).
-//	        								append("|").append(getSubgraph().getSubgraphId().get()).
-//	        								append("|").append(0);
-//	        			
-//	        		}
-//	        		
-//	        		
-//	        		
-//	        		}
-//	        		
-//		        	
-//	        		
-//	        		
-//	        		
-//	            }
-//	        	
-//	        	//Sending packed messages by iterating through MessagePacking Hashmap
-//	        	for(Map.Entry<Long,StringBuilder> remoteSubgraphMessage: getSubgraph().getSubgraphValue().MessagePacking.entrySet()){
-//	        		Text msg = new Text(remoteSubgraphMessage.getValue().toString());
-//	                
-//	                sendMessage(new LongWritable(remoteSubgraphMessage.getKey()),msg);
-//	        	}
-//	        	
-//		}	
-//				
-			}
-	
-			//subgraphId/20:attr?21,12,23|attr?12,12
-			else if ( getSuperstep()==2 ) {
-			//TODO :remove this hack
-			for (IMessage<LongWritable, Text> _message: messageList){
-				
-				String message = _message.getMessage().toString();
-
-				
-				String[] SubgraphMessages=message.split(Pattern.quote("$"));
-				for(String subgraphMessage:SubgraphMessages){
-					String[] values = subgraphMessage.split(Pattern.quote("|"));
-		        	 long Source=Long.parseLong(values[1]);
-		        	 long Sink=Long.parseLong(values[2]);
-		        	 String[] attr_data=values[3].split(":");
-		        	 if(getSubgraph().getSubgraphValue().InEdges.containsKey(Sink))
-		        	  {
-		        		 EdgeAttr attr= new EdgeAttr(attr_data[0],attr_data[1],Long.parseLong(values[4]),true,Long.parseLong(values[5]));      				
-		        		 getSubgraph().getSubgraphValue().InEdges.get(Sink).put(Source, attr);
-		        	  }
-		        	 else
-		        	  {
-		        		 EdgeAttr attr= new EdgeAttr(attr_data[0],attr_data[1],Long.parseLong(values[4]),true,Long.parseLong(values[5]));   
-		        		 getSubgraph().getSubgraphValue().InEdges.put(Sink, new HashMap<Long,EdgeAttr>());
-		        		 getSubgraph().getSubgraphValue().InEdges.get(Sink).put(Source, attr);
-		        	  }
-				}
-					
-				
-				
-					
-			}
-			if(!gcCalled){
-			System.gc();
-			System.runFinalization();
-			}
-			LOG.info("TIME ACCUMULATING INEDGES....Starting loading of heuristics");
-//			hueristics=HueristicsLoad.getInstance();
-			LOG.info("Heuristic Loaded");
-
-			if(!gcCalled){
-	                        System.gc();
-	                        System.runFinalization();
-	                        gcCalled=true;
-	                }
-			
-		}
 		}
 		
 		// RUNTIME FUNCTIONALITITES 
 		{
 	
 			// COMPUTE-LOAD-INIT
-			if(getSuperstep()==3){
+			if(getSuperstep()==1){
 			        if(!queryStart){
 			        queryStart=true;  
 				LOG.info("Starting Query Execution");
@@ -910,9 +778,9 @@ implements ISubgraphWrapup{
 					try{
 						synchronized(queryLock){
 							if(!queryMade){
-								LOG.info("Querying Lucene Index");
+//								LOG.info("Querying Lucene Index");
 								makeQuery(currentProperty,currentValue);
-								LOG.info("Querying Lucene Done");
+//								LOG.info("Querying Lucene Done");
 							}
 						}
 						
@@ -920,7 +788,7 @@ implements ISubgraphWrapup{
 //					System.out.println("*******Querying done********:"+hits.length);
 					
 						if(hits.length>0){
-							LOG.info("Processing Initial Vertices Returned");
+//							LOG.info("Processing Initial Vertices Returned");
 							for (int i=0;i<hits.length;i++){
 								Document doc = indexSearcher.doc(hits[i].doc);
 								if ( Long.valueOf(doc.get("subgraphid")) == getSubgraph().getSubgraphId().get() ){
@@ -940,7 +808,7 @@ implements ISubgraphWrapup{
 //									getSubgraph().getSubgraphValue().forwardLocalVertexList.add( new VertexMessageSteps(_vertexId,_message,0) );
 								}
 							}
-							LOG.info("Processing Initial Vertices Done");
+//							LOG.info("Processing Initial Vertices Done");
 						}
 						
 					}catch(Exception e){e.printStackTrace();}
@@ -976,10 +844,10 @@ implements ISubgraphWrapup{
 				
 			}
 			
-		LOG.info("Traversal Started");
+//		LOG.info("Traversal Started");
 			// CHECK MSSG-PROCESS FORWARD-PROCESS BACKWARD
 			if(getSuperstep()>=3) {
-				LOG.info("Initial memory" + " Free Memory: " + Runtime.getRuntime().freeMemory() + " Total Memory:" + Runtime.getRuntime().totalMemory());
+//				LOG.info("Initial memory" + " Free Memory: " + Runtime.getRuntime().freeMemory() + " Total Memory:" + Runtime.getRuntime().totalMemory());
 				// CHECK INCOMING MESSAGE, ADD VERTEX TO APPRT LIST
 				// this is for the partially executed paths, which have been 
 				// forwarded from a different machine
@@ -1014,21 +882,21 @@ implements ISubgraphWrapup{
 			//output(partition.getId(), subgraph.getId(), getSuperstep()+":"+forwardLocalVertexList.size()+":"+revLocalVertexList.size());
 			// PROCESS FORWARD LIST
 			//System.out.println("FORWARD LIST:"+forwardLocalVertexList.isEmpty() +" REV LIST:"+revLocalVertexList.isEmpty() + "SGID:" + subgraph.getId() + " PID:" + partition.getId());
-				long[] hopTime=new long[getSubgraph().getSubgraphValue().path.size()];
-				long[] count=new long[getSubgraph().getSubgraphValue().path.size()];//assuming default is zero
-				String countStr1="";
+//				long[] hopTime=new long[getSubgraph().getSubgraphValue().path.size()];
+//				long[] count=new long[getSubgraph().getSubgraphValue().path.size()];//assuming default is zero
+//				String countStr1="";
 			
 //				LOG.info("SGID:" + getSubgraph().getSubgraphId()+" Traversal Memory" + " Free Memory: " + Runtime.getRuntime().freeMemory() + " Total Memory:" + Runtime.getRuntime().totalMemory() + " TraversalSteps:" + countStr1 + ":" +getSubgraph().getSubgraphValue().forwardLocalVertexList.size()+"," + getSuperstep());
 				LinkedList<VertexMessageSteps> nextStepForwardLocalVertexList = new LinkedList<VertexMessageSteps>();
 			while(!getSubgraph().getSubgraphValue().forwardLocalVertexList.isEmpty()) {
 				VertexMessageSteps vertexMessageStep = getSubgraph().getSubgraphValue().forwardLocalVertexList.poll();
 				if(getSubgraph().getSubgraphValue().forwardLocalVertexList.isEmpty()) {
-					count[vertexMessageStep.stepsTraversed]++;
+//					count[vertexMessageStep.stepsTraversed]++;
 					getSubgraph().getSubgraphValue().forwardLocalVertexList=nextStepForwardLocalVertexList;
-					String countStr="";
-					for(long c:count) {
-						countStr+=","+c;
-					}
+//					String countStr="";
+//					for(long c:count) {
+//						countStr+=","+c;
+//					}
 //				LOG.info("SGID:" + getSubgraph().getSubgraphId() +" Traversal Memory" + " Free Memory: " + Runtime.getRuntime().freeMemory() + " Total Memory:" + Runtime.getRuntime().totalMemory() + " TraversalSteps:" + countStr + ":" +getSubgraph().getSubgraphValue().forwardLocalVertexList.size()+"," + getSuperstep());
 				}
 				//output(partition.getId(), subgraph.getId(), "FORWARD-LIST");
@@ -1075,7 +943,7 @@ implements ISubgraphWrapup{
 				}
 				long startTime=System.nanoTime();
 				Step nextStep = getSubgraph().getSubgraphValue().path.get(vertexMessageStep.stepsTraversed+1);
-				count[vertexMessageStep.stepsTraversed]++;
+//				count[vertexMessageStep.stepsTraversed]++;
 				
 				
 				IVertex<MapValue, MapValue, LongWritable, LongWritable> currentVertex = getSubgraph().getVertexById(new LongWritable(vertexMessageStep.vertexId));
@@ -1234,7 +1102,7 @@ implements ISubgraphWrapup{
 					
 				}
 				long endTime=System.nanoTime();
-				hopTime[vertexMessageStep.stepsTraversed]+=(endTime-startTime);
+//				hopTime[vertexMessageStep.stepsTraversed]+=(endTime-startTime);
 						
 				
 			}
@@ -1413,7 +1281,7 @@ implements ISubgraphWrapup{
 					}
 					/* filtered vertex*/
 					else {
-					        LOG.info("PROP:"+prevStep.property.toString() + " VALUE:" + currentVertex.getValue().get(prevStep.property.toString()));
+//					        LOG.info("PROP:"+prevStep.property.toString() + " VALUE:" + currentVertex.getValue().get(prevStep.property.toString()));
 //						ISubgraphObjectProperties subgraphProperties = subgraphInstance.getPropertiesForVertex(currentVertex.getId());
 						if ( compareValuesUtil(currentVertex.getValue().get(prevStep.property.toString()).toString(), prevStep.value.toString()) ) {
 							/* add appropriate value later*/
@@ -1429,7 +1297,7 @@ implements ISubgraphWrapup{
 				
 			}
 
-			LOG.info("Sending Messages");
+//			LOG.info("Sending Messages");
 			// TODO: send the messages in Remote vertex list
 			for(VertexMessageSteps stuff: getSubgraph().getSubgraphValue().forwardRemoteVertexList){
 				// send message to all the remote vertices
@@ -1493,24 +1361,24 @@ implements ISubgraphWrapup{
 			
 			//printing traversal data for analysis
 
-			String countStr="";
-			for(long c:count) {
-				countStr+=","+c;
-			}
-		LOG.info("SGID:" + getSubgraph().getSubgraphId() +" Traversal Memory" + " Free Memory: " + Runtime.getRuntime().freeMemory() + " Total Memory:" + Runtime.getRuntime().totalMemory() + " TraversalSteps:" + countStr + ":" +getSubgraph().getSubgraphValue().forwardLocalVertexList.size()+"," + getSuperstep());
+//			String countStr="";
+//			for(long c:count) {
+//				countStr+=","+c;
+//			}
+//		LOG.info("SGID:" + getSubgraph().getSubgraphId() +" Traversal Memory" + " Free Memory: " + Runtime.getRuntime().freeMemory() + " Total Memory:" + Runtime.getRuntime().totalMemory() + " TraversalSteps:" + countStr + ":" +getSubgraph().getSubgraphValue().forwardLocalVertexList.size()+"," + getSuperstep());
 		
-		String timeStr="";
-		for(long t:hopTime) {
-			timeStr+=","+t;
-		}
+//		String timeStr="";
+//		for(long t:hopTime) {
+//			timeStr+=","+t;
+//		}
 //		System.gc();
 //	LOG.info("SGID:" + getSubgraph().getSubgraphId() +" Traversal Memory" + " Free Memory: " + Runtime.getRuntime().freeMemory() + " Total Memory:" + Runtime.getRuntime().totalMemory() + " TraversalTimeSteps:" + timeStr + ":" + getSuperstep());
 	
 		}
 		}
 		
-		LOG.info("Traversal Ends");
-		if(getSuperstep()>=3)
+//		LOG.info("Traversal Ends");
+		if(getSuperstep()>=1)
 			voteToHalt();
 	}
 	
