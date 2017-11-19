@@ -846,7 +846,7 @@ implements ISubgraphWrapup{
 			
 //		LOG.info("Traversal Started");
 			// CHECK MSSG-PROCESS FORWARD-PROCESS BACKWARD
-			if(getSuperstep()>=3) {
+			if(getSuperstep()>=1) {
 //				LOG.info("Initial memory" + " Free Memory: " + Runtime.getRuntime().freeMemory() + " Total Memory:" + Runtime.getRuntime().totalMemory());
 				// CHECK INCOMING MESSAGE, ADD VERTEX TO APPRT LIST
 				// this is for the partially executed paths, which have been 
