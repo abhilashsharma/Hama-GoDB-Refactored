@@ -38,7 +38,7 @@ public class pathDistrTraversalStepFixedJob {
 		  job.setInitialInput(readArgsFromFile(args[2]));
 		  job.setSubgraphValueClass(pathDistrTraversalStepFixedSubgraphState.class);
 		  job.setInputFormat(NonSplitTextInputFormat.class);
-		  job.setInputReaderClass(LongMapPartitionSubsetGsonReaderSynthLongRemoteLong.class);
+		  job.setInputReaderClass(LongMapPartitionSubsetGsonReader.class);
 		  
 		  //job.setSubgraphComputeClass(SubgraphComputeReduce.class);
 		  job.waitForCompletion(true);

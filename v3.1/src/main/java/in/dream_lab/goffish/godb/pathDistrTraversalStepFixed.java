@@ -1428,12 +1428,13 @@ implements ISubgraphWrapup{
 			
 				
 			}
-
+			
 			LOG.info("Sending Messages");
+			HashMap<Long,Long> msgPerSubgraph=new HashMap<>();
 			// TODO: send the messages in Remote vertex list
 			for(VertexMessageSteps stuff: getSubgraph().getSubgraphValue().forwardRemoteVertexList){
 				// send message to all the remote vertices
-				
+				long rsgid=0;
 				IRemoteVertex<MapValue,MapValue,LongWritable,LongWritable,LongWritable> remoteVertex = (IRemoteVertex<MapValue, MapValue, LongWritable, LongWritable, LongWritable>)getSubgraph().getVertexById(new LongWritable(stuff.vertexId));
 				StringBuilder remoteMessage = new StringBuilder("for();");
 				//remoteMessage.append(String.valueOf(stuff.vertexId.longValue())).append(";").append(stuff.message).append(";").append(stuff.stepsTraversed) ;
@@ -1448,15 +1449,30 @@ implements ISubgraphWrapup{
 				
 				if(remoteVertex!=null){
 					sendMessage(remoteVertex.getSubgraphId(),remoteM);
+					rsgid=remoteVertex.getSubgraphId().get();
 				}
 					
 				else{
 					
 					sendMessage(new LongWritable(getSubgraph().getSubgraphValue().InEdges.get(stuff.startVertexId).get(stuff.vertexId).sinkSubgraphId),remoteM);
 				}
-					
+				Long c=msgPerSubgraph.get(rsgid);	
+				if(c==null) {
+					msgPerSubgraph.put(rsgid,1l);
+				}
+				else {
+					c++;
+					msgPerSubgraph.put(rsgid,c);
+				}
 			}
+			
 			getSubgraph().getSubgraphValue().forwardRemoteVertexList.clear();
+			//Printing out remote messages sent per partition
+			for (Map.Entry<Long, Long> entry : msgPerSubgraph.entrySet())
+			{
+			    LOG.info("RSGID:"+entry.getKey() + "," + entry.getValue());
+			}
+			
 			
 			for(VertexMessageSteps stuff: getSubgraph().getSubgraphValue().revRemoteVertexList){
 				// send message to all the remote vertices
