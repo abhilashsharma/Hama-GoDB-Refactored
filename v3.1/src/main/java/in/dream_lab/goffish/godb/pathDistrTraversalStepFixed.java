@@ -1470,7 +1470,7 @@ implements ISubgraphWrapup{
 			//Printing out remote messages sent per partition
 			for (Map.Entry<Long, Long> entry : msgPerSubgraph.entrySet())
 			{
-			    LOG.info("RSGID:"+entry.getKey() + "," + entry.getValue());
+			    LOG.info("RSGID:"+getSuperstep()+","+entry.getKey() + "," + entry.getValue());
 			}
 			
 			
