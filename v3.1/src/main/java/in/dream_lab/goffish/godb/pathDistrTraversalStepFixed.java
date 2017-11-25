@@ -976,13 +976,14 @@ implements ISubgraphWrapup{
 				
 			}
 			
-		LOG.info("Traversal Started");
+		
 			// CHECK MSSG-PROCESS FORWARD-PROCESS BACKWARD
 			if(getSuperstep()>=3) {
 				LOG.info("Initial memory" + " Free Memory: " + Runtime.getRuntime().freeMemory() + " Total Memory:" + Runtime.getRuntime().totalMemory());
 				// CHECK INCOMING MESSAGE, ADD VERTEX TO APPRT LIST
 				// this is for the partially executed paths, which have been 
 				// forwarded from a different machine
+				boolean tr=false;
 			        Iterator msgIter=messageList.iterator();
 				if(msgIter.hasNext()){
 					for (IMessage<LongWritable, Text> message: messageList){
@@ -999,6 +1000,7 @@ implements ISubgraphWrapup{
 						if ( Long.parseLong(new String( message.getMessage().toString() ).split(Pattern.quote(";"))[6] ) == getSubgraph().getSubgraphId().get() ){
 							VertexMessageSteps v=processMessage(message) ;
 							if(v!=null){
+								tr=true;
 								if(new String( message.getMessage().toString() ).contains("rev()") )
 									getSubgraph().getSubgraphValue().revLocalVertexList.add( v );
 								else
@@ -1007,6 +1009,9 @@ implements ISubgraphWrapup{
 						
 						}
 						
+					}
+					if(tr) {//if anything added to traversal queue, then log for traversal
+						LOG.info("Traversal Started");
 					}
 	
 				}
