@@ -13,6 +13,7 @@ import org.apache.hama.bsp.TextInputFormat;
 import org.apache.hama.bsp.TextOutputFormat;
 
 import in.dream_lab.goffish.hama.GraphJob;
+import in.dream_lab.goffish.hama.LongMapPartitionSplitPropertySuccinctReader;
 import in.dream_lab.goffish.hama.LongMapPartitionSubsetSuccinctGsonReader;
 import in.dream_lab.goffish.hama.LongMapPartitionSuccinctReader;
 import in.dream_lab.goffish.hama.NonSplitTextInputFormat;
@@ -37,7 +38,7 @@ public class pathDistrSplitPropertySuccinctArrayStructureSingleNodeJob {
 		  job.setInitialInput(readArgsFromFile(args[2]));
 		  job.setSubgraphValueClass(pathDistrSubgraphSplitPropertySuccinctArrayStructureSingleNodeState.class);
 		  job.setInputFormat(NonSplitTextInputFormat.class);
-		  job.setInputReaderClass(LongMapPartitionSuccinctReader.class);
+		  job.setInputReaderClass(LongMapPartitionSplitPropertySuccinctReader.class);
 		  
 		  //job.setSubgraphComputeClass(SubgraphComputeReduce.class);
 		  job.waitForCompletion(true);
