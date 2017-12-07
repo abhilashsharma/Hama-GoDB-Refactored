@@ -430,8 +430,8 @@ String sCurrentLine=null;
  
  //finally populate the subgraphs and return the answer   
     for(ISubgraph<S, V, E, LongWritable, LongWritable, LongWritable> sg:partition.getSubgraphs()) {
-    	SuccinctArraySubgraph<S, V, E, LongWritable, LongWritable, LongWritable> succinctArraySubgraph=(SuccinctArraySubgraph<S, V, E, LongWritable, LongWritable, LongWritable>)sg;
-    	succinctArraySubgraph.setRemoteMap(remoteVertexToSubgraphMap);
+    	SplitPropertySuccinctArraySubgraph<S, V, E, LongWritable, LongWritable, LongWritable> splitPropertySuccinctArraySubgraph=(SplitPropertySuccinctArraySubgraph<S, V, E, LongWritable, LongWritable, LongWritable>)sg;
+    	splitPropertySuccinctArraySubgraph.setRemoteMap(remoteVertexToSubgraphMap);
 //    	succinctHashMapSubgraph.setLocalMap(vertexSubgraphMap);
     }
     
@@ -657,6 +657,7 @@ String sCurrentLine=null;
 //     
     }
       LongWritable pid = new LongWritable(pseudoPartId);
+      //pid is set as subgraph id here.. may have to fix this later
       SplitPropertySuccinctArraySubgraph<S, V, E, LongWritable, LongWritable, LongWritable> subgraph = new SplitPropertySuccinctArraySubgraph(pid,vertexSuccinctBuffer,propertySuccinctBufferMap,edgeSuccinctBufferList);
       partition.addSubgraph(subgraph);
 //    sendToAllPartitions(subgraphLocationBroadcast);
