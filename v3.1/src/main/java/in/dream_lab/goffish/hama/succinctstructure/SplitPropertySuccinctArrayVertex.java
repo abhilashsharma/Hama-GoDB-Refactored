@@ -166,8 +166,8 @@ public class SplitPropertySuccinctArrayVertex<V extends Writable, E extends Writ
     public String getPropforVertex(String name)
     {
         Log.info("getPropforVertex");
-        long searchQuery=((LongWritable)vid).get();
-        byte[] wholeQuery= (searchQuery).getBytes();
+        Long searchQuery=((LongWritable)vid).get();
+        byte[] wholeQuery= searchQuery.toString().getBytes();
         SuccinctIndexedFileBuffer propBuffer = propertySuccinctBufferMap.get(name);
 //        int offset;
         byte[] record;
@@ -188,8 +188,8 @@ public class SplitPropertySuccinctArrayVertex<V extends Writable, E extends Writ
     public List<String> getAllPropforVertex()
     {
         List<String> props = new ArrayList<>();
-        long searchQuery=((LongWritable)vid).get();
-        byte[] wholeQuery= ("#" + searchQuery + "@").getBytes();
+        Long searchQuery=((LongWritable)vid).get();
+        byte[] wholeQuery= searchQuery.toString().getBytes();
 //    	LOG.info("ALLPROP search:" + searchQuery.toString().concat("@") );
 //    	LOG.info("VBUFFER size:" + vbufferList.size());
         int offset;
