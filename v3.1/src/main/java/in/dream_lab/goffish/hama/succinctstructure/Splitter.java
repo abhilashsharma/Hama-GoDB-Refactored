@@ -60,11 +60,10 @@ public class Splitter {
         while (index < bytes.length)
         {
             x = new StringBuilder();
-            while (index < bytes.length && (isLowerCharacter(bytes[index]) || isUpperCharacter(bytes[index])))
+            while (index < bytes.length && (isLowerCharacter(bytes[index]) || isUpperCharacter(bytes[index]) || isDigit(bytes[index]) ))
             {
-                if (isUpperCharacter(bytes[index]))
-                    x.append((char)bytes[index]);
-                else
+              
+                
                     x.append((char)bytes[index]);
                 index++;
             }

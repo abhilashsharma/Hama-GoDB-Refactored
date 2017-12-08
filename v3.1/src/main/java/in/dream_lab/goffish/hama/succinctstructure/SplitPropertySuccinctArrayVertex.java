@@ -166,12 +166,12 @@ public class SplitPropertySuccinctArrayVertex<V extends Writable, E extends Writ
     public String getPropforVertex(String name)
     {
         Log.info("getPropforVertex");
-        Long searchQuery=((LongWritable)vid).get();
+        String searchQuery=("#" +((LongWritable)vid).get() + "@");
         byte[] wholeQuery= searchQuery.toString().getBytes();
         SuccinctIndexedFileBuffer propBuffer = propertySuccinctBufferMap.get(name);
 //        int offset;
         byte[] record;
-        String r=null;//USED FOR TESTING
+//        String r=null;//USED FOR TESTING
         long start = System.nanoTime();
         Integer[] recordId=vbuffer.recordSearchIds(wholeQuery);
         LOG.info("Lookup record id(property): " + (System.nanoTime() - start) + " ns");
@@ -179,10 +179,10 @@ public class SplitPropertySuccinctArrayVertex<V extends Writable, E extends Writ
 //        offset = propBuffer.getRecordOffset(recordID[0]);
 //        LOG.info("Lookup record offset(property): " + (System.nanoTime() - start) + " ns");
         start = System.nanoTime();
-        r = propBuffer.getRecord(recordId[0]);
+        record = propBuffer.getRecordBytes(recordId[0]);
         LOG.info("Extract until(property): " + (System.nanoTime() - start) + " ns");
-        LOG.info("# Extracted Bytes: " + r.length());
-        return r;
+        LOG.info("# Extracted Bytes: " + record.length);
+        return splitter.splitString(record).get(1).toString();
     }
     
 //TODO: Only for query generation
