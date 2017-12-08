@@ -795,7 +795,10 @@ implements ISubgraphWrapup{
 					}
 					/* filtered vertex*/
 					else {
-						if ( compareValuesUtil(String.valueOf(currentVertex.getPropforVertex(nextStep.property)), nextStep.value.toString()) ) {
+						
+						String prop=currentVertex.getPropforVertex(nextStep.property);
+						LOG.info("Prop:" + prop);
+						if ( compareValuesUtil(prop, nextStep.value.toString()) ) {
 							LOG.info("Predicate Matched");
 							/* add appropriate value later*/
 							getSubgraph().getSubgraphValue().forwardLocalVertexList.add(new VertexMessageSteps(vertexMessageStep.queryId,vertexMessageStep.vertexId,vertexMessageStep.message,vertexMessageStep.stepsTraversed+1, vertexMessageStep.startVertexId,vertexMessageStep.startStep, vertexMessageStep.previousSubgraphId, vertexMessageStep.previousPartitionId));

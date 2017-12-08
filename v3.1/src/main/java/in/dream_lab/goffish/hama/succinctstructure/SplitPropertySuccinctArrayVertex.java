@@ -171,6 +171,7 @@ public class SplitPropertySuccinctArrayVertex<V extends Writable, E extends Writ
         SuccinctIndexedFileBuffer propBuffer = propertySuccinctBufferMap.get(name);
 //        int offset;
         byte[] record;
+        String r=null;//USED FOR TESTING
         long start = System.nanoTime();
         Integer[] recordId=vbuffer.recordSearchIds(wholeQuery);
         LOG.info("Lookup record id(property): " + (System.nanoTime() - start) + " ns");
@@ -178,10 +179,10 @@ public class SplitPropertySuccinctArrayVertex<V extends Writable, E extends Writ
 //        offset = propBuffer.getRecordOffset(recordID[0]);
 //        LOG.info("Lookup record offset(property): " + (System.nanoTime() - start) + " ns");
         start = System.nanoTime();
-        record = propBuffer.getRecordBytes(recordId[0]);
+        r = propBuffer.getRecord(recordId[0]);
         LOG.info("Extract until(property): " + (System.nanoTime() - start) + " ns");
-        LOG.info("# Extracted Bytes: " + record.length);
-        return (String)splitter.splitString(record).get(0);
+        LOG.info("# Extracted Bytes: " + r.length());
+        return r;
     }
     
 //TODO: Only for query generation
