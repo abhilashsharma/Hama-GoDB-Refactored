@@ -750,7 +750,7 @@ implements ISubgraphWrapup{
 								Long otherVertex = edge;
 								StringBuilder _modifiedMessage = new StringBuilder("");
 								_modifiedMessage.append(vertexMessageStep.message).append("-->E:").append("-->V:").append(otherVertex);
-								LOG.info("OPathTraversed:" + _modifiedMessage.toString());
+//								LOG.info("OPathTraversed:" + _modifiedMessage.toString());
 									getSubgraph().getSubgraphValue().forwardLocalVertexList.add(new VertexMessageSteps(vertexMessageStep.queryId,otherVertex,_modifiedMessage.toString(),vertexMessageStep.stepsTraversed+1, vertexMessageStep.startVertexId,vertexMessageStep.startStep, vertexMessageStep.previousSubgraphId, vertexMessageStep.previousPartitionId));
 									
 							}//localoutedges traversal end
@@ -764,7 +764,7 @@ implements ISubgraphWrapup{
 								Long otherVertex = edge;
 								StringBuilder _modifiedMessage = new StringBuilder("");
 								_modifiedMessage.append(vertexMessageStep.message).append("-->E:").append("-->V:").append(otherVertex);
-								LOG.info("RPathTraversed:" + _modifiedMessage.toString());
+//								LOG.info("RPathTraversed:" + _modifiedMessage.toString());
 								getSubgraph().getSubgraphValue().forwardLocalVertexList.add(new VertexMessageSteps(vertexMessageStep.queryId,otherVertex,_modifiedMessage.toString(),vertexMessageStep.stepsTraversed+1, vertexMessageStep.startVertexId,vertexMessageStep.startStep, vertexMessageStep.previousSubgraphId, vertexMessageStep.previousPartitionId));
 //								if(!flag){
 //								addFlag=StoreRecursive(vertexMessageStep,_modifiedMessage.toString(),true);	
@@ -797,9 +797,9 @@ implements ISubgraphWrapup{
 					else {
 						
 						String prop=currentVertex.getPropforVertex(nextStep.property);
-						LOG.info("Prop:" + prop + " Path: " + vertexMessageStep.message);
+//						LOG.info("Prop:" + prop + " Path: " + vertexMessageStep.message);
 						if ( compareValuesUtil(prop, nextStep.value.toString()) ) {
-							LOG.info("Predicate Matched");
+//							LOG.info("Predicate Matched");
 							/* add appropriate value later*/
 							getSubgraph().getSubgraphValue().forwardLocalVertexList.add(new VertexMessageSteps(vertexMessageStep.queryId,vertexMessageStep.vertexId,vertexMessageStep.message,vertexMessageStep.stepsTraversed+1, vertexMessageStep.startVertexId,vertexMessageStep.startStep, vertexMessageStep.previousSubgraphId, vertexMessageStep.previousPartitionId));
 							//forwardLocalVertexList.add(vertexMessageStep);
