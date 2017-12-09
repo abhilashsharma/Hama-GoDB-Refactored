@@ -103,12 +103,13 @@ public class SplitPropertySuccinctArrayVertex<V extends Writable, E extends Writ
 //            LOG.info("Extract until(edge): " + (System.nanoTime() - start) + " ns" );
 //            LOG.info("# Extracted Bytes: " + record.length);
             String[] sTokens = sRecord.split("\\W");
-            for(int i=2; i < 2 + Long.valueOf(sTokens[1]); i++)
-                localSinks1.add(Long.valueOf(sTokens[i]));
-            for(long i= 2 + Long.valueOf(sTokens[1]); i < sTokens.length; i++)
-                remoteSinks1.add(Long.valueOf(sTokens[(int)i]));
+            LOG.info(sTokens);
+//            for(int i=2; i < 2 + Long.valueOf(sTokens[1]); i++)
+//                localSinks1.add(Long.valueOf(sTokens[i]));
+//            for(long i= 2 + Long.valueOf(sTokens[1]); i < sTokens.length; i++)
+//                remoteSinks1.add(Long.valueOf(sTokens[(int)i]));
         }
-        return new Tuple<>(localSinks1, remoteSinks1);
+        return new Tuple<>(localSinks, remoteSinks);
     }
     
     /**
