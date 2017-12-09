@@ -48,7 +48,7 @@ public class SplitPropertySuccinctArrayVertex<V extends Writable, E extends Writ
         long searchQuery=((LongWritable)vid).get();
 //    	LOG.info("GETEDGES search:" + searchQuery.toString().concat("@") );
 //    	LOG.info("EBUFFER size:" + ebufferList.size());
-        byte[] wholeQuery= (searchQuery + "@").getBytes();//TODO: # is not used now, remove that..DONE
+        byte[] wholeQuery= ("#" + searchQuery + "@").getBytes();//TODO: # is not used now, remove that..DONE
         long countStart=System.nanoTime();
         int iteration=0;
         for(SuccinctIndexedFileBuffer ebuf:ebufferList) {
@@ -102,7 +102,7 @@ public class SplitPropertySuccinctArrayVertex<V extends Writable, E extends Writ
         long searchQuery=((LongWritable)vid).get();
 //    	LOG.info("GETEDGES search:" + searchQuery.toString().concat("@") );
 //    	LOG.info("EBUFFER size:" + ebufferList.size());
-        byte[] wholeQuery= (searchQuery + "@").getBytes();//TODO: # is not used now, remove that..DONE
+        byte[] wholeQuery= ("#" + searchQuery + "@").getBytes();//TODO: # is not used now, remove that..DONE
         long countStart=System.nanoTime();
         int iteration=0;
         for(SuccinctIndexedFileBuffer ebuf:ebufferList) {//TODO: iterate through the Inedge buffer list
