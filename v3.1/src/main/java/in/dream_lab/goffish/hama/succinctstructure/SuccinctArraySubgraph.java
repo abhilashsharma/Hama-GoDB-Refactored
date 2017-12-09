@@ -143,7 +143,7 @@ public class SuccinctArraySubgraph<S extends Writable, V extends Writable, E ext
     	String record;
     	String[] tokens;
     	long startFine = System.nanoTime();
-    	Integer[] recordID = succinctIndexedVertexFileBuffer.recordSearchIds(value.getBytes());
+    	Integer[] recordID = succinctIndexedVertexFileBuffer.recordSearchIds(("#"+value+"@").getBytes());
     	Log.info("Lookup record id(vertex): "+ (System.nanoTime() - startFine)+ " ns " + recordID.length);
     	for (Integer rid : recordID)
     	 {
