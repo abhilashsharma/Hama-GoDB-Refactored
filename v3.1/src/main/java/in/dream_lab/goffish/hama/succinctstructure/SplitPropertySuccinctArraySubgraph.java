@@ -138,7 +138,7 @@ public class SplitPropertySuccinctArraySubgraph<S extends Writable, V extends Wr
         byte[] record;
         LongArrayList tokens;
         long startFine = System.nanoTime();
-        Integer[] recordID = propBuffer.recordSearchIds(("#" +value + "@").getBytes());
+        Integer[] recordID = propBuffer.recordSearchIds((value).getBytes());
         Log.info("Lookup record id(vertex): "+ (System.nanoTime() - startFine)+ " ns " + recordID.length);
             for (Integer rid : recordID)
            {
@@ -149,11 +149,9 @@ public class SplitPropertySuccinctArraySubgraph<S extends Writable, V extends Wr
               record = vertexSuccinctBuffer.getRecordBytes(rid);
               Log.info("Extract until(vertex): "+(System.nanoTime() - startFine) + " ns");
               Log.info("# Extracted Bytes: " + record.length);
-              String sRecord = vertexSuccinctBuffer.getRecord(rid);
               tokens=splitter.splitLong(record);
               for(long token : tokens) {
                   vid.add(token);
-              	  Log.info("Non Word split: " + sRecord + " Byte Splitter token:" + token);
               }
            }
         Log.info("Querying Time:" + (System.nanoTime() - start));

@@ -67,8 +67,7 @@ public class SplitPropertySuccinctArrayVertex<V extends Writable, E extends Writ
         byte[] record;
         List<Long> localSinks = new ArrayList<>();
         List<Long> remoteSinks = new ArrayList<>();
-        List<Long> localSinks1 = new ArrayList<>();
-        List<Long> remoteSinks1 = new ArrayList<>();
+
         if(ebuffer==null) {
 //        	LOG.info("Returning null edge buffer");
             return new Tuple<>(localSinks, remoteSinks);
@@ -76,42 +75,21 @@ public class SplitPropertySuccinctArrayVertex<V extends Writable, E extends Writ
         long start = System.nanoTime();
         Integer[] recordID = ebuffer.recordSearchIds(wholeQuery);
         LOG.info("Lookup record id(edge): " + (System.nanoTime() - start) + " ns " + recordID.length);
-        LOG.info("Byte Splitter OutEdges");
         for (Integer rid : recordID)//TODO: remove this as the number of records is only 1.
         {
 //            start = System.nanoTime();
 //            offset = ebuffer.getRecordOffset(rid);
 //            LOG.info("Lookup record offset(edge): " + (System.nanoTime() - start) + " ns");
             start = System.nanoTime();
-            record = ebuffer.getRecordBytes(rid);//TODO: use getRecordBytes instead of this.
-//            LOG.info("Extract until(edge): " + (System.nanoTime() - start) + " ns" );
-//            LOG.info("# Extracted Bytes: " + record.length);
+            record = ebuffer.getRecordBytes(rid);//TODO: use getRecordBytes instead of this...DONE
+            LOG.info("Extract until(edge): " + (System.nanoTime() - start) + " ns" );
+            LOG.info("# Extracted Bytes: " + record.length);
             tokens = splitter.splitLong(record);
  
-            LOG.info(tokens.toString());
             for(int i=2; i < 2 + tokens.getLong(1); i++)
                 localSinks.add(tokens.getLong(i));
             for(long i= 2 + tokens.getLong(1); i < tokens.size(); i++)
                 remoteSinks.add(tokens.getLong((int)i));
-        }
-        
-//        LOG.info("Lookup record id(edge): " + (System.nanoTime() - start) + " ns " + recordID.length);
-        LOG.info("Non-Word Split OutEdges");
-        for (Integer rid : recordID)//TODO: remove this as the number of records is only 1.
-        {
-//            start = System.nanoTime();
-//            offset = ebuffer.getRecordOffset(rid);
-//            LOG.info("Lookup record offset(edge): " + (System.nanoTime() - start) + " ns");
-            start = System.nanoTime();
-            String sRecord = ebuffer.getRecord(rid);//TODO: use getRecordBytes instead of this.
-//            LOG.info("Extract until(edge): " + (System.nanoTime() - start) + " ns" );
-//            LOG.info("# Extracted Bytes: " + record.length);
-            String[] sTokens = sRecord.split("\\W");
-            LOG.info(Arrays.toString(sTokens));
-//            for(int i=2; i < 2 + Long.valueOf(sTokens[1]); i++)
-//                localSinks1.add(Long.valueOf(sTokens[i]));
-//            for(long i= 2 + Long.valueOf(sTokens[1]); i < sTokens.length; i++)
-//                remoteSinks1.add(Long.valueOf(sTokens[(int)i]));
         }
         return new Tuple<>(localSinks, remoteSinks);
     }
@@ -205,10 +183,10 @@ public class SplitPropertySuccinctArrayVertex<V extends Writable, E extends Writ
 //        LOG.info("Lookup record offset(property): " + (System.nanoTime() - start) + " ns");
         start = System.nanoTime();
 //        record = propBuffer.getRecordBytes(recordId[0]);
-//        LOG.info("Extract until(property): " + (System.nanoTime() - start) + " ns");
-//        LOG.info("# Extracted Bytes: " + record.length);
         String sRecord = propBuffer.getRecord(recordId[0]);
-        LOG.info("PropForVertex: " + sRecord + " returning:" + sRecord.substring(1, sRecord.length()-1));
+        LOG.info("Extract until(property): " + (System.nanoTime() - start) + " ns");
+        LOG.info("# Extracted Bytes: " + sRecord.length());
+
         return sRecord.substring(1, sRecord.length()-1);
     }
     
