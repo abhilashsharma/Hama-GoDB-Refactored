@@ -12,6 +12,7 @@ import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import org.apache.commons.logging.LogFactory;
 import org.apache.hadoop.io.Writable;
+import org.mortbay.log.Log;
 public class SplitPropertySuccinctArraySubgraph<S extends Writable, V extends Writable, E extends Writable, I extends Writable, J extends Writable, K extends Writable> implements ISubgraph<S, V, E, I, J, K> {
     public Map<Long, Long> remotevertexToSubgraph;
     public K subgraphId;
@@ -148,9 +149,12 @@ public class SplitPropertySuccinctArraySubgraph<S extends Writable, V extends Wr
               record = vertexSuccinctBuffer.getRecordBytes(rid);
               Log.info("Extract until(vertex): "+(System.nanoTime() - startFine) + " ns");
               Log.info("# Extracted Bytes: " + record.length);
+              String sRecord = vertexSuccinctBuffer.getRecord(rid);
               tokens=splitter.splitLong(record);
-              for(long token : tokens)
+              for(long token : tokens) {
                   vid.add(token);
+              	  Log.info("Non Word split: " + sRecord + " Byte Splitter token:" + token);
+              }
            }
         Log.info("Querying Time:" + (System.nanoTime() - start));
         return vid;
