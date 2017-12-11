@@ -36,7 +36,7 @@ public class pathDistrSplitPropertySuccinctArrayStructureJob {
 		  job.setInputPath(new Path(args[0]));
 		  job.setOutputPath(new Path(args[1]));
 		  job.setInitialInput(readArgsFromFile(args[2]));
-		  job.setSubgraphValueClass(pathDistrSubgraphSuccinctArrayStructureState.class);
+		  job.setSubgraphValueClass(pathDistrSubgraphSplitPropertySuccinctArrayStructureState.class);
 		  job.setInputFormat(NonSplitTextInputFormat.class);
 		  job.setInputReaderClass(LongMapPartitionSplitPropertySuccinctReader.class);
 		  
