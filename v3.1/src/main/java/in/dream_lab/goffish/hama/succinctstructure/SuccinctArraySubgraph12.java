@@ -16,7 +16,6 @@ import org.apache.hadoop.io.Writable;
 import org.mortbay.log.Log;
 
 public class SuccinctArraySubgraph12<S extends Writable, V extends Writable, E extends Writable, I extends Writable, J extends Writable, K extends Writable> implements ISubgraph<S, V, E, I, J, K> {
-  private SuccinctIndexedFileBuffer succinctIndexedVertexFileBuffer,succinctIndexedEdgeFileBuffer;
     public Map<Long, Long> remotevertexToSubgraph;
     public Map<Long, Long> localvertexToSubgraph;
     public K subgraphId;
@@ -127,7 +126,7 @@ public class SuccinctArraySubgraph12<S extends Writable, V extends Writable, E e
 //    		offset = succinctIndexedVertexFileBuffer.getRecordOffset(rid);
 //    		Log.info("Lookup record offset(vertex): " + (System.nanoTime() - startFine) + " ns");
 //    		startFine = System.nanoTime();
-    		record = succinctIndexedVertexFileBuffer.getRecord(rid);
+    		record = vertexSuccinctBuffer.getRecord(rid);
     		Log.info("Extract until(vertex): "+(System.nanoTime() - startFine) + " ns");
     		Log.info("# Extracted Bytes: " + record.length());
     		tokens=record.split("\\W");
