@@ -868,6 +868,7 @@ implements ISubgraphWrapup{
 		
 		LOG.info("Ending Query Traversal");
 		LOG.info("Compute Ends");
+		flushAllLogs();
 		if(getSuperstep()>=1)
 			voteToHalt();
 	}
