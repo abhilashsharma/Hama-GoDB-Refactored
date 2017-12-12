@@ -14,6 +14,7 @@ import java.io.PrintWriter;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.HashSet;
 
@@ -21,6 +22,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.ListIterator;
 import java.util.Map;
+import java.util.Set;
 import java.util.regex.Pattern;
 import java.util.zip.GZIPInputStream;
 import java.util.zip.GZIPOutputStream;
@@ -33,6 +35,9 @@ import org.apache.hadoop.io.LongWritable;
 import org.apache.hadoop.io.MapWritable;
 import org.apache.hadoop.io.Text;
 import org.apache.hama.commons.math.Tuple;
+import org.apache.log4j.FileAppender;
+import org.apache.log4j.LogManager;
+import org.apache.log4j.Logger;
 import org.apache.lucene.analysis.Analyzer;
 
 import org.apache.lucene.analysis.standard.StandardAnalyzer;
@@ -671,8 +676,8 @@ implements ISubgraphWrapup{
 			
 			// CHECK MSSG-PROCESS FORWARD-PROCESS BACKWARD
 			if(getSuperstep()>=1) {
-			
 				LOG.info("Started Query Traversal");
+				flushAllLogs();
 				// CHECK INCOMING MESSAGE, ADD VERTEX TO APPRT LIST
 				// this is for the partially executed paths, which have been 
 				// forwarded from a different machine
@@ -1129,7 +1134,47 @@ implements ISubgraphWrapup{
 	
 	}
 
-
+	public static void flushAllLogs()
+	{
+		try
+	    {
+	        Set<FileAppender> flushedFileAppenders = new HashSet<FileAppender>();
+	        Enumeration currentLoggers = LogManager.getLoggerRepository().getCurrentLoggers();
+	        while(currentLoggers.hasMoreElements())
+	        {
+	            Object nextLogger = currentLoggers.nextElement();
+	            if(nextLogger instanceof Logger)
+	            {
+	                Logger currentLogger = (Logger) nextLogger;
+	                Enumeration allAppenders = currentLogger.getAllAppenders();
+	                while(allAppenders.hasMoreElements())
+	                {
+	                    Object nextElement = allAppenders.nextElement();
+	                    if(nextElement instanceof FileAppender)
+	                    {
+	                        FileAppender fileAppender = (FileAppender) nextElement;
+	                        if(!flushedFileAppenders.contains(fileAppender) && !fileAppender.getImmediateFlush())
+	                        {
+	                            flushedFileAppenders.add(fileAppender);
+	                            //log.info("Appender "+fileAppender.getName()+" is not doing immediateFlush ");
+	                            fileAppender.setImmediateFlush(true);
+	                            currentLogger.info("FLUSH");
+	                            fileAppender.setImmediateFlush(false);
+	                        }
+	                        else
+	                        {
+	                            //log.info("fileAppender"+fileAppender.getName()+" is doing immediateFlush");
+	                        }
+	                    }
+	                }
+	            }
+	        }
+	    }
+	    catch(RuntimeException e)
+	    {
+	        LOG.error("Failed flushing logs",e);
+	    }
+	}
 
 
 	
