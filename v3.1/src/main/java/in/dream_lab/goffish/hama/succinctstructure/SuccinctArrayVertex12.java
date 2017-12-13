@@ -71,9 +71,9 @@ public class SuccinctArrayVertex12<V extends Writable, E extends Writable, I ext
     	
     	LOG.info("Count(Edge): " + (System.nanoTime()-countStart) + " " + iteration);
     	
-        LongArrayList tokens;
+       String[] tokens;
         
-        byte[] record;
+        String record;
         List<Long> localSinks = new ArrayList<>();
         List<Long> remoteSinks = new ArrayList<>();
         if(ebuffer==null) {
@@ -87,14 +87,16 @@ public class SuccinctArrayVertex12<V extends Writable, E extends Writable, I ext
         {
 
             start = System.nanoTime();
-            record = ebuffer.getRecordBytes(rid);
+            record = ebuffer.getRecord(rid);
             LOG.info("Extract until(edge): " + (System.nanoTime() - start) + " ns" );
-            LOG.info("# Extracted Bytes: " + record.length);
-            tokens = splitter.splitLong(record);
-            for(int i=2; i < 2 + tokens.getLong(1); i++)
-                localSinks.add(tokens.getLong(i));
-            for(int i= (int) (2 + tokens.getLong(1)); i < tokens.size(); i++)
-                remoteSinks.add(tokens.getLong((int)i));
+            LOG.info("# Extracted Bytes: " + record.length());
+//            tokens = splitter.splitLong(record);
+            tokens = record.split("\\W");
+            int lCount=Integer.parseInt(tokens[2]);
+            for(int i=3; i < 3 + lCount ; i++)
+                localSinks.add(Long.parseLong(tokens[i]));
+            for(int i= 3 + lCount; i < tokens.length; i++)
+                remoteSinks.add(Long.parseLong(tokens[i]));
         }
         return new Tuple<>(localSinks, remoteSinks);
     }

@@ -118,8 +118,8 @@ public class SuccinctArraySubgraph12<S extends Writable, V extends Writable, E e
     	
     	SuccinctIndexedFileBuffer propBuffer= getPropertyBuffer(propName);
 //    	Integer offset;
-    	byte[] record;
-    	LongArrayList tokens;
+    	String record;
+    	String[] tokens;
     	long startFine = System.nanoTime();
     	Integer[] recordID = propBuffer.recordSearchIds(("#"+propValue+"@").getBytes());
     	Log.info("Lookup record id(vertex): "+ (System.nanoTime() - startFine)+ " ns " + recordID.length);
@@ -129,15 +129,12 @@ public class SuccinctArraySubgraph12<S extends Writable, V extends Writable, E e
 //    		offset = succinctIndexedVertexFileBuffer.getRecordOffset(rid);
 //    		Log.info("Lookup record offset(vertex): " + (System.nanoTime() - startFine) + " ns");
 //    		startFine = System.nanoTime();
-    		record = vertexSuccinctBuffer.getRecordBytes(rid);
+    		record = vertexSuccinctBuffer.getRecord(rid);
     		Log.info("Extract until(vertex): "+(System.nanoTime() - startFine) + " ns");
-    		Log.info("# Extracted Bytes: " + record.length);
-    		tokens=splitter.splitLong(record);
-            for(long token : tokens) {
-                vid.add(token);
-            }
-
-    		
+    		Log.info("# Extracted Bytes: " + record.length());
+//    		tokens=splitter.splitLong(record);
+    		tokens=record.split("\\W");
+            vid.add(Long.parseLong(tokens[1]));
     	}
     	
     	
