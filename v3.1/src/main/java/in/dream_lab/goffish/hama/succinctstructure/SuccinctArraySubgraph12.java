@@ -10,6 +10,7 @@ import in.dream_lab.goffish.api.IEdge;
 import in.dream_lab.goffish.api.IRemoteVertex;
 import in.dream_lab.goffish.api.ISubgraph;
 import in.dream_lab.goffish.api.IVertex;
+import it.unimi.dsi.fastutil.longs.LongArrayList;
 
 import org.apache.commons.logging.LogFactory;
 import org.apache.hadoop.io.Writable;
@@ -24,6 +25,7 @@ public class SuccinctArraySubgraph12<S extends Writable, V extends Writable, E e
     private SuccinctIndexedFileBuffer vertexSuccinctBuffer;
     List<SuccinctIndexedFileBuffer> edgeSuccinctBufferList;
     private HashMap<String, SuccinctIndexedFileBuffer> propertySuccinctBufferMap;
+    private static Splitter splitter;
 //    String vertexPath,edgePath;
     public SuccinctArraySubgraph12(K subgraphId, SuccinctIndexedFileBuffer _vertexSuccinctBuffer,HashMap<String, SuccinctIndexedFileBuffer> propertySuccinctBufferMap,List<SuccinctIndexedFileBuffer> _edgeSuccinctBufferList)
     {
@@ -32,6 +34,7 @@ public class SuccinctArraySubgraph12<S extends Writable, V extends Writable, E e
     	edgeSuccinctBufferList=_edgeSuccinctBufferList;
     	this.setPropertySuccinctBufferMap(propertySuccinctBufferMap);
         this.subgraphId = subgraphId;
+        splitter = Splitter.createSplitter();
     }
     
     public SuccinctIndexedFileBuffer getPropertyBuffer(String property)
@@ -115,8 +118,8 @@ public class SuccinctArraySubgraph12<S extends Writable, V extends Writable, E e
     	
     	SuccinctIndexedFileBuffer propBuffer= getPropertyBuffer(propName);
 //    	Integer offset;
-    	String record;
-    	String[] tokens;
+    	byte[] record;
+    	LongArrayList tokens;
     	long startFine = System.nanoTime();
     	Integer[] recordID = propBuffer.recordSearchIds(("#"+propValue+"@").getBytes());
     	Log.info("Lookup record id(vertex): "+ (System.nanoTime() - startFine)+ " ns " + recordID.length);
@@ -126,12 +129,14 @@ public class SuccinctArraySubgraph12<S extends Writable, V extends Writable, E e
 //    		offset = succinctIndexedVertexFileBuffer.getRecordOffset(rid);
 //    		Log.info("Lookup record offset(vertex): " + (System.nanoTime() - startFine) + " ns");
 //    		startFine = System.nanoTime();
-    		record = vertexSuccinctBuffer.getRecord(rid);
+    		record = vertexSuccinctBuffer.getRecordBytes(rid);
     		Log.info("Extract until(vertex): "+(System.nanoTime() - startFine) + " ns");
-    		Log.info("# Extracted Bytes: " + record.length());
-    		tokens=record.split("\\W");
+    		Log.info("# Extracted Bytes: " + record.length);
+    		tokens=splitter.splitLong(record);
+            for(long token : tokens) {
+                vid.add(token);
+            }
 
-    		vid.add(Long.parseLong(tokens[1]));
     		
     	}
     	

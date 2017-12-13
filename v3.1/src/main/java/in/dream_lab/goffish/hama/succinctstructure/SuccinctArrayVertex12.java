@@ -4,6 +4,7 @@ import edu.berkeley.cs.succinct.buffers.SuccinctIndexedFileBuffer;
 import in.dream_lab.goffish.api.IEdge;
 import in.dream_lab.goffish.api.IVertex;
 import in.dream_lab.goffish.godb.pathDistrSuccinctStructure;
+import it.unimi.dsi.fastutil.longs.LongArrayList;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -29,6 +30,7 @@ public class SuccinctArrayVertex12<V extends Writable, E extends Writable, I ext
     private SuccinctIndexedFileBuffer vertexSuccinctBuffer;
 //    private char delim;
     private HashMap<String, SuccinctIndexedFileBuffer> propertySuccinctBufferMap;
+    private static Splitter splitter;
     public SuccinctArrayVertex12(I vid, SuccinctIndexedFileBuffer _vertexSuccinctBuffer,HashMap<String, SuccinctIndexedFileBuffer> propertySuccinctBufferMap, List<SuccinctIndexedFileBuffer> ebufferList)
     {
         this.vid = vid;
@@ -36,6 +38,7 @@ public class SuccinctArrayVertex12<V extends Writable, E extends Writable, I ext
         this.setPropertySuccinctBufferMap(propertySuccinctBufferMap);
         this.ebufferList = ebufferList;
 //        this.delim = delim;
+        splitter = Splitter.createSplitter();
     }
     public I getVertexId()
     {
@@ -68,10 +71,9 @@ public class SuccinctArrayVertex12<V extends Writable, E extends Writable, I ext
     	
     	LOG.info("Count(Edge): " + (System.nanoTime()-countStart) + " " + iteration);
     	
-    	Integer offset;
-        String[] tokens;
+        LongArrayList tokens;
         
-        String record;
+        byte[] record;
         List<Long> localSinks = new ArrayList<>();
         List<Long> remoteSinks = new ArrayList<>();
         if(ebuffer==null) {
@@ -83,18 +85,16 @@ public class SuccinctArrayVertex12<V extends Writable, E extends Writable, I ext
         LOG.info("Lookup record id(edge): " + (System.nanoTime() - start) + " ns " + recordID.length);
         for (Integer rid : recordID)
         {
-//        	start = System.nanoTime();
-//            offset = ebuffer.getRecordOffset(rid);
-//            LOG.info("Lookup record offset(edge): " + (System.nanoTime() - start) + " ns");
+
             start = System.nanoTime();
-            record = ebuffer.getRecord(rid);
+            record = ebuffer.getRecordBytes(rid);
             LOG.info("Extract until(edge): " + (System.nanoTime() - start) + " ns" );
-            LOG.info("# Extracted Bytes: " + record.length());
-            tokens=record.split("\\W");
-            for(int i=3; i < 3 + Integer.parseInt(tokens[2]); i++) 
-                localSinks.add(Long.parseLong(tokens[i]));
-            for(int i=3 + Integer.parseInt(tokens[2]); i < tokens.length; i++) 
-                remoteSinks.add(Long.parseLong(tokens[i]));
+            LOG.info("# Extracted Bytes: " + record.length);
+            tokens = splitter.splitLong(record);
+            for(int i=3; i < 3 + tokens.getLong(2); i++) 
+                localSinks.add(tokens.getLong(i));
+            for(int i=(int) (3 + tokens.getLong(2)); i < tokens.size(); i++) 
+                remoteSinks.add(tokens.getLong(i));
         }
         return new Tuple<>(localSinks, remoteSinks);
     }
@@ -179,19 +179,16 @@ public class SuccinctArrayVertex12<V extends Writable, E extends Writable, I ext
     	SuccinctIndexedFileBuffer propBuffer = getPropertySuccinctBufferMap().get(propName);
 		LOG.info("Count(Vertex): " + (System.nanoTime()-countStart) + " " + iteration);
 		
-    	
-        String[] tokens;
-        String record;
   
         long start = System.nanoTime();
         Integer[] recordID=getVertexSuccinctBuffer().recordSearchIds(wholeQuery.getBytes());
         LOG.info("Lookup record id(property): " + (System.nanoTime() - start) + " ns");
         start = System.nanoTime();
-        record = propBuffer.getRecord(recordID[0]);
+        String sRecord = propBuffer.getRecord(recordID[0]);
         LOG.info("Extract until(property): " + (System.nanoTime() - start) + " ns");
-        LOG.info("# Extracted Bytes: " + record.length());
-        tokens=record.split("\\W");
-        return tokens[1];
+        LOG.info("# Extracted Bytes: " + sRecord.length());
+
+        return sRecord.substring(1, sRecord.length()-1);
     }
 	public SuccinctIndexedFileBuffer getVertexSuccinctBuffer() {
 		return vertexSuccinctBuffer;

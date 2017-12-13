@@ -23,7 +23,6 @@ public class SplitPropertySuccinctArrayVertex<V extends Writable, E extends Writ
     private ObjectArrayList<SuccinctIndexedFileBuffer> ebufferList;
     private SuccinctIndexedFileBuffer vbuffer;
     private Object2ObjectOpenHashMap<String, SuccinctIndexedFileBuffer> propertySuccinctBufferMap;
-    private char delim;
     private static Splitter splitter;
     public SplitPropertySuccinctArrayVertex(I vid, SuccinctIndexedFileBuffer vbuffer, ObjectArrayList<SuccinctIndexedFileBuffer> ebufferList, Object2ObjectOpenHashMap<String, SuccinctIndexedFileBuffer> propertySuccinctBufferMap)
     {
@@ -31,7 +30,6 @@ public class SplitPropertySuccinctArrayVertex<V extends Writable, E extends Writ
         this.vbuffer = vbuffer;
         this.ebufferList = ebufferList;
         this.propertySuccinctBufferMap = propertySuccinctBufferMap;
-        this.delim = delim;
         splitter = Splitter.createSplitter();
     }
     public I getVertexId()
