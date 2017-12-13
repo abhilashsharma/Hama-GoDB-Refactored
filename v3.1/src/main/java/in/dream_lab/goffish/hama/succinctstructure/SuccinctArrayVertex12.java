@@ -91,10 +91,10 @@ public class SuccinctArrayVertex12<V extends Writable, E extends Writable, I ext
             LOG.info("Extract until(edge): " + (System.nanoTime() - start) + " ns" );
             LOG.info("# Extracted Bytes: " + record.length);
             tokens = splitter.splitLong(record);
-            for(int i=3; i < 3 + tokens.getLong(2); i++) 
+            for(int i=2; i < 2 + tokens.getLong(1); i++)
                 localSinks.add(tokens.getLong(i));
-            for(int i=(int) (3 + tokens.getLong(2)); i < tokens.size(); i++) 
-                remoteSinks.add(tokens.getLong(i));
+            for(int i= (int) (2 + tokens.getLong(1)); i < tokens.size(); i++)
+                remoteSinks.add(tokens.getLong((int)i));
         }
         return new Tuple<>(localSinks, remoteSinks);
     }
