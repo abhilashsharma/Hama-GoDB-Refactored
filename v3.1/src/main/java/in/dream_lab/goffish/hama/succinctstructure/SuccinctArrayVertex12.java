@@ -27,7 +27,7 @@ public class SuccinctArrayVertex12<V extends Writable, E extends Writable, I ext
 	private I vid;
     private List<SuccinctIndexedFileBuffer>  ebufferList;
     private SuccinctIndexedFileBuffer vertexSuccinctBuffer;
-    private char delim;
+//    private char delim;
     private HashMap<String, SuccinctIndexedFileBuffer> propertySuccinctBufferMap;
     public SuccinctArrayVertex12(I vid, SuccinctIndexedFileBuffer _vertexSuccinctBuffer,HashMap<String, SuccinctIndexedFileBuffer> propertySuccinctBufferMap, List<SuccinctIndexedFileBuffer> ebufferList)
     {
@@ -35,7 +35,7 @@ public class SuccinctArrayVertex12<V extends Writable, E extends Writable, I ext
         this.setVertexSuccinctBuffer(_vertexSuccinctBuffer);
         this.setPropertySuccinctBufferMap(propertySuccinctBufferMap);
         this.ebufferList = ebufferList;
-        this.delim = delim;
+//        this.delim = delim;
     }
     public I getVertexId()
     {
@@ -83,11 +83,11 @@ public class SuccinctArrayVertex12<V extends Writable, E extends Writable, I ext
         LOG.info("Lookup record id(edge): " + (System.nanoTime() - start) + " ns " + recordID.length);
         for (Integer rid : recordID)
         {
-        	start = System.nanoTime();
-            offset = ebuffer.getRecordOffset(rid);
-            LOG.info("Lookup record offset(edge): " + (System.nanoTime() - start) + " ns");
+//        	start = System.nanoTime();
+//            offset = ebuffer.getRecordOffset(rid);
+//            LOG.info("Lookup record offset(edge): " + (System.nanoTime() - start) + " ns");
             start = System.nanoTime();
-            record = ebuffer.extractUntil(offset, delim);
+            record = ebuffer.getRecord(rid);
             LOG.info("Extract until(edge): " + (System.nanoTime() - start) + " ns" );
             LOG.info("# Extracted Bytes: " + record.length());
             tokens=record.split("\\W");
