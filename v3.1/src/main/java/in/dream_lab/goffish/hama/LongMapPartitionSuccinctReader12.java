@@ -590,7 +590,7 @@ String sCurrentLine=null;
     String vdirectory = vertexDataDir+"RGraphVertex"+pseudoPartId;
     File[] vfiles = new File(vdirectory).listFiles();
     Arrays.sort(vfiles);
-    String edirectory = edgeDataDir+"RGraphEdge"+pseudoPartId;
+    String edirectory = edgeDataDir+"RGraphOutEdge"+pseudoPartId;
     File[] efiles = new File(edirectory).listFiles();
     Arrays.sort(efiles);
     
