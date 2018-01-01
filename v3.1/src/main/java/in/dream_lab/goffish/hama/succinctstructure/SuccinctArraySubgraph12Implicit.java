@@ -167,7 +167,7 @@ public class SuccinctArraySubgraph12Implicit<S extends Writable, V extends Writa
 		return recordID[0];
 	}
 	
-	public long getActualVid(int dummyVid) {
+	public Long getActualVid(int dummyVid) {
 		String sRecord=vertexSuccinctBuffer.getRecord(dummyVid);
 		return Long.parseLong(sRecord.substring(1, sRecord.length()-1));
 	}

@@ -420,7 +420,7 @@ implements ISubgraphWrapup{
 	 * The Merged output may be partial output that needs to be sent back further to its parent subgraph, that is checked by checking  'outputPathMaintainance' if there is an entry.
 	 */
 	private void join(IMessage<LongWritable, Text> _message) {
-		
+		SuccinctArraySubgraph12Implicit sg=(SuccinctArraySubgraph12Implicit)getSubgraph();
 		long Time=System.currentTimeMillis();
 		String message = _message.getMessage().toString();
 //		System.out.println("RECEIVED JOIN MESSAGE:" +message);
@@ -466,7 +466,7 @@ implements ISubgraphWrapup{
 						remoteMessage.append("for();");
 					else
 						remoteMessage.append("rev();");
-					remoteMessage.append(entry.endVertex.toString()).append(";");
+					remoteMessage.append(sg.getActualVid(entry.endVertex.intValue()).toString()).append(";");
 					remoteMessage.append(entry.prevSubgraphId.toString()).append(";");
 					remoteMessage.append(result).append(";").append(queryId).append(";").append(recursiveStartStep);
 					Text remoteM = new Text(remoteMessage.toString());
@@ -504,6 +504,7 @@ implements ISubgraphWrapup{
 	 * 
 	 */
 	private void forwardOutputToSubgraph(int direction,VertexMessageSteps step) {
+		SuccinctArraySubgraph12Implicit sg=(SuccinctArraySubgraph12Implicit)getSubgraph();
 		boolean d=false;
 		if(direction==1){
 			d=true;
@@ -516,7 +517,7 @@ implements ISubgraphWrapup{
 		
 		for (Pair entry: getSubgraph().getSubgraphValue().outputPathMaintainance.get(new OutputPathKey(step.queryId,step.startStep,d,step.startVertexId) )){
 			StringBuilder remoteMessage = new StringBuilder("output();"+dir+";");
-			remoteMessage.append(entry.endVertex.toString()).append(";");
+			remoteMessage.append(sg.getActualVid(entry.endVertex.intValue()).toString()).append(";");
 			remoteMessage.append(entry.prevSubgraphId.toString()).append(";");
 			remoteMessage.append(step.message).append(";").append(step.queryId).append(";").append(step.startStep).append(";");
 			Text remoteM = new Text(remoteMessage.toString());
