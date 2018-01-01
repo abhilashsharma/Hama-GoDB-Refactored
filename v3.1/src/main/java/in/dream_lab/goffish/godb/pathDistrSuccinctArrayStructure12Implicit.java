@@ -991,7 +991,7 @@ implements ISubgraphWrapup{
 	 */
 	private VertexMessageSteps processMessage(IMessage<LongWritable, Text> _message){
 		
-		
+		SuccinctArraySubgraph12Implicit sg=(SuccinctArraySubgraph12Implicit)getSubgraph();
 		//TODO:add queryid to vertex message step
 		String message = _message.getMessage().toString();
 //		System.out.println("RECVD REMOTE MSG:" + message);
@@ -1034,7 +1034,7 @@ implements ISubgraphWrapup{
 			//FIX: new code to remove duplicates, to be tested
 //		if(pathAlreadyExists)
 //			return null;
-		
+			_vertexId = sg.getDummyVid(_vertexId);
 			return new VertexMessageSteps(_queryId,_vertexId,"V:" + _vertexId, _steps, _vertexId,_steps, getSubgraph().getSubgraphId().get() , 0);
 		
 	}
