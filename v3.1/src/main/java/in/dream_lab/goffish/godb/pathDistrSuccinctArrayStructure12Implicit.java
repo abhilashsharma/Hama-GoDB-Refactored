@@ -456,11 +456,11 @@ implements ISubgraphWrapup{
 			Integer recursiveStartStep=stuff.startStep;
 			boolean recursion=false;
 //			System.out.println("JoinQuery:" + queryId+","+ recursiveStartStep+","+ direction+","+ stuff.startVertex);
-			
-			if ( getSubgraph().getSubgraphValue().outputPathMaintainance.containsKey(new OutputPathKey(queryId, recursiveStartStep, direction, stuff.startVertex)))
+			long actualStartVertexId=sg.getActualVid(stuff.startVertex.intValue());
+			if ( getSubgraph().getSubgraphValue().outputPathMaintainance.containsKey(new OutputPathKey(queryId, recursiveStartStep, direction, actualStartVertexId)))
 			{
 				
-				for ( Pair entry: getSubgraph().getSubgraphValue().outputPathMaintainance.get(new OutputPathKey(queryId,recursiveStartStep,direction,stuff.startVertex))){
+				for ( Pair entry: getSubgraph().getSubgraphValue().outputPathMaintainance.get(new OutputPathKey(queryId,recursiveStartStep,direction,actualStartVertexId))){
 					StringBuilder remoteMessage = new StringBuilder("output();");
 					if(direction)
 						remoteMessage.append("for();");
@@ -515,9 +515,9 @@ implements ISubgraphWrapup{
 			dir="rev()";
 //		System.out.println("OUTPUT SIZE:"+step.startVertexId+":"+step.message+":"+getSubgraph().getSubgraphValue().outputPathMaintainance.get(new OutputPathKey(step.queryId,step.startStep,d,step.startVertexId)).size());
 		
-		for (Pair entry: getSubgraph().getSubgraphValue().outputPathMaintainance.get(new OutputPathKey(step.queryId,step.startStep,d,step.startVertexId) )){
+		for (Pair entry: getSubgraph().getSubgraphValue().outputPathMaintainance.get(new OutputPathKey(step.queryId,step.startStep,d,sg.getActualVid(step.startVertexId.intValue())) )){
 			StringBuilder remoteMessage = new StringBuilder("output();"+dir+";");
-			remoteMessage.append(sg.getActualVid(entry.endVertex.intValue()).toString()).append(";");
+			remoteMessage.append(entry.endVertex.toString()).append(";");
 			remoteMessage.append(entry.prevSubgraphId.toString()).append(";");
 			remoteMessage.append(step.message).append(";").append(step.queryId).append(";").append(step.startStep).append(";");
 			Text remoteM = new Text(remoteMessage.toString());
@@ -823,7 +823,7 @@ implements ISubgraphWrapup{
 				StringBuilder remoteMessage = new StringBuilder("for();");
 				//remoteMessage.append(String.valueOf(stuff.vertexId.longValue())).append(";").append(stuff.message).append(";").append(stuff.stepsTraversed) ;
 				
-				remoteMessage.append(String.valueOf(stuff.startVertexId)).append(";").append(String.valueOf(stuff.previousSubgraphId)).append(";").append(stuff.previousPartitionId).append(";").append(stuff.vertexId).append(";").append(stuff.stepsTraversed).append(";").append(sg.getRemoteMap().get(stuff.vertexId).toString());
+				remoteMessage.append(String.valueOf(sg.getActualVid(stuff.startVertexId.intValue()))).append(";").append(String.valueOf(stuff.previousSubgraphId)).append(";").append(stuff.previousPartitionId).append(";").append(stuff.vertexId).append(";").append(stuff.stepsTraversed).append(";").append(sg.getRemoteMap().get(stuff.vertexId).toString());
 					
 				remoteMessage.append(";").append(stuff.queryId);
 				Text remoteM = new Text(remoteMessage.toString());
