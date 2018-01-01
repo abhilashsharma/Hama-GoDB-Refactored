@@ -71,8 +71,10 @@ import in.dream_lab.goffish.godb.Step.Type;
 import in.dream_lab.goffish.godb.pathDistrSuccinctIndex.VertexMessageSteps;
 import in.dream_lab.goffish.hama.succinctstructure.SuccinctArraySubgraph;
 import in.dream_lab.goffish.hama.succinctstructure.SuccinctArraySubgraph12;
+import in.dream_lab.goffish.hama.succinctstructure.SuccinctArraySubgraph12Implicit;
 import in.dream_lab.goffish.hama.succinctstructure.SuccinctArrayVertex;
 import in.dream_lab.goffish.hama.succinctstructure.SuccinctArrayVertex12;
+import in.dream_lab.goffish.hama.succinctstructure.SuccinctArrayVertex12Implicit;
 import in.dream_lab.goffish.hama.succinctstructure.SuccinctSubgraph;
 import in.dream_lab.goffish.hama.succinctstructure.SuccinctVertex;
 
@@ -109,7 +111,7 @@ implements ISubgraphWrapup{
 	static Hueristics hueristics = new Hueristics(); 
 	//for succinct
 	HashMap<String,Integer> propToIndex= new HashMap<String,Integer>();
-	public  List<Long> hitList;
+	public  Integer[] hitList;
 	//Local subgraph to succint buffer mapping
 	static HashMap<Long,SuccinctBuffer> subgraphToBuffer;
 	/**
@@ -547,7 +549,7 @@ implements ISubgraphWrapup{
 	@Override
 	public void compute(Iterable<IMessage<LongWritable, Text>> messageList) {
 		LOG.info("Compute Starts");
-		SuccinctArraySubgraph12 sg=(SuccinctArraySubgraph12)getSubgraph();
+		SuccinctArraySubgraph12Implicit sg=(SuccinctArraySubgraph12Implicit)getSubgraph();
 //		System.out.println("**********SUPERSTEPS***********:" + getSuperstep() +"Message List Size:" + messageList.size());
 		
 		
@@ -617,14 +619,14 @@ implements ISubgraphWrapup{
 							
 						}
 						
-					System.out.println("Starting Vertices:" +hitList.size());	
+					System.out.println("Starting Vertices:" +hitList.length);	
 					
 					
-						if(hitList.size()>0){
+						if(hitList.length>0){
 							LOG.info("Index Querying Processing");
-							for (int i=0;i< hitList.size();i++){
+							for (int i=0;i< hitList.length;i++){
 
-								long vid= hitList.get(i);
+									long vid= hitList[i];
 //								if ( getSubgraph().getSubgraphId().get() ==hitList.get(i)){
 //									System.out.println("GOT:"+ vid);
 									Long _vertexId = vid;
@@ -736,7 +738,7 @@ implements ISubgraphWrapup{
 				Step nextStep = getSubgraph().getSubgraphValue().path.get(vertexMessageStep.stepsTraversed+1);
 				
 				
-				SuccinctArrayVertex12<MapValue,MapValue,LongWritable,LongWritable> currentVertex = new SuccinctArrayVertex12(new LongWritable(vertexMessageStep.vertexId),sg.getVertexSuccinctBuffer(),sg.getPropertySuccinctBufferMap(),sg.getEdgeBufferList());
+				SuccinctArrayVertex12Implicit<MapValue,MapValue,LongWritable,LongWritable> currentVertex = new SuccinctArrayVertex12Implicit(new LongWritable(vertexMessageStep.vertexId),sg.getVertexSuccinctBuffer(),sg.getPropertySuccinctBufferMap(),sg.getEdgeBufferList());
 				
 				if( nextStep.type == Type.EDGE ) {
 					
