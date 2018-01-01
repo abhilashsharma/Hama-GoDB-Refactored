@@ -16,6 +16,7 @@ import in.dream_lab.goffish.hama.GraphJob;
 import in.dream_lab.goffish.hama.LongMapPartitionSubsetSuccinctGsonReader;
 import in.dream_lab.goffish.hama.LongMapPartitionSuccinctReader;
 import in.dream_lab.goffish.hama.LongMapPartitionSuccinctReader12;
+import in.dream_lab.goffish.hama.LongMapPartitionSuccinctReader12Implicit;
 import in.dream_lab.goffish.hama.NonSplitTextInputFormat;
 
 public class pathDistrSuccinctArrayStructure12ImplicitJob {
@@ -38,7 +39,7 @@ public class pathDistrSuccinctArrayStructure12ImplicitJob {
 		  job.setInitialInput(readArgsFromFile(args[2]));
 		  job.setSubgraphValueClass(pathDistrSubgraphSuccinctArrayStructureState12Implicit.class);
 		  job.setInputFormat(NonSplitTextInputFormat.class);
-		  job.setInputReaderClass(LongMapPartitionSuccinctReader12.class);
+		  job.setInputReaderClass(LongMapPartitionSuccinctReader12Implicit.class);
 		  
 		  //job.setSubgraphComputeClass(SubgraphComputeReduce.class);
 		  job.waitForCompletion(true);
