@@ -51,7 +51,7 @@ public class SuccinctArrayVertex12Implicit<V extends Writable, E extends Writabl
     public Tuple<List<Long>, List<Long>> getEdges()
     {
         Log.info("getEdges");
-    	SuccinctIndexedFileBuffer ebuffer = null;
+    	SuccinctIndexedFileBuffer ebuffer = ebufferList.get(0);
 //    	Long searchQuery=((LongWritable)vid).get();
 //    	LOG.info("GETEDGES search:" + searchQuery.toString().concat("@") );
 //    	LOG.info("EBUFFER size:" + ebufferList.size());
