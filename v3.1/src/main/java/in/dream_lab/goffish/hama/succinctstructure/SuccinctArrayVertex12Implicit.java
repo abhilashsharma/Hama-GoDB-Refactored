@@ -93,7 +93,7 @@ public class SuccinctArrayVertex12Implicit<V extends Writable, E extends Writabl
             tokens = splitter.splitLong(record);
             int lCount = (int)tokens.getLong(0);
             for(int i=1; i < 1 + lCount ; i++) 
-                localSinks.add(tokens.getLong(i));
+                localSinks.add(tokens.getLong(i) - 1 );//TODO: Fix this hack
             for(int i=1 + lCount; i < tokens.size(); i++) 
                 remoteSinks.add(tokens.getLong(i));
         
