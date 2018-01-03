@@ -114,7 +114,7 @@ public class SuccinctArraySubgraph12Implicit<S extends Writable, V extends Writa
     {
     	long start = System.nanoTime();
     	List<Long> vid = new ArrayList<>();
-    	Log.info("getVertexByProp");
+    	Log.info("getVertexByProp: " + propName + "," + propValue);
     	
     	SuccinctIndexedFileBuffer propBuffer= getPropertyBuffer(propName);
 //    	Integer offset;
@@ -140,7 +140,7 @@ public class SuccinctArraySubgraph12Implicit<S extends Writable, V extends Writa
 //    		
 //    	}
     	
-    	
+    	Log.info("IndexLookup:" + recordID[0]);
     	Log.info("Querying Time:" + (System.nanoTime() - start));
     	return recordID;
     }
