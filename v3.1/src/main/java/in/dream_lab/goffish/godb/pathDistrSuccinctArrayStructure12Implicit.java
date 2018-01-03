@@ -456,7 +456,8 @@ implements ISubgraphWrapup{
 			Integer recursiveStartStep=stuff.startStep;
 			boolean recursion=false;
 			
-			long actualStartVertexId=sg.getActualVid(stuff.startVertex.intValue());
+//			long actualStartVertexId=sg.getActualVid(stuff.startVertex.intValue());
+			long actualStartVertexId=stuff.startVertex;
 			LOG.info("JoinQuery:" + queryId+","+ recursiveStartStep+","+ direction+","+ actualStartVertexId +", dummyVertex:" +stuff.startVertex);
 			if ( getSubgraph().getSubgraphValue().outputPathMaintainance.containsKey(new OutputPathKey(queryId, recursiveStartStep, direction, actualStartVertexId)))
 			{
@@ -888,26 +889,28 @@ implements ISubgraphWrapup{
 	 * 
 	 */
 	private boolean StoreRecursive(VertexMessageSteps vertexMessageStep,String _modifiedMessage,boolean _direction) {
-	
+		SuccinctArraySubgraph12Implicit sg=(SuccinctArraySubgraph12Implicit)getSubgraph();
 		boolean flag=true;
 		
 		int dir=0;
 		if(_direction==true){
 			dir=1;
 		}
-		LOG.info("Storing Recursive:" + vertexMessageStep.queryId+","+vertexMessageStep.stepsTraversed+","+_direction+","+vertexMessageStep.vertexId);
-		if(!getSubgraph().getSubgraphValue().recursivePaths.containsKey(new RecursivePathKey(vertexMessageStep.queryId,vertexMessageStep.stepsTraversed,_direction,vertexMessageStep.vertexId))){
+		long actualVertexId= sg.getActualVid(vertexMessageStep.vertexId.intValue());
+		long actualStartVertexId= sg.getActualVid( vertexMessageStep.startVertexId.intValue());
+		LOG.info("Storing Recursive:" + vertexMessageStep.queryId+","+vertexMessageStep.stepsTraversed+","+_direction+","+actualVertexId+", dummyVid:" +vertexMessageStep.vertexId);
+		if(!getSubgraph().getSubgraphValue().recursivePaths.containsKey(new RecursivePathKey(vertexMessageStep.queryId,vertexMessageStep.stepsTraversed,_direction,actualVertexId))){
 			
 			ArrayList<RecursivePathMaintained> tempList = new ArrayList<RecursivePathMaintained>();
-			tempList.add(new RecursivePathMaintained(vertexMessageStep.startVertexId,vertexMessageStep.startStep, _modifiedMessage.toString(),dir));
-			getSubgraph().getSubgraphValue().recursivePaths.put(new RecursivePathKey(vertexMessageStep.queryId,vertexMessageStep.stepsTraversed,_direction,vertexMessageStep.vertexId), tempList);
+			tempList.add(new RecursivePathMaintained(actualStartVertexId,vertexMessageStep.startStep, _modifiedMessage.toString(),dir));
+			getSubgraph().getSubgraphValue().recursivePaths.put(new RecursivePathKey(vertexMessageStep.queryId,vertexMessageStep.stepsTraversed,_direction,actualVertexId), tempList);
 //			System.out.println(vertexMessageStep.queryId+" Storing Recursive path:"+vertexMessageStep.startVertexId+":" + vertexMessageStep.vertexId +":"+_modifiedMessage+ ":" + vertexMessageStep.startStep + ":" + vertexMessageStep.stepsTraversed + ":" + _direction);
 //			vertexMessageStep.startVertexId = vertexMessageStep.vertexId;
 		}
 		else{
-			if(!getSubgraph().getSubgraphValue().recursivePaths.get(new RecursivePathKey(vertexMessageStep.queryId,vertexMessageStep.stepsTraversed,_direction,vertexMessageStep.vertexId)).contains(new RecursivePathMaintained(vertexMessageStep.startVertexId,vertexMessageStep.startStep, _modifiedMessage.toString(),dir))){
+			if(!getSubgraph().getSubgraphValue().recursivePaths.get(new RecursivePathKey(vertexMessageStep.queryId,vertexMessageStep.stepsTraversed,_direction,actualVertexId)).contains(new RecursivePathMaintained(actualStartVertexId,vertexMessageStep.startStep, _modifiedMessage.toString(),dir))){
 				
-				getSubgraph().getSubgraphValue().recursivePaths.get(new RecursivePathKey(vertexMessageStep.queryId,vertexMessageStep.stepsTraversed,_direction,vertexMessageStep.vertexId)).add(new RecursivePathMaintained(vertexMessageStep.startVertexId,vertexMessageStep.startStep, _modifiedMessage.toString(),dir));
+				getSubgraph().getSubgraphValue().recursivePaths.get(new RecursivePathKey(vertexMessageStep.queryId,vertexMessageStep.stepsTraversed,_direction,actualVertexId)).add(new RecursivePathMaintained(actualStartVertexId,vertexMessageStep.startStep, _modifiedMessage.toString(),dir));
 //				System.out.println(vertexMessageStep.queryId+" Adding Recursive path:"+vertexMessageStep.startVertexId+":" + vertexMessageStep.vertexId +":"+_modifiedMessage+ ":" + vertexMessageStep.startStep + ":" + vertexMessageStep.stepsTraversed + ":" + _direction  + ":" + !getSubgraph().getSubgraphValue().recursivePaths.get(new RecursivePathKey(vertexMessageStep.queryId,vertexMessageStep.stepsTraversed,_direction,vertexMessageStep.vertexId)).contains(new RecursivePathMaintained(vertexMessageStep.startVertexId,vertexMessageStep.startStep, _modifiedMessage.toString(),dir)) );
 				
 				//Checking partialResultCache if any partialResult present prior to this and sending result back
