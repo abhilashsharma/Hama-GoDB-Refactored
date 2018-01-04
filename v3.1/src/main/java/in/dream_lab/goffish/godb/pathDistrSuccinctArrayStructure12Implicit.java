@@ -431,7 +431,7 @@ implements ISubgraphWrapup{
 		Integer step=Integer.parseInt(split[6]);
 		//Recently added line...Reminder
 		step=direction?step-1:step+1;
-		 LOG.info("Joining:"+ queryId+","+step+","+direction+","+endVertexId+"," + getSubgraph().getSubgraphId().get());
+//		 LOG.info("Joining:"+ queryId+","+step+","+direction+","+endVertexId+"," + getSubgraph().getSubgraphId().get());
 		for (RecursivePathMaintained stuff : getSubgraph().getSubgraphValue().recursivePaths.get(new RecursivePathKey(queryId, step, direction,endVertexId))){
 			StringBuilder result = new StringBuilder(split[4]);//partial result
 			//*****Adding partial Result to partialResultCache********
@@ -458,7 +458,7 @@ implements ISubgraphWrapup{
 			
 //			long actualStartVertexId=sg.getActualVid(stuff.startVertex.intValue());
 			long actualStartVertexId=stuff.startVertex;
-			LOG.info("JoinQuery:" + queryId+","+ recursiveStartStep+","+ direction+","+ actualStartVertexId +", dummyVertex:" +stuff.startVertex);
+//			LOG.info("JoinQuery:" + queryId+","+ recursiveStartStep+","+ direction+","+ actualStartVertexId +", dummyVertex:" +stuff.startVertex);
 			if ( getSubgraph().getSubgraphValue().outputPathMaintainance.containsKey(new OutputPathKey(queryId, recursiveStartStep, direction, actualStartVertexId)))
 			{
 				
@@ -518,7 +518,7 @@ implements ISubgraphWrapup{
 			dir="rev()";
 //		System.out.println("OUTPUT SIZE:"+step.startVertexId+":"+step.message+":"+getSubgraph().getSubgraphValue().outputPathMaintainance.get(new OutputPathKey(step.queryId,step.startStep,d,step.startVertexId)).size());
 		long actualVertexId=sg.getActualVid(step.startVertexId.intValue());
-		LOG.info("FOROUTPUT:"+step.queryId + "," + step.startStep + "," + d + "," + actualVertexId + ", dummyVertex:" + step.startVertexId);
+//		LOG.info("FOROUTPUT:"+step.queryId + "," + step.startStep + "," + d + "," + actualVertexId + ", dummyVertex:" + step.startVertexId);
 		
 		for (Pair entry: getSubgraph().getSubgraphValue().outputPathMaintainance.get(new OutputPathKey(step.queryId,step.startStep,d,actualVertexId)) ){
 			StringBuilder remoteMessage = new StringBuilder("output();"+dir+";");
@@ -566,7 +566,7 @@ implements ISubgraphWrapup{
 	
 	
 				if( Arguments==null ){
-					System.out.println("START_ERROR:NO ARGUMENTS PROVIDED\tEXPECTED ARGUMENTS FORMAT\tvertexFilter@edgeDirection?edgeFilter@edgeDirection?edgeFilter@...|vertexFilter|edgeDirection?edgeFilter|...//instanceNumber\n");
+					LOG.info("START_ERROR:NO ARGUMENTS PROVIDED\tEXPECTED ARGUMENTS FORMAT\tvertexFilter@edgeDirection?edgeFilter@edgeDirection?edgeFilter@...|vertexFilter|edgeDirection?edgeFilter|...//instanceNumber\n");
 					voteToHalt();
 				}
 				else
@@ -625,7 +625,7 @@ implements ISubgraphWrapup{
 							
 						}
 						
-					System.out.println("Starting Vertices:" +hitList.length);	
+					LOG.info("Starting Vertices:" +hitList.length);	
 					
 					
 						if(hitList.length>0){
@@ -683,7 +683,7 @@ implements ISubgraphWrapup{
 			// CHECK MSSG-PROCESS FORWARD-PROCESS BACKWARD
 			if(getSuperstep()>=1) {
 				LOG.info("Started Query Traversal");
-				flushAllLogs();
+//				flushAllLogs();
 				// CHECK INCOMING MESSAGE, ADD VERTEX TO APPRT LIST
 				// this is for the partially executed paths, which have been 
 				// forwarded from a different machine
@@ -831,7 +831,7 @@ implements ISubgraphWrapup{
 					
 				remoteMessage.append(";").append(stuff.queryId);
 				Text remoteM = new Text(remoteMessage.toString());
-				LOG.info("ForRemoteMsg:" + remoteMessage.toString());
+//				LOG.info("ForRemoteMsg:" + remoteMessage.toString());
 //				LOG.info("RemoteMap:" + (long)sg.getRemoteMap().get(stuff.vertexId) + "," +stuff.vertexId);
 				sendMessage(new LongWritable((long) sg.getRemoteMap().get(stuff.vertexId)),remoteM);
 
@@ -867,7 +867,7 @@ implements ISubgraphWrapup{
 			// TODO: Send back the partial result lists
 			for(OutputMessageSteps stuff: getSubgraph().getSubgraphValue().outputList){
 				sendMessage(stuff.targetSubgraphId,stuff.message);
-				LOG.info("OutputMsg:" + stuff.message.toString());
+//				LOG.info("OutputMsg:" + stuff.message.toString());
 			}
 			
 			getSubgraph().getSubgraphValue().outputList.clear();
@@ -899,7 +899,7 @@ implements ISubgraphWrapup{
 		}
 		long actualVertexId= sg.getActualVid(vertexMessageStep.vertexId.intValue());
 		long actualStartVertexId= sg.getActualVid( vertexMessageStep.startVertexId.intValue());
-		LOG.info("Storing Recursive:" + vertexMessageStep.queryId+","+vertexMessageStep.stepsTraversed+","+_direction+","+actualVertexId+", dummyVid:" +vertexMessageStep.vertexId);
+//		LOG.info("Storing Recursive:" + vertexMessageStep.queryId+","+vertexMessageStep.stepsTraversed+","+_direction+","+actualVertexId+", dummyVid:" +vertexMessageStep.vertexId);
 		if(!getSubgraph().getSubgraphValue().recursivePaths.containsKey(new RecursivePathKey(vertexMessageStep.queryId,vertexMessageStep.stepsTraversed,_direction,actualVertexId))){
 			
 			ArrayList<RecursivePathMaintained> tempList = new ArrayList<RecursivePathMaintained>();
@@ -1019,7 +1019,7 @@ implements ISubgraphWrapup{
 		Long _queryId=Long.parseLong(split[7]);
 		//adding to the recursive path maintenance
 		boolean pathAlreadyExists=false;
-			LOG.info("Storing PATH:" + _queryId + "," + _steps + "," + _dir + "," + _vertexId+"," + _endVertexId);
+//			LOG.info("Storing PATH:" + _queryId + "," + _steps + "," + _dir + "," + _vertexId+"," + _endVertexId);
 			
 			if(getSubgraph().getSubgraphValue().outputPathMaintainance.containsKey(new OutputPathKey(_queryId,_steps,_dir,_vertexId))){
 				getSubgraph().getSubgraphValue().outputPathMaintainance.get(new OutputPathKey(_queryId,_steps,_dir,_vertexId)).add( new Pair(_endVertexId,_previousSubgraphId,_previousPartitionId));

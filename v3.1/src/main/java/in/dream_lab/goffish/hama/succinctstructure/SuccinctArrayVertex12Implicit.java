@@ -89,7 +89,7 @@ public class SuccinctArrayVertex12Implicit<V extends Writable, E extends Writabl
             record = ebuffer.getRecordBytes(new Integer((int)((LongWritable)vid).get()));
             LOG.info("Extract until(edge): " + (System.nanoTime() - start) + " ns" );
             LOG.info("# Extracted Bytes: " + record.length);
-            LOG.info("EdgeRecord:"+new String(record));
+//            LOG.info("EdgeRecord:"+new String(record));
             tokens = splitter.splitLong(record);
             int lCount = (int)tokens.getLong(0);
             for(int i=1; i < 1 + lCount ; i++) 
@@ -188,7 +188,7 @@ public class SuccinctArrayVertex12Implicit<V extends Writable, E extends Writabl
         String sRecord = propBuffer.getRecord(new Integer((int)((LongWritable)vid).get()));
         LOG.info("Extract until(property): " + (System.nanoTime() - start) + " ns");
         LOG.info("# Extracted Bytes: " + sRecord.length());
-        LOG.info("PropertyRecord:" + sRecord);
+//        LOG.info("PropertyRecord:" + sRecord);
         return sRecord.substring(1, sRecord.length()-1);
     }
 	public SuccinctIndexedFileBuffer getVertexSuccinctBuffer() {
