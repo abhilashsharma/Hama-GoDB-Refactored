@@ -468,7 +468,7 @@ implements ISubgraphWrapup{
 						remoteMessage.append("for();");
 					else
 						remoteMessage.append("rev();");
-					remoteMessage.append(sg.getActualVid(entry.endVertex.intValue()).toString()).append(";");
+					remoteMessage.append(entry.endVertex).append(";");
 					remoteMessage.append(entry.prevSubgraphId.toString()).append(";");
 					remoteMessage.append(result).append(";").append(queryId).append(";").append(recursiveStartStep);
 					Text remoteM = new Text(remoteMessage.toString());
