@@ -189,7 +189,7 @@ public class LongMapPartitionSubsetGsonReaderSynthLongRemoteLong<S extends Writa
     	if(sg.getLocalVertexCount() > maxSize) {
     		maxSize=sg.getLocalVertexCount();
     	}
-    	LOG.info("SGINFO:" + sg.getVertexCount());
+    	LOG.info("SGINFO:" + sg.getVertexCount() + "," + sg.getLocalVertexCount());
     	sgCount++;
     }
     
