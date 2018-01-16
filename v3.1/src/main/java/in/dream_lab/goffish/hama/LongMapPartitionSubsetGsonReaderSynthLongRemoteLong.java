@@ -188,8 +188,8 @@ public class LongMapPartitionSubsetGsonReaderSynthLongRemoteLong<S extends Writa
     for(ISubgraph<S, V, E, LongWritable, LongWritable, LongWritable> sg :partition.getSubgraphs()) {
     	if(sg.getLocalVertexCount() > maxSize) {
     		maxSize=sg.getLocalVertexCount();
-    		
     	}
+    	LOG.info("SGINFO:" + sg.getVertexCount());
     	sgCount++;
     }
     
