@@ -101,6 +101,7 @@ AbstractSubgraphComputation<LongWritable, MapValue, MapValue, Text, LongWritable
   @Override
   public void compute(Iterable<IMessage<LongWritable,Text>> messages) {
 	  
+	  voteToHalt();
 	   	
   }
   
