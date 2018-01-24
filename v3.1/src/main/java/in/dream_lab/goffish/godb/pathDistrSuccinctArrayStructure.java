@@ -255,11 +255,20 @@ implements ISubgraphWrapup{
 //		propToIndex.put("patid", 0);
 //    	propToIndex.put("country", 1);
 //    	propToIndex.put("nclass", 2);
-		propToIndex.put("vid", 0);
-		propToIndex.put("lang", 1);
-    	propToIndex.put("ind", 2);
-    	propToIndex.put("contr", 3);
-    	propToIndex.put("ispublic", 4);
+		
+		//RGraph schema
+//		propToIndex.put("vid", 0);
+//		propToIndex.put("lang", 1);
+//    	propToIndex.put("ind", 2);
+//    	propToIndex.put("contr", 3);
+//    	propToIndex.put("ispublic", 4);
+    	
+    	//gplus Schema
+    	propToIndex.put("vid", 0);
+    	propToIndex.put("emp", 1);
+    	propToIndex.put("school", 2);
+    	propToIndex.put("major", 3);
+    	propToIndex.put("places", 4);
 		
 	    getSubgraph().getSubgraphValue().path = new ArrayList<Step>();
 		Type previousStepType = Type.EDGE;
@@ -615,9 +624,9 @@ implements ISubgraphWrapup{
 					
 						if(hitList.size()>0){
 							LOG.info("Index Querying Processing");
-							for (int i=0;i< hitList.size();i=i+2){
+							for (int i=0;i< hitList.size();i++){
 
-								long vid= hitList.get(i+1);
+								long vid= hitList.get(i);
 //								if ( getSubgraph().getSubgraphId().get() ==hitList.get(i)){
 //									System.out.println("GOT:"+ vid);
 									Long _vertexId = vid;

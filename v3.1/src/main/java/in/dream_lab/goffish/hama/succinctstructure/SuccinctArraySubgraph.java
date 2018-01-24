@@ -155,8 +155,8 @@ public class SuccinctArraySubgraph<S extends Writable, V extends Writable, E ext
     		Log.info("Extract until(vertex): "+(System.nanoTime() - startFine) + " ns");
     		Log.info("# Extracted Bytes: " + record.length());
     		tokens=record.split("\\W");
-    		for(int i=0;i<tokens.length;i++) {
-    			vid.add(Long.parseLong(tokens[i]));
+    		{//As subgraphid is not stored now... only returning vids
+    			vid.add(Long.parseLong(tokens[1]));
     		}
     	}
     	

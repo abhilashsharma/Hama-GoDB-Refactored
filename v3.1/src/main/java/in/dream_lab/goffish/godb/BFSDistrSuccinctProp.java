@@ -214,53 +214,12 @@ AbstractSubgraphComputation<BFSDistrPropSuccinctSubgraphState, MapValue, MapValu
 		}
 
 		
-	    void mountIndexToMemory()
-	         {
-	    	String Index_DIR="abhilash/index/";
-	             try
-	             {
-	         		// Creating FileSystem object, to be able to work with HDFS	
-	     			Configuration config = new Configuration();
-	     			config.set("fs.default.name","hdfs://orion-00:19000/");
-	     			FileSystem dfs = FileSystem.get(config);
-	     			File LocalDir=new File("/tmp/index");
-	     			if(!(LocalDir.exists())){
-	     				System.out.println("Loading to /tmp done ");
-	     			}
-	     			else{
-	     				System.out.println("Removing Existing index directory");
-	     				FileUtils.deleteDirectory(LocalDir);
-	     				System.out.println("Directory exists:" + LocalDir.exists());
-	     			}
-	     			
-	     			dfs.copyToLocalFile(new Path(Index_DIR), new Path("/tmp"));
-	             }
-	             catch(Exception e){
-	                 e.printStackTrace();
-	             }
-
-	             
-	             
-	         }
+	  
 
 		
 		
 		
 
-		//initialize lucene
-		private void initLucene() throws InterruptedException, IOException{
-			
-			{
-			  long pseudoPid=getSubgraph().getSubgraphId().get() >> 32;
-				initDone = true;
-				vertexIndexDir = new File(ConfigFile.basePath+ "/index/Partition"+pseudoPid+"/vertexIndex");
-				vertexDirectory = FSDirectory.open(vertexIndexDir);
-				analyzer = new StandardAnalyzer(Version.LATEST);
-				indexReader  = DirectoryReader.open(vertexDirectory);
-				indexSearcher = new IndexSearcher(indexReader);
-			}
-			
-		}
 		/**
 	         * Initialize Lucene in memory
 	         * searcher = new IndexSearcher (new RAMDirectory (indexDirectory)); 
@@ -280,23 +239,7 @@ AbstractSubgraphComputation<BFSDistrPropSuccinctSubgraphState, MapValue, MapValu
 	        }
 		
   
-		//updated Code to Integer attributes as well
-//		private void makeQuery(String prop,Object val) throws IOException{
-//			{
-//				queryMade = true;
-//				if(val.getClass()==String.class){
-//				query  = new BooleanQuery();
-//				query.add(new TermQuery(new Term(prop, (String)val)), BooleanClause.Occur.MUST);
-//				hits =  indexSearcher.search(query,40000).scoreDocs;
-//				}
-//				else if(val.getClass()==Integer.class)
-//				{
-//					Query q = NumericRangeQuery.newIntRange(prop,(Integer)val, (Integer)val, true, true);
-//					hits =  indexSearcher.search(q,40000).scoreDocs;
-//				}
-//				
-//			}
-//		}
+
 		
 		
 		private void join(IMessage<LongWritable,Text> _message) {
@@ -417,9 +360,9 @@ AbstractSubgraphComputation<BFSDistrPropSuccinctSubgraphState, MapValue, MapValu
 					LOG.info("*******Querying done********:"+hitList.size());
 						
 						if(hitList.size()>0){
-							for (int i=0;i<hitList.size();i+=2){
+							for (int i=0;i<hitList.size();i++){
 
-								long vid= hitList.get(i+1);
+								long vid= hitList.get(i);
 //							
 									Long _vertexId = vid;
 									String _message = "V:";
@@ -588,7 +531,7 @@ AbstractSubgraphComputation<BFSDistrPropSuccinctSubgraphState, MapValue, MapValu
 				//remoteMessage.append(String.valueOf(stuff.vertexId.longValue())).append(";").append(stuff.message).append(";").append(stuff.stepsTraversed) ;
 				remoteMessage.append(String.valueOf(stuff.startVertexId)).append(";").append(String.valueOf(stuff.startSubgraphId)).append(";").append(stuff.startPartitionId).append(";").append(stuff.vertexId).append(";").append(stuff.message).append(";").append(stuff.stepsTraversed) ;
 				Text remoteM = new Text(remoteMessage.toString());
-				LOG.info("RemoteVertexToSubgraph Vertex:" + stuff.vertexId + " Subgraph" + (long) sg.remotevertexToSubgraph.get(stuff.vertexId));
+//				LOG.info("RemoteVertexToSubgraph Vertex:" + stuff.vertexId + " Subgraph" + (long) sg.remotevertexToSubgraph.get(stuff.vertexId));
 				sendMessage(new LongWritable((long) sg.remotevertexToSubgraph.get(stuff.vertexId)),remoteM);
 //				LOG.info("Sending Remote Message:"+ remoteMessage.toString());
 			}
@@ -634,29 +577,7 @@ AbstractSubgraphComputation<BFSDistrPropSuccinctSubgraphState, MapValue, MapValu
 	        queryEnd=true;
 	        LOG.info("Ending Query Execution");
 	    }
-	  
-		
-		
-//		for(Map.Entry<Long, ResultSet> entry: getSubgraph().getSubgraphValue().resultsMap.entrySet()) {
-//			if (!entry.getValue().revResultSet.isEmpty())
-//				for(String partialRevPath: entry.getValue().revResultSet) {
-//					if (!entry.getValue().forwardResultSet.isEmpty())
-//						for(String partialForwardPath: entry.getValue().forwardResultSet) {
-//							LOG.info("ResultSet:" +partialRevPath+partialForwardPath);
-//							//output(partition.getId(), subgraph.getId(), partialRevPath+partialForwardPath); 
-//						}
-//					else{
-//						LOG.info("ResultSet:" +partialRevPath);
-//						//output(partition.getId(), subgraph.getId(), partialRevPath);
-//					}
-//				}
-//			else
-//				for(String partialForwardPath: entry.getValue().forwardResultSet) {
-//					LOG.info("ResultSet:" +partialForwardPath);
-//					//output(partition.getId(), subgraph.getId(), partialForwardPath); 
-//				}
-//		}
-		
+	  					
 		
 //		LOG.info("SetSize:" + getSubgraph().getSubgraphValue().resultsMap.size());
 		LOG.info("Cumulative Result Collection:" + getSubgraph().getSubgraphValue().resultCollectionTime);
