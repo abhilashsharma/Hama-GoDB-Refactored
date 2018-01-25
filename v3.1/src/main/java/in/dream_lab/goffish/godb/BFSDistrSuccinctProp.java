@@ -119,8 +119,8 @@ AbstractSubgraphComputation<BFSDistrPropSuccinctSubgraphState, MapValue, MapValu
 		enum Direction{OUT,IN}
 
 		public  List<Long> hitList;
-		public ArrayList<String> delimArray;
-		public ArrayList<String> propArray;
+		public ArrayList<String> delimArray= new ArrayList<>();
+		public ArrayList<String> propArray= new ArrayList<>();
 		/**
 		 * Class for storing the traversal path V->E->V->E->E.....
 		 */
