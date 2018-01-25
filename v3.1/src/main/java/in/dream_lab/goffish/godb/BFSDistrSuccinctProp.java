@@ -119,7 +119,8 @@ AbstractSubgraphComputation<BFSDistrPropSuccinctSubgraphState, MapValue, MapValu
 		enum Direction{OUT,IN}
 
 		public  List<Long> hitList;
-		
+		public ArrayList<String> delimArray;
+		public ArrayList<String> propArray;
 		/**
 		 * Class for storing the traversal path V->E->V->E->E.....
 		 */
@@ -210,6 +211,18 @@ AbstractSubgraphComputation<BFSDistrPropSuccinctSubgraphState, MapValue, MapValu
 			
 			getSubgraph().getSubgraphValue().remoteSubgraphMap = new HashMap<Long, Long>();
 			// read heuristics from memory
+			
+			//add properties and delimiter list
+			propArray.add("employer");
+			propArray.add("school");
+			propArray.add("major");
+			propArray.add("places_lived");
+			
+			delimArray.add("@");
+			delimArray.add("$");
+			delimArray.add("*");
+			delimArray.add("^");
+			delimArray.add("|");
 			
 		}
 
@@ -430,21 +443,13 @@ AbstractSubgraphComputation<BFSDistrPropSuccinctSubgraphState, MapValue, MapValu
 			while(!getSubgraph().getSubgraphValue().forwardLocalVertexList.isEmpty()) {
 				
 				VertexMessageSteps vertexMessageStep = getSubgraph().getSubgraphValue().forwardLocalVertexList.poll();
-//				if(!visitedVertices.contains(vertexMessageStep.vertexId)){
-//					visitedVertices.add(vertexMessageStep.vertexId);
-//				}
-//				else
-//					continue;
-				//output(partition.getId(), subgraph.getId(), "FORWARD-LIST");
-				/* if last step,end that iteration*/
-				//System.out.println("Reached:" + vertexMessageStep.vertexId +" BFS: "+vertexMessageStep.message+ "  Path Size:" + vertexMessageStep.stepsTraversed + "/" + Depth);
+
 				if ( vertexMessageStep.stepsTraversed == getSubgraph().getSubgraphValue().Depth ){
 					SuccinctArrayVertex<MapValue,MapValue,LongWritable,LongWritable> currentVertex = new SuccinctArrayVertex(new LongWritable(vertexMessageStep.vertexId),sg.getVertexBufferList(),sg.getEdgeBufferList(),'|');
-//				  SuccinctArrayVertex<MapValue,MapValue,LongWritable,LongWritable> currentVertex = getSubgraph().getVertexById(new LongWritable(vertexMessageStep.vertexId));
 					String[] str=currentVertex.getAllPropforVertex();
-				  StringBuilder _modifiedMsg = new StringBuilder("");
-                                  _modifiedMsg .append(vertexMessageStep.message).append(str[1]+","+str[2]+","+str[3]+"," + str[4] + "," + str[5]);
-                                 LOG.info("MODIFIEDMSG:" + _modifiedMsg.toString());
+					StringBuilder _modifiedMsg = new StringBuilder("");
+                    _modifiedMsg .append(vertexMessageStep.message).append(str[1]+","+str[2]+","+str[3]+"," + str[4] + "," + str[5]);
+                    LOG.info("MODIFIEDMSG:" + _modifiedMsg.toString());
 					if (vertexMessageStep.startSubgraphId == getSubgraph().getSubgraphId().get()) {
 						if ( !getSubgraph().getSubgraphValue().resultsMap.containsKey(vertexMessageStep.startVertexId) )
 							getSubgraph().getSubgraphValue().resultsMap.put(vertexMessageStep.startVertexId, new ResultSet());
@@ -479,9 +484,8 @@ AbstractSubgraphComputation<BFSDistrPropSuccinctSubgraphState, MapValue, MapValu
 								StringBuilder _modifiedMessage = new StringBuilder("");
 								_modifiedMessage.append(vertexMessageStep.message).append(str[1]+","+str[2]+","+str[3]+"," + str[4] + "," + str[5]).append("-->V:");
 								LOG.info("MODIFIEDMSG:" + _modifiedMsg.toString());
-									/* TODO :add the correct value to list*/
-//									if(!visitedVertices.contains(otherVertex.getId()))
-									getSubgraph().getSubgraphValue().forwardLocalVertexList.add(new VertexMessageSteps(otherVertex,_modifiedMessage.toString(),vertexMessageStep.stepsTraversed+1, vertexMessageStep.startVertexId, vertexMessageStep.startSubgraphId, vertexMessageStep.startPartitionId));
+									
+								getSubgraph().getSubgraphValue().forwardLocalVertexList.add(new VertexMessageSteps(otherVertex,_modifiedMessage.toString(),vertexMessageStep.stepsTraversed+1, vertexMessageStep.startVertexId, vertexMessageStep.startSubgraphId, vertexMessageStep.startPartitionId));
 								
 									
 							}
@@ -496,7 +500,7 @@ AbstractSubgraphComputation<BFSDistrPropSuccinctSubgraphState, MapValue, MapValu
 							
 								/* TODO :add vertex to forwardRemoteVertexList*/
 //								getSubgraph().getSubgraphValue().forwardRemoteVertexList.add(new VertexMessageSteps(otherVertex,_modifiedMessage.toString(),vertexMessageStep.stepsTraversed+1,vertexMessageStep.startVertexId, vertexMessageStep.startSubgraphId,vertexMessageStep.startPartitionId));
-								getSubgraph().getSubgraphValue().forwardLocalVertexList.add(new VertexMessageSteps(otherVertex,_modifiedMessage.toString(),vertexMessageStep.stepsTraversed+1, vertexMessageStep.startVertexId, vertexMessageStep.startSubgraphId, vertexMessageStep.startPartitionId));
+								getSubgraph().getSubgraphValue().forwardRemoteVertexList.add(new VertexMessageSteps(otherVertex,_modifiedMessage.toString(),vertexMessageStep.stepsTraversed+1, vertexMessageStep.startVertexId, vertexMessageStep.startSubgraphId, vertexMessageStep.startPartitionId));
 							}
 							
 							

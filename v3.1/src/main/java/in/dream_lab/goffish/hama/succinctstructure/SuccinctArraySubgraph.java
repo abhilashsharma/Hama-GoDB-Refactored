@@ -12,6 +12,7 @@ import in.dream_lab.goffish.api.IVertex;
 
 import org.apache.commons.logging.LogFactory;
 import org.apache.hadoop.io.Writable;
+import org.apache.hama.commons.math.Tuple;
 import org.mortbay.log.Log;
 
 public class SuccinctArraySubgraph<S extends Writable, V extends Writable, E extends Writable, I extends Writable, J extends Writable, K extends Writable> implements ISubgraph<S, V, E, I, J, K> {
@@ -23,6 +24,8 @@ public class SuccinctArraySubgraph<S extends Writable, V extends Writable, E ext
     public static final org.apache.commons.logging.Log Log = LogFactory.getLog(SuccinctArraySubgraph.class);
     List<SuccinctIndexedFileBuffer> vertexSuccinctBufferList;
     List<SuccinctIndexedFileBuffer> edgeSuccinctBufferList;
+    ArrayList<String> delimArray;
+    ArrayList<String> propList;
 //    String vertexPath,edgePath;
     public SuccinctArraySubgraph(K subgraphId, List<SuccinctIndexedFileBuffer> _vertexSuccinctBufferList,List<SuccinctIndexedFileBuffer> _edgeSuccinctBufferList)
     {
@@ -107,6 +110,27 @@ public class SuccinctArraySubgraph<S extends Writable, V extends Writable, E ext
      
 	return _value;
     }
+    
+    void setDelimArray(ArrayList<String> delimArray) {//left for user to set in application code
+    	
+    	this.delimArray = delimArray;
+    }
+    
+void setPropArray(ArrayList<String> propList) {//left for user to set in application code
+    	
+    	this.propList = propList;
+    }
+    
+    Tuple<String, String>  getPropDelim(String propName){
+    	
+    	int index = propList.indexOf(propName);
+    	String startDelim= delimArray.get(index);
+    	String endDelim =delimArray.get(index+1);
+    	Tuple<String,String> t= new Tuple<String, String>(startDelim, endDelim);
+    	
+    	return t;
+    }
+    
     //TODO:Change This..DONE
     public List<Long> getVertexIDs()
     {
@@ -133,8 +157,12 @@ public class SuccinctArraySubgraph<S extends Writable, V extends Writable, E ext
     }
   
     //TODO:Change this..DONE
-    public List<Long> getVertexByProp(String name, String value, char delim)
+    public List<Long> getVertexByProp(String name, String value, char untilDelim)
     {
+    	String startDelim,endDelim;
+    	Tuple<String, String> propDelim = getPropDelim(name);
+    	startDelim =propDelim.getFirst();
+    	endDelim=propDelim.getSecond();
     	long start = System.nanoTime();
     	List<Long> vid = new ArrayList<>();
     	Log.info("getVertexByProp");
@@ -143,7 +171,7 @@ public class SuccinctArraySubgraph<S extends Writable, V extends Writable, E ext
     	String record;
     	String[] tokens;
     	long startFine = System.nanoTime();
-    	Integer[] recordID = succinctIndexedVertexFileBuffer.recordSearchIds(("#"+value+"@").getBytes());
+    	Integer[] recordID = succinctIndexedVertexFileBuffer.recordSearchIds((startDelim+value+endDelim).getBytes());
     	Log.info("Lookup record id(vertex): "+ (System.nanoTime() - startFine)+ " ns " + recordID.length);
     	for (Integer rid : recordID)
     	 {
@@ -151,7 +179,7 @@ public class SuccinctArraySubgraph<S extends Writable, V extends Writable, E ext
     		offset = succinctIndexedVertexFileBuffer.getRecordOffset(rid);
     		Log.info("Lookup record offset(vertex): " + (System.nanoTime() - startFine) + " ns");
     		startFine = System.nanoTime();
-    		record = succinctIndexedVertexFileBuffer.extractUntil(offset, delim);
+    		record = succinctIndexedVertexFileBuffer.extractUntil(offset, untilDelim);
     		Log.info("Extract until(vertex): "+(System.nanoTime() - startFine) + " ns");
     		Log.info("# Extracted Bytes: " + record.length());
     		tokens=record.split("\\W");
