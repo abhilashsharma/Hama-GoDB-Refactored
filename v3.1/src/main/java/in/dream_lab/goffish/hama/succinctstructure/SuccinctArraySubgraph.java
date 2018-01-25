@@ -111,12 +111,12 @@ public class SuccinctArraySubgraph<S extends Writable, V extends Writable, E ext
 	return _value;
     }
     
-    void setDelimArray(ArrayList<String> delimArray) {//left for user to set in application code
+    public void setDelimArray(ArrayList<String> delimArray) {//left for user to set in application code
     	
     	this.delimArray = delimArray;
     }
     
-void setPropArray(ArrayList<String> propList) {//left for user to set in application code
+    public void setPropArray(ArrayList<String> propList) {//left for user to set in application code
     	
     	this.propList = propList;
     }

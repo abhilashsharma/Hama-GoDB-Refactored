@@ -224,6 +224,12 @@ AbstractSubgraphComputation<BFSDistrPropSuccinctSubgraphState, MapValue, MapValu
 			delimArray.add("^");
 			delimArray.add("|");
 			
+			
+			 SuccinctArraySubgraph sg=(SuccinctArraySubgraph)getSubgraph();
+			 
+			 sg.setDelimArray(delimArray);
+			 sg.setPropArray(propArray);
+			
 		}
 
 		
