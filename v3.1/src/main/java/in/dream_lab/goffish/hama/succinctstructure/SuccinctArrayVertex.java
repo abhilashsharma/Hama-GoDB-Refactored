@@ -43,7 +43,7 @@ public class SuccinctArrayVertex<V extends Writable, E extends Writable, I exten
      */
     public Tuple<List<Long>, List<Long>> getEdges()
     {
-        Log.info("getEdges");
+//        Log.info("getEdges");
     	SuccinctIndexedFileBuffer ebuffer = null;
     	Long searchQuery=((LongWritable)vid).get();
 //    	LOG.info("GETEDGES search:" + searchQuery.toString().concat("@") );
@@ -62,7 +62,7 @@ public class SuccinctArrayVertex<V extends Writable, E extends Writable, I exten
     		
     	}
     	
-    	LOG.info("Count(Edge): " + (System.nanoTime()-countStart) + " " + iteration);
+//    	LOG.info("Count(Edge): " + (System.nanoTime()-countStart) + " " + iteration);
     	
     	Integer offset;
         String[] tokens;
@@ -76,16 +76,16 @@ public class SuccinctArrayVertex<V extends Writable, E extends Writable, I exten
     	}
         long start = System.nanoTime();
         Integer[] recordID = ebuffer.recordSearchIds(wholeQuery.getBytes());
-        LOG.info("Lookup record id(edge): " + (System.nanoTime() - start) + " ns " + recordID.length);
+//        LOG.info("Lookup record id(edge): " + (System.nanoTime() - start) + " ns " + recordID.length);
         for (Integer rid : recordID)
         {
         	start = System.nanoTime();
             offset = ebuffer.getRecordOffset(rid);
-            LOG.info("Lookup record offset(edge): " + (System.nanoTime() - start) + " ns");
+//            LOG.info("Lookup record offset(edge): " + (System.nanoTime() - start) + " ns");
             start = System.nanoTime();
             record = ebuffer.extractUntil(offset, delim);
-            LOG.info("Extract until(edge): " + (System.nanoTime() - start) + " ns" );
-            LOG.info("# Extracted Bytes: " + record.length());
+//            LOG.info("Extract until(edge): " + (System.nanoTime() - start) + " ns" );
+//            LOG.info("# Extracted Bytes: " + record.length());
             tokens=record.split("\\W");
             for(int i=3; i < 3 + Integer.parseInt(tokens[2]); i++) 
                 localSinks.add(Long.parseLong(tokens[i]));
@@ -165,7 +165,7 @@ public class SuccinctArrayVertex<V extends Writable, E extends Writable, I exten
     }
     public String getPropforVertex(int index)
     {
-        Log.info("getPropforVertex");
+//        Log.info("getPropforVertex");
     	Long searchQuery=((LongWritable)vid).get();
     	String wholeQuery="#"+searchQuery.toString().concat("@");
     	SuccinctIndexedFileBuffer vbuffer=null;
@@ -178,7 +178,7 @@ public class SuccinctArrayVertex<V extends Writable, E extends Writable, I exten
     			break;
     		}
     	}
-		LOG.info("Count(Vertex): " + (System.nanoTime()-countStart) + " " + iteration);
+//		LOG.info("Count(Vertex): " + (System.nanoTime()-countStart) + " " + iteration);
 		
     	
         Integer offset;
@@ -190,14 +190,14 @@ public class SuccinctArrayVertex<V extends Writable, E extends Writable, I exten
     	}
         long start = System.nanoTime();
         Integer[] recordID=vbuffer.recordSearchIds(wholeQuery.getBytes());
-        LOG.info("Lookup record id(property): " + (System.nanoTime() - start) + " ns");
+//        LOG.info("Lookup record id(property): " + (System.nanoTime() - start) + " ns");
         start = System.nanoTime();
         offset = vbuffer.getRecordOffset(recordID[0]);
-        LOG.info("Lookup record offset(property): " + (System.nanoTime() - start) + " ns");
+//        LOG.info("Lookup record offset(property): " + (System.nanoTime() - start) + " ns");
         start = System.nanoTime();
         record = vbuffer.extractUntil(offset, '|');
-        LOG.info("Extract until(property): " + (System.nanoTime() - start) + " ns");
-        LOG.info("# Extracted Bytes: " + record.length());
+//        LOG.info("Extract until(property): " + (System.nanoTime() - start) + " ns");
+//        LOG.info("# Extracted Bytes: " + record.length());
         tokens=record.split("\\W");
         return tokens[index+1];
     }
