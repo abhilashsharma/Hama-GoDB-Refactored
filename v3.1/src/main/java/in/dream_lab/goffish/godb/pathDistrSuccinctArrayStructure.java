@@ -82,6 +82,9 @@ implements ISubgraphWrapup{
 	
 	public static final Log LOG = LogFactory.getLog(pathDistrSuccinctArrayStructure.class);
 	
+	
+	public ArrayList<String> delimArray= new ArrayList<>();
+	public ArrayList<String> propArray= new ArrayList<>();
 	String Arguments=null;
 	//Required for lucene 
 	static File vertexIndexDir;
@@ -344,6 +347,24 @@ implements ISubgraphWrapup{
 //		inVerticesMap = new HashMap<Long, HashMap<String,LinkedList<Long>>>();
 //		remoteSubgraphMap = new HashMap<Long, Long>();
 //		hueristics=HueristicsLoad.getInstance();//loading this at a different place
+		
+		//add properties and delimiter list
+		propArray.add("employer");
+		propArray.add("school");
+		propArray.add("major");
+		propArray.add("places_lived");
+		
+		delimArray.add("@");
+		delimArray.add("$");
+		delimArray.add("*");
+		delimArray.add("^");
+		delimArray.add("|");
+		
+		
+		 SuccinctArraySubgraph sg=(SuccinctArraySubgraph)getSubgraph();
+		 
+		 sg.setDelimArray(delimArray);
+		 sg.setPropArray(propArray);
 
 		
 	}
