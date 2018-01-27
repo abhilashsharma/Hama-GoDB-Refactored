@@ -268,10 +268,10 @@ implements ISubgraphWrapup{
     	
     	//gplus Schema
     	propToIndex.put("vid", 0);
-    	propToIndex.put("emp", 1);
+    	propToIndex.put("employer", 1);
     	propToIndex.put("school", 2);
     	propToIndex.put("major", 3);
-    	propToIndex.put("places", 4);
+    	propToIndex.put("places_lived", 4);
 		
 	    getSubgraph().getSubgraphValue().path = new ArrayList<Step>();
 		Type previousStepType = Type.EDGE;
