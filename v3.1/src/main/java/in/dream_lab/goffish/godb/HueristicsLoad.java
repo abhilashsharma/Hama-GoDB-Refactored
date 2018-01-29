@@ -73,7 +73,7 @@ public class HueristicsLoad {
 				                 //hdfs://10.0.0.4:29000/
 				                 //hdfs://orion-00:29000/
 		     			Configuration config = new Configuration();
-		     			config.set("fs.default.name","hdfs://192.168.0.10:29000");
+		     			config.set("fs.default.name","hdfs://192.168.0.10:8020");
 		     			FileSystem dfs = FileSystem.get(config);
 		     			FSDataInputStream in = null;
 		     			//Exact statistics:/Stats/hue_FULL.ser
