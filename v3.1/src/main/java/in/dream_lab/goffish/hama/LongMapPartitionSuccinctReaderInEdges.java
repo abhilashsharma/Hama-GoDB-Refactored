@@ -417,8 +417,8 @@ String sCurrentLine=null;
  
  //finally populate the subgraphs and return the answer   
     for(ISubgraph<S, V, E, LongWritable, LongWritable, LongWritable> sg:partition.getSubgraphs()) {
-    	SuccinctArraySubgraph<S, V, E, LongWritable, LongWritable, LongWritable> succinctArraySubgraph=(SuccinctArraySubgraph<S, V, E, LongWritable, LongWritable, LongWritable>)sg;
-    	succinctArraySubgraph.setRemoteMap(remoteVertexToSubgraphMap);
+    	SuccinctArraySubgraphInEdges<S, V, E, LongWritable, LongWritable, LongWritable> succinctArraySubgraphInEdges=(SuccinctArraySubgraphInEdges<S, V, E, LongWritable, LongWritable, LongWritable>)sg;
+    	succinctArraySubgraphInEdges.setRemoteMap(remoteVertexToSubgraphMap);
 //    	succinctHashMapSubgraph.setLocalMap(vertexSubgraphMap);
     }
     
