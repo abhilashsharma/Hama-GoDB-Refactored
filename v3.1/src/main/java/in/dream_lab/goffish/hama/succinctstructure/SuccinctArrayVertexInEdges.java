@@ -32,7 +32,7 @@ public class SuccinctArrayVertexInEdges<V extends Writable, E extends Writable, 
         this.vbufferList = vbufferList;
         this.oebufferList = oebufferList;
         this.iebufferList = iebufferList;
-//        this.delim = delim;
+        this.delim = '|';
     }
     public I getVertexId()
     {
