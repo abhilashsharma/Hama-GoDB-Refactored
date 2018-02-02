@@ -191,14 +191,14 @@ import org.apache.lucene.document.Field;
 					try{
 					{
 					 //assuming all property types are string, to be changed for other types
-/* 253 */           String value = vertex.getValue().get(property).toString();
+/* 253 */           String value = vertex.getValue().get(property);
 /* 254 */           if (value != null) {
 /* 255 */             doc.add(new StringField(property, value.toString(), Field.Store.NO));
 /*     */           } else
 /* 257 */             nullValue = true;
 /*     */         }
 /* 259 */         if (nullValue) {
-/* 260 */           doc.add(new StringField(property, "null", Field.Store.NO));
+/* 260 */           doc.add(new StringField(property, "n", Field.Store.NO));
 /*     */         }
 					}catch(Exception e) {
 						throw new IOException("VertexID:" + vertex.getVertexId() + " Property:" + property);
