@@ -669,7 +669,8 @@ implements ISubgraphWrapup{
 			System.runFinalization();
 			}
 			LOG.info("TIME ACCUMULATING INEDGES....Starting loading of heuristics");
-			hueristics=HueristicsLoad.getInstance();
+//			hueristics=HueristicsLoad.getInstance();
+			hueristics=HueristicsLoad.getInstance("/user/abhilash/gplusHeurSer/gplusHue_FULL.ser");
 			LOG.info("Heuristic Loaded");
 
 			if(!gcCalled){
