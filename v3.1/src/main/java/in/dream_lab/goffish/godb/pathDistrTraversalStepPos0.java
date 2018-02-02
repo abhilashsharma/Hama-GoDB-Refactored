@@ -1093,7 +1093,12 @@ implements ISubgraphWrapup{
 					/* filtered vertex*/
 					else {
 //						ISubgraphObjectProperties subgraphProperties = subgraphInstance.getPropertiesForVertex(currentVertex.getId());
-						if ( compareValuesUtil(currentVertex.getValue().get(nextStep.property).toString(), nextStep.value.toString()) ) {
+						String val=currentVertex.getValue().get(nextStep.property);
+						if(val==null) {
+							LOG.info("null found");
+							val="n";
+						}
+						if ( compareValuesUtil(val, nextStep.value.toString()) ) {
 							/* add appropriate value later*/
 							nextStepForwardLocalVertexList.add(new VertexMessageSteps(vertexMessageStep.queryId,vertexMessageStep.vertexId,vertexMessageStep.message,vertexMessageStep.stepsTraversed+1, vertexMessageStep.startVertexId,vertexMessageStep.startStep, vertexMessageStep.previousSubgraphId, vertexMessageStep.previousPartitionId));
 							//forwardLocalVertexList.add(vertexMessageStep);

@@ -24,7 +24,7 @@ public class pathDistrTraversalStepPos0Job {
 	  {
 		  HamaConfiguration conf = new HamaConfiguration();
 		  GraphJob job = new GraphJob(conf, pathDistrTraversalStepPos0.class);
-		  job.setJobName("Path Fixed");
+		  job.setJobName("Path Fixed point");
 		  job.setInputFormat(TextInputFormat.class);
 		  job.setInputKeyClass(LongWritable.class);
 		  job.setInputValueClass(LongWritable.class);
