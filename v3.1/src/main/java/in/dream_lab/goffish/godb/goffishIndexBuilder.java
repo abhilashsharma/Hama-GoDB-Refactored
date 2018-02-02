@@ -188,7 +188,8 @@ import org.apache.lucene.document.Field;
 /* 221 */         SupportedTypes type = (SupportedTypes)entry.getValue();
 /* 222 */         boolean nullValue = false;
 /*     */         
-		{
+					try{
+					{
 					 //assuming all property types are string, to be changed for other types
 /* 253 */           String value = vertex.getValue().get(property).toString();
 /* 254 */           if (value != null) {
@@ -199,7 +200,11 @@ import org.apache.lucene.document.Field;
 /* 259 */         if (nullValue) {
 /* 260 */           doc.add(new StringField(property, "null", Field.Store.NO));
 /*     */         }
-/*     */       }
+					}catch(Exception e) {
+						throw new IOException("VertexID:" + vertex.getVertexId() + " Property:" + property);
+					}
+
+/*     */       }//while ends
 /* 263 */       doc.add(new LongField("id", vertex.getVertexId().get(), Field.Store.YES));
 /* 264 */       doc.add(new LongField("subgraphid", getSubgraph().getSubgraphId().get(), Field.Store.YES));
 /* 265 */       vertexIndexWriter.addDocument(doc);
