@@ -420,11 +420,18 @@ public class LongMapPartitionSubsetGsonReaderSynthLongRemoteLong<S extends Writa
           
 //        LOG.info("HashMap:" + map[0] + "," + map[2]);
         if(vertexPropertySet.contains(map[0])){
-          try {
-            vertexValueMap.put(map[0].intern(), map[2].intern());
-          }catch(Exception e) {
-        	  throw new IOException("Exception in Line:" + jsonMap + "   " + e.getMessage());
-          }
+//          try {
+        	String val="";
+        	if(map.length!=3) {
+        		val="n";
+        	}
+        	else {
+        		val=map[2];
+        	}
+            vertexValueMap.put(map[0].intern(), val.intern());
+//          }catch(Exception e) {
+//        	  throw new IOException("Exception in Line:" + jsonMap + "   " + e.getMessage());
+//          }
 //            LOG.info("Entered HashMap:" + map[0] + "," + map[2]);
         }
         
