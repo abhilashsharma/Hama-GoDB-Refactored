@@ -1205,8 +1205,13 @@ implements ISubgraphWrapup{
 					}
 					/* filtered vertex*/
 					else {
+						String val=currentVertex.getValue().get(nextStep.property);
+						if(val==null) {
+							LOG.info("null found");
+							val="n";
+						}
 //						ISubgraphObjectProperties subgraphProperties = subgraphInstance.getPropertiesForVertex(currentVertex.getId());
-						if ( compareValuesUtil(currentVertex.getValue().get(nextStep.property).toString(), nextStep.value.toString()) ) {
+						if ( compareValuesUtil(val, nextStep.value.toString()) ) {
 							/* add appropriate value later*/
 							getSubgraph().getSubgraphValue().forwardLocalVertexList.add(new VertexMessageSteps(vertexMessageStep.queryId,vertexMessageStep.vertexId,vertexMessageStep.message,vertexMessageStep.stepsTraversed+1, vertexMessageStep.startVertexId,vertexMessageStep.startStep, vertexMessageStep.previousSubgraphId, vertexMessageStep.previousPartitionId));
 							//forwardLocalVertexList.add(vertexMessageStep);
@@ -1391,9 +1396,14 @@ implements ISubgraphWrapup{
 					}
 					/* filtered vertex*/
 					else {
+						String val=currentVertex.getValue().get(prevStep.property);
+						if(val==null) {
+							LOG.info("null found");
+							val="n";
+						}
 //					        LOG.info("PROP:"+prevStep.property.toString() + " VALUE:" + currentVertex.getValue().get(prevStep.property.toString()));
 //						ISubgraphObjectProperties subgraphProperties = subgraphInstance.getPropertiesForVertex(currentVertex.getId());
-						if ( compareValuesUtil(currentVertex.getValue().get(prevStep.property.toString()).toString(), prevStep.value.toString()) ) {
+						if ( compareValuesUtil(val, prevStep.value.toString()) ) {
 							/* add appropriate value later*/
 						  
 							getSubgraph().getSubgraphValue().revLocalVertexList.add(new VertexMessageSteps(vertexMessageStep.queryId,vertexMessageStep.vertexId,vertexMessageStep.message,vertexMessageStep.stepsTraversed-1, vertexMessageStep.startVertexId,vertexMessageStep.startStep,vertexMessageStep.previousSubgraphId, vertexMessageStep.previousPartitionId));
