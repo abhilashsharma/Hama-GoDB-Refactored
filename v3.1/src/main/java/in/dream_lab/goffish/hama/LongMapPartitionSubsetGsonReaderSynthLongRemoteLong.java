@@ -97,10 +97,15 @@ public class LongMapPartitionSubsetGsonReaderSynthLongRemoteLong<S extends Writa
     this.subgraphPartitionMap = subgraphPartitionMap;
     this.conf = peer.getConfiguration();
     this.vertexSubgraphMap = new HashMap<LongWritable, LongWritable>();
-    this.vertexPropertySet.add("vid");
+    
+    this.vertexPropertySet.add("Employer");
+    this.vertexPropertySet.add("School");
+    this.vertexPropertySet.add("Major");
+    this.vertexPropertySet.add("Places_Lived");
+//    this.vertexPropertySet.add("vid");
 //    this.vertexPropertySet.add("Language");
 //    this.vertexPropertySet.add("Industry");
-    this.vertexPropertySet.add("Contributors");
+//    this.vertexPropertySet.add("Contributors");
 //    this.vertexPropertySet.add("IsPublic");
   }
   
@@ -189,7 +194,7 @@ public class LongMapPartitionSubsetGsonReaderSynthLongRemoteLong<S extends Writa
     	if(sg.getLocalVertexCount() > maxSize) {
     		maxSize=sg.getLocalVertexCount();
     	}
-    	LOG.info("SGINFO:" + sg.getVertexCount() + "," + sg.getLocalVertexCount());
+//    	LOG.info("SGINFO:" + sg.getVertexCount() + "," + sg.getLocalVertexCount());
     	sgCount++;
     }
     
