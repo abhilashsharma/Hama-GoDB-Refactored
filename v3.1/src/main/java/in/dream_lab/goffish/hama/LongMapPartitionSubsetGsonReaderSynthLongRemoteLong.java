@@ -252,7 +252,7 @@ public class LongMapPartitionSubsetGsonReaderSynthLongRemoteLong<S extends Writa
     	BufferedReader reader;
 		try {
 			reader = new BufferedReader(new FileReader(
-					"/scratch/abhilash/DataSynth/CorrectedMappings20/file" + pseudoPartId));
+					"/scratch/abhilash/gplusGraph/gplusSM12P.txt")); //+ pseudoPartId //TODO:Removing partition id for now
 			String line = reader.readLine();
 			while (line != null) {
 				String[] data=line.trim().split(",");
@@ -266,10 +266,11 @@ public class LongMapPartitionSubsetGsonReaderSynthLongRemoteLong<S extends Writa
 //		        sink.setSubgraphID(remoteSubgraphID);
 				
 				Object sink = vertexMap.get(sinkID);
-			
+				if(sink!=null) {
 				if(sink instanceof IRemoteVertex) {
 					LongRemoteVertex<V, E, LongWritable, LongWritable, LongWritable> sinkVertex =(LongRemoteVertex<V, E, LongWritable, LongWritable, LongWritable>) vertexMap.get(sinkID);
 					sinkVertex.setSubgraphID(remoteSubgraphID);
+				}
 				}
 				// read next line
 				line = reader.readLine();
