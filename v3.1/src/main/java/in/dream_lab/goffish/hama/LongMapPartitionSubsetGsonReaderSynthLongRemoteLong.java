@@ -398,7 +398,7 @@ public class LongMapPartitionSubsetGsonReaderSynthLongRemoteLong<S extends Writa
   }
   
   @SuppressWarnings("unchecked")
-  LongVertex<V, E, LongWritable, LongWritable> createVertex(String JSONString) {
+  LongVertex<V, E, LongWritable, LongWritable> createVertex(String JSONString) throws IOException {
     JsonArray JSONInput = GsonParser.parse(JSONString).getAsJsonArray();
 
     long sourceID = 
@@ -420,8 +420,11 @@ public class LongMapPartitionSubsetGsonReaderSynthLongRemoteLong<S extends Writa
           
 //        LOG.info("HashMap:" + map[0] + "," + map[2]);
         if(vertexPropertySet.contains(map[0])){
-          
+          try {
             vertexValueMap.put(map[0].intern(), map[2].intern());
+          }catch(Exception e) {
+        	  throw new IOException("Exception in Line:" + jsonMap + "   " + e.getMessage());
+          }
 //            LOG.info("Entered HashMap:" + map[0] + "," + map[2]);
         }
         
