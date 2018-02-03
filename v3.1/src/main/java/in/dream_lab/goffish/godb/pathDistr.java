@@ -692,191 +692,7 @@ implements ISubgraphWrapup{
 				 queryEnd=false;
 			        }
 				// COMPUTE HUERISTIC BASED QUERY COST
-				{
-					// TODO: implementation for calc cost from middle of query ( for each position calc cost forward and backward cost and add them)
-					
-					for (int pos = 0;pos < getSubgraph().getSubgraphValue().path.size() ; pos+=2 ){
-						Double joinCost = new Double(0);
-						//forward cost
-						{	
-							Double totalCost = new Double(0);
-							Double prevScanCost = hueristics.numVertices;
-							Double resultSetNumber = hueristics.numVertices;
-							ListIterator<Step> It = getSubgraph().getSubgraphValue().path.listIterator(pos);
-							//Iterator<Step> It = path.iterator();
-							Step currentStep = It.next();
-							
-							while(It.hasNext()){
-								//cost calc
-								// TODO: make cost not count in probability when no predicate on edge/vertex
-								{
-									Double probability = null;
-									
-									if ( currentStep.property == null )
-										probability = new Double(1);
-									else {
-										if ( hueristics.vertexPredicateMap.get(currentStep.property).containsKey(currentStep.value.toString()) ){
-											probability = hueristics.vertexPredicateMap.get(currentStep.property).get(currentStep.value.toString()).probability;
-											//System.out.println("Vertex Probability:" + probability);
-										}	
-										else {
-											totalCost = new Double(-1);
-											break;
-										}
-									}
-									resultSetNumber *= probability;
-									Double avgDeg = new Double(0);
-									Double avgRemoteDeg = new Double(0);
-									Step nextStep = It.next();
-									if(nextStep.direction == Direction.OUT){
-										if ( currentStep.property == null) {
-											avgDeg = hueristics.numEdges/hueristics.numVertices;
-											avgRemoteDeg = hueristics.numRemoteVertices/(hueristics.numVertices+hueristics.numRemoteVertices) * avgDeg;
-											//System.out.println("AVGDEG:" +avgDeg + "REMOTEAVGDEG:" + avgRemoteDeg);
-										}	
-										else { 
-											avgDeg = hueristics.vertexPredicateMap.get(currentStep.property).get(currentStep.value.toString()).avgOutDegree; 
-											avgRemoteDeg = hueristics.vertexPredicateMap.get(currentStep.property).get(currentStep.value.toString()).avgRemoteOutDegree;
-											//System.out.println("AVGDEG:" +avgDeg + "REMOTEAVGDEG:" + avgRemoteDeg);
-										}	
-									}else if(nextStep.direction == Direction.IN){
-										if ( currentStep.property == null) {
-											avgDeg = hueristics.numEdges/hueristics.numVertices;
-											avgRemoteDeg = hueristics.numRemoteVertices/(hueristics.numVertices+hueristics.numRemoteVertices) * avgDeg;
-											//System.out.println("AVGDEG:" +avgDeg + "REMOTEAVGDEG:" + avgRemoteDeg);
-										}	
-										else { 
-											avgDeg = hueristics.vertexPredicateMap.get(currentStep.property).get(currentStep.value.toString()).avgInDegree;
-											avgRemoteDeg = hueristics.vertexPredicateMap.get(currentStep.property).get(currentStep.value.toString()).avgRemoteInDegree;
-											//System.out.println("AVGDEG:" +avgDeg + "REMOTEAVGDEG:" + avgRemoteDeg);
-										}		
-									}
-									resultSetNumber *= (avgDeg+avgRemoteDeg); 
-									Double eScanCost = prevScanCost * probability * avgDeg;
-									Double networkCost = new Double(0);
-									Double vScanCost = new Double(0);
-									if(nextStep.property == null)
-										vScanCost = eScanCost;
-									else {
-										//output(partition.getId(), subgraph.getId(),nextStep.property);
-										//output(partition.getId(), subgraph.getId(),nextStep.value.toString());
-										//output(partition.getId(), subgraph.getId(),String.valueOf(hueristics.edgePredicateMap.size()));
-										//output(partition.getId(), subgraph.getId(),String.valueOf(pos));
-										//output(partition.getId(), subgraph.getId(),hueristics.edgePredicateMap.get(nextStep.property).get(nextStep.value.toString()).probability.toString());
-										//System.out.println(nextStep.property+":"+nextStep.value);
-										if ( hueristics.edgePredicateMap.get(nextStep.property).containsKey(nextStep.value.toString()) ) {
-											vScanCost = eScanCost * hueristics.edgePredicateMap.get(nextStep.property).get(nextStep.value.toString()).probability;
-											networkCost = getSubgraph().getSubgraphValue().networkCoeff * prevScanCost * probability * avgRemoteDeg * hueristics.edgePredicateMap.get(nextStep.property).get(nextStep.value.toString()).probability;
-											resultSetNumber *= hueristics.edgePredicateMap.get(nextStep.property).get(nextStep.value.toString()).probability;
-											//System.out.println("Edge:" + hueristics.edgePredicateMap.get(nextStep.property).get(nextStep.value.toString()).probability);
-										}
-										else {
-											totalCost = new Double(-1);
-											break;
-										}
-									}
-									totalCost += (eScanCost+vScanCost+networkCost);
-									prevScanCost = vScanCost;
-									currentStep = It.next();
-								}	
-												
-							}
-							joinCost += resultSetNumber;
-							getSubgraph().getSubgraphValue().queryCostHolder[pos] = totalCost;
-							
-//							System.out.println(pos+":"+"for:"+String.valueOf(totalCost));
-						}
-						//reverse cost
-						{
-							Double totalCost = new Double(0);
-							Double prevScanCost = hueristics.numVertices;
-							Double resultSetNumber = hueristics.numVertices;
-
-							ListIterator<Step> revIt = getSubgraph().getSubgraphValue().path.listIterator(pos+1);
-							Step currentStep = revIt.previous();
-							while(revIt.hasPrevious()){
-								// TODO: make cost not count in probability when no predicate on edge/vertex
-								{
-									Double probability = null;
-									if ( currentStep.property == null )
-										probability = new Double(1);
-									else {
-										if ( hueristics.vertexPredicateMap.get(currentStep.property).containsKey(currentStep.value.toString()) )
-											probability = hueristics.vertexPredicateMap.get(currentStep.property).get(currentStep.value.toString()).probability;
-										else {
-											totalCost = new Double(-1);
-											break;
-										}
-									}
-									resultSetNumber *= probability;
-									Double avgDeg = new Double(0);
-									Double avgRemoteDeg = new Double(0);
-									Step nextStep = revIt.previous();
-									if(nextStep.direction == Direction.OUT){
-										if ( currentStep.property == null) {
-											avgDeg = hueristics.numEdges/hueristics.numVertices;
-											avgRemoteDeg = hueristics.numRemoteVertices/(hueristics.numVertices+hueristics.numRemoteVertices) * avgDeg;
-										}
-										else {
-											avgDeg = hueristics.vertexPredicateMap.get(currentStep.property).get(currentStep.value.toString()).avgInDegree; 
-											avgRemoteDeg = hueristics.vertexPredicateMap.get(currentStep.property).get(currentStep.value.toString()).avgRemoteInDegree;
-										}	
-									}else if(nextStep.direction == Direction.IN){
-										if ( currentStep.property == null) {
-											avgDeg = hueristics.numEdges/hueristics.numVertices;
-											avgRemoteDeg = hueristics.numRemoteVertices/(hueristics.numVertices+hueristics.numRemoteVertices) * avgDeg;
-										}
-										else { 
-											avgDeg = hueristics.vertexPredicateMap.get(currentStep.property).get(currentStep.value.toString()).avgOutDegree;
-											avgRemoteDeg = hueristics.vertexPredicateMap.get(currentStep.property).get(currentStep.value.toString()).avgRemoteOutDegree;
-										}	
-									}
-									resultSetNumber *= (avgDeg+avgRemoteDeg);
-									Double eScanCost = prevScanCost * probability * avgDeg;
-									Double vScanCost = new Double(0);
-									Double networkCost = new Double(0);
-									if(nextStep.property == null)
-										vScanCost = eScanCost;
-									else {
-										if ( hueristics.edgePredicateMap.get(nextStep.property).containsKey(nextStep.value.toString()) ) {
-											vScanCost = eScanCost * hueristics.edgePredicateMap.get(nextStep.property).get(nextStep.value.toString()).probability;
-											networkCost = getSubgraph().getSubgraphValue().networkCoeff * prevScanCost * probability * avgRemoteDeg * hueristics.edgePredicateMap.get(nextStep.property).get(nextStep.value.toString()).probability;
-											resultSetNumber *= hueristics.edgePredicateMap.get(nextStep.property).get(nextStep.value.toString()).probability;
-										}
-										else {
-											totalCost = new Double(-1);
-											break;
-										}
-									}
-									totalCost += (eScanCost+vScanCost);
-									prevScanCost = vScanCost;
-									currentStep = revIt.previous();
-								}
-							}
-							joinCost *= resultSetNumber;
-							if ( getSubgraph().getSubgraphValue().queryCostHolder[pos] != -1 && totalCost != -1) {
-								getSubgraph().getSubgraphValue().queryCostHolder[pos] += totalCost;
-								if (pos!=0 && pos!= getSubgraph().getSubgraphValue().path.size()-1)
-									getSubgraph().getSubgraphValue().queryCostHolder[pos] += joinCost;
-							}
-							else
-								getSubgraph().getSubgraphValue().queryCostHolder[pos] = new Double(-1);
-							
-						}
-						/* add that extra cost of initial scan*/
-						//TODO: Add 1 when indexed
-						if ( getSubgraph().getSubgraphValue().queryCostHolder[pos] != -1 )
-						{
-							if(!initDone)
-								getSubgraph().getSubgraphValue().queryCostHolder[pos] += hueristics.numVertices;
-							else
-								getSubgraph().getSubgraphValue().queryCostHolder[pos] +=1;
-								
-						}
-//						System.out.println(pos+":Total:"+String.valueOf(getSubgraph().getSubgraphValue().queryCostHolder[pos]));
-					}
-					 
-				}
+			        Optimize();
 				
 				
 				
@@ -1740,6 +1556,207 @@ implements ISubgraphWrapup{
 
 
 
+	public void Optimize() {//TODO: Rewrite optimizer to incorporate bytes extracted
+		// COMPUTE HUERISTIC BASED QUERY COST
+		{
+			// TODO: implementation for calc cost from middle of query ( for each position calc cost forward and backward cost and add them)
+			
+			for (int pos = 0;pos < getSubgraph().getSubgraphValue().path.size() ; pos+=2 ){
+				Double joinCost = new Double(0);
+				//forward cost
+				{	
+					Double totalCost = new Double(0);
+					Double prevScanCost = hueristics.numVertices;
+					Double resultSetNumber = hueristics.numVertices;
+					ListIterator<Step> It = getSubgraph().getSubgraphValue().path.listIterator(pos);
+					//Iterator<Step> It = path.iterator();
+					Step currentStep = It.next();
+					
+					while(It.hasNext()){
+						//cost calc
+						// TODO: make cost not count in probability when no predicate on edge/vertex
+						{
+							Double probability = null;
+							
+							if ( currentStep.property == null )
+								probability = new Double(1);
+							else {
+								if ( hueristics.vertexPredicateMap.get(currentStep.property.toLowerCase()).containsKey(currentStep.value.toString()) ){
+									probability = hueristics.vertexPredicateMap.get(currentStep.property.toLowerCase()).get(currentStep.value.toString()).probability;
+									//System.out.println("Vertex Probability:" + probability);
+								}	
+								else {
+									totalCost = new Double(-1);
+									break;
+								}
+							}
+							resultSetNumber *= probability;
+							Double avgDeg = new Double(0);
+							Double avgRemoteDeg = new Double(0);
+							Step nextStep = It.next();
+							if(nextStep.direction == Direction.OUT){
+								if ( currentStep.property == null) {
+									avgDeg = hueristics.numEdges/hueristics.numVertices;
+									avgRemoteDeg = hueristics.numRemoteVertices/(hueristics.numVertices+hueristics.numRemoteVertices) * avgDeg;
+									//System.out.println("AVGDEG:" +avgDeg + "REMOTEAVGDEG:" + avgRemoteDeg);
+								}	
+								else { 
+									avgDeg = hueristics.vertexPredicateMap.get(currentStep.property.toLowerCase()).get(currentStep.value.toString()).avgOutDegree; 
+									avgRemoteDeg = hueristics.vertexPredicateMap.get(currentStep.property.toLowerCase()).get(currentStep.value.toString()).avgRemoteOutDegree;
+									//System.out.println("AVGDEG:" +avgDeg + "REMOTEAVGDEG:" + avgRemoteDeg);
+								}	
+							}else if(nextStep.direction == Direction.IN){
+								if ( currentStep.property == null) {
+									avgDeg = hueristics.numEdges/hueristics.numVertices;
+									avgRemoteDeg = hueristics.numRemoteVertices/(hueristics.numVertices+hueristics.numRemoteVertices) * avgDeg;
+									//System.out.println("AVGDEG:" +avgDeg + "REMOTEAVGDEG:" + avgRemoteDeg);
+								}	
+								else { 
+									avgDeg = hueristics.vertexPredicateMap.get(currentStep.property.toLowerCase()).get(currentStep.value.toString()).avgInDegree;
+									avgRemoteDeg = hueristics.vertexPredicateMap.get(currentStep.property.toLowerCase()).get(currentStep.value.toString()).avgRemoteInDegree;
+									//System.out.println("AVGDEG:" +avgDeg + "REMOTEAVGDEG:" + avgRemoteDeg);
+								}		
+							}
+							resultSetNumber *= (avgDeg+avgRemoteDeg); 
+							Double eScanCost = prevScanCost * probability * avgDeg;
+							Double networkCost = new Double(0);
+							Double vScanCost = new Double(0);
+							if(nextStep.property == null)
+								vScanCost = eScanCost;
+							else {
+								//output(partition.getId(), subgraph.getId(),nextStep.property);
+								//output(partition.getId(), subgraph.getId(),nextStep.value.toString());
+								//output(partition.getId(), subgraph.getId(),String.valueOf(hueristics.edgePredicateMap.size()));
+								//output(partition.getId(), subgraph.getId(),String.valueOf(pos));
+								//output(partition.getId(), subgraph.getId(),hueristics.edgePredicateMap.get(nextStep.property).get(nextStep.value.toString()).probability.toString());
+								//System.out.println(nextStep.property+":"+nextStep.value);
+								if ( hueristics.edgePredicateMap.get(nextStep.property.toLowerCase()).containsKey(nextStep.value.toString()) ) {
+									vScanCost = eScanCost * hueristics.edgePredicateMap.get(nextStep.property.toLowerCase()).get(nextStep.value.toString()).probability;
+									networkCost = getSubgraph().getSubgraphValue().networkCoeff * prevScanCost * probability * avgRemoteDeg * hueristics.edgePredicateMap.get(nextStep.property.toLowerCase()).get(nextStep.value.toString()).probability;
+									resultSetNumber *= hueristics.edgePredicateMap.get(nextStep.property.toLowerCase()).get(nextStep.value.toString()).probability;
+									//System.out.println("Edge:" + hueristics.edgePredicateMap.get(nextStep.property).get(nextStep.value.toString()).probability);
+								}
+								else {
+									totalCost = new Double(-1);
+									break;
+								}
+							}
+							totalCost += (eScanCost+vScanCost+networkCost);
+							prevScanCost = vScanCost;
+							currentStep = It.next();
+						}	
+										
+					}
+					joinCost += resultSetNumber;
+					getSubgraph().getSubgraphValue().queryCostHolder[pos] = totalCost;
+					
+//					System.out.println(pos+":"+"for:"+String.valueOf(totalCost));
+				}
+				//reverse cost
+				{
+					Double totalCost = new Double(0);
+					Double prevScanCost = hueristics.numVertices;
+					Double resultSetNumber = hueristics.numVertices;
+
+					ListIterator<Step> revIt = getSubgraph().getSubgraphValue().path.listIterator(pos+1);
+					Step currentStep = revIt.previous();
+					while(revIt.hasPrevious()){
+						// TODO: make cost not count in probability when no predicate on edge/vertex
+						{
+							Double probability = null;
+							if ( currentStep.property == null )
+								probability = new Double(1);
+							else {
+								if ( hueristics.vertexPredicateMap.get(currentStep.property.toLowerCase()).containsKey(currentStep.value.toString()) )
+									probability = hueristics.vertexPredicateMap.get(currentStep.property.toLowerCase()).get(currentStep.value.toString()).probability;
+								else {
+									totalCost = new Double(-1);
+									break;
+								}
+							}
+							resultSetNumber *= probability;
+							Double avgDeg = new Double(0);
+							Double avgRemoteDeg = new Double(0);
+							Step nextStep = revIt.previous();
+							if(nextStep.direction == Direction.OUT){
+								if ( currentStep.property == null) {
+									avgDeg = hueristics.numEdges/hueristics.numVertices;
+									avgRemoteDeg = hueristics.numRemoteVertices/(hueristics.numVertices+hueristics.numRemoteVertices) * avgDeg;
+								}
+								else {
+									avgDeg = hueristics.vertexPredicateMap.get(currentStep.property.toLowerCase()).get(currentStep.value.toString()).avgInDegree; 
+									avgRemoteDeg = hueristics.vertexPredicateMap.get(currentStep.property.toLowerCase()).get(currentStep.value.toString()).avgRemoteInDegree;
+								}	
+							}else if(nextStep.direction == Direction.IN){
+								if ( currentStep.property == null) {
+									avgDeg = hueristics.numEdges/hueristics.numVertices;
+									avgRemoteDeg = hueristics.numRemoteVertices/(hueristics.numVertices+hueristics.numRemoteVertices) * avgDeg;
+								}
+								else { 
+									avgDeg = hueristics.vertexPredicateMap.get(currentStep.property.toLowerCase()).get(currentStep.value.toString()).avgOutDegree;
+									avgRemoteDeg = hueristics.vertexPredicateMap.get(currentStep.property.toLowerCase()).get(currentStep.value.toString()).avgRemoteOutDegree;
+								}	
+							}
+							resultSetNumber *= (avgDeg+avgRemoteDeg);
+							Double eScanCost = prevScanCost * probability * avgDeg;
+							Double vScanCost = new Double(0);
+							Double networkCost = new Double(0);
+							if(nextStep.property == null)
+								vScanCost = eScanCost;
+							else {
+								if ( hueristics.edgePredicateMap.get(nextStep.property.toLowerCase()).containsKey(nextStep.value.toString()) ) {
+									vScanCost = eScanCost * hueristics.edgePredicateMap.get(nextStep.property.toLowerCase()).get(nextStep.value.toString()).probability;
+									networkCost = getSubgraph().getSubgraphValue().networkCoeff * prevScanCost * probability * avgRemoteDeg * hueristics.edgePredicateMap.get(nextStep.property.toLowerCase()).get(nextStep.value.toString()).probability;
+									resultSetNumber *= hueristics.edgePredicateMap.get(nextStep.property.toLowerCase()).get(nextStep.value.toString()).probability;
+								}
+								else {
+									totalCost = new Double(-1);
+									break;
+								}
+							}
+							totalCost += (eScanCost+vScanCost);
+							prevScanCost = vScanCost;
+							currentStep = revIt.previous();
+						}
+					}
+					joinCost *= resultSetNumber;
+					if ( getSubgraph().getSubgraphValue().queryCostHolder[pos] != -1 && totalCost != -1) {
+						getSubgraph().getSubgraphValue().queryCostHolder[pos] += totalCost;
+						if (pos!=0 && pos!= getSubgraph().getSubgraphValue().path.size()-1)
+							getSubgraph().getSubgraphValue().queryCostHolder[pos] += joinCost;
+					}
+					else
+						getSubgraph().getSubgraphValue().queryCostHolder[pos] = new Double(-1);
+					
+				}
+				/* add that extra cost of initial scan*/
+				//TODO: Add 1 when indexed
+				if ( getSubgraph().getSubgraphValue().queryCostHolder[pos] != -1 )
+				{
+					if(!initDone)
+						getSubgraph().getSubgraphValue().queryCostHolder[pos] += hueristics.numVertices;
+					else
+						getSubgraph().getSubgraphValue().queryCostHolder[pos] +=1;
+						
+				}
+//				System.out.println(pos+":Total:"+String.valueOf(getSubgraph().getSubgraphValue().queryCostHolder[pos]));
+			}
+			 
+		}
+		
+		{//taking minimum cost plan
+			Double minCost = getSubgraph().getSubgraphValue().queryCostHolder[getSubgraph().getSubgraphValue().startPos];
+			boolean queryPossible = true;
+			for (int i = 0; i < getSubgraph().getSubgraphValue().queryCostHolder.length ; i++) {
+				if ( getSubgraph().getSubgraphValue().queryCostHolder[i]!=0 && getSubgraph().getSubgraphValue().queryCostHolder[i]!=-1 && getSubgraph().getSubgraphValue().queryCostHolder[i] < minCost ){
+					minCost=getSubgraph().getSubgraphValue().queryCostHolder[i];
+					getSubgraph().getSubgraphValue().startPos = i;
+				}
+				if( getSubgraph().getSubgraphValue().queryCostHolder[i]==-1 )
+					queryPossible = false;
+			}
+		}
+ }
 
 	
 	
