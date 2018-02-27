@@ -604,7 +604,7 @@ implements ISubgraphWrapup{
 						}
 						
 //					System.out.println("Starting Position:" + getSubgraph().getSubgraphValue().startPos +"  Query min Cost:" + minCost + "   Path Size:" + getSubgraph().getSubgraphValue().path.size());	
-//					System.out.println("*******Querying done********:"+hits.length);
+					LOG.info("*******Querying done********:"+hits.length);
 					
 						if(hits.length>0){
 							LOG.info("Index Querying Processing");
