@@ -404,7 +404,7 @@ implements ISubgraphWrapup{
 		Integer step=Integer.parseInt(split[6]);
 		//Recently added line...Reminder
 		step=direction?step-1:step+1;
-		 LOG.info("Joining:"+ queryId+","+step+","+direction+","+endVertexId+"," + getSubgraph().getSubgraphId().get());
+//		 LOG.info("Joining:"+ queryId+","+step+","+direction+","+endVertexId+"," + getSubgraph().getSubgraphId().get());
 		for (RecursivePathMaintained stuff : getSubgraph().getSubgraphValue().recursivePaths.get(new RecursivePathKey(queryId, step, direction,endVertexId))){
 			StringBuilder result = new StringBuilder(split[4]);//partial result
 			//*****Adding partial Result to partialResultCache********
@@ -545,10 +545,10 @@ implements ISubgraphWrapup{
 						}
 					}catch(Exception e){e.printStackTrace();}
 
-						LOG.info("TIME ACCUMULATING INEDGES....Starting loading of heuristics");
+//						LOG.info("TIME ACCUMULATING INEDGES....Starting loading of heuristics");
 //						hueristics=HueristicsLoad.getInstance();
 						hueristics=HueristicsLoad.getInstance("/user/abhilash/gplusHeurSer/gplusHue_FULL.ser");
-						LOG.info("Heuristic Loaded");
+//						LOG.info("Heuristic Loaded");
 
 					
 				}
@@ -597,17 +597,17 @@ implements ISubgraphWrapup{
 					try{
 						synchronized(queryLock){
 							if(!queryMade){
-								LOG.info("Querying Index");
+//								LOG.info("Querying Index");
 								makeQuery(currentProperty,currentValue);
-								LOG.info("Querying Done");
+//								LOG.info("Querying Done");
 							}
 						}
 						
 //					System.out.println("Starting Position:" + getSubgraph().getSubgraphValue().startPos +"  Query min Cost:" + minCost + "   Path Size:" + getSubgraph().getSubgraphValue().path.size());	
-					LOG.info("*******Querying done********:"+hits.length);
+//					LOG.info("*******Querying done********:"+hits.length);
 					
 						if(hits.length>0){
-							LOG.info("Index Querying Processing");
+//							LOG.info("Index Querying Processing");
 							for (int i=0;i<hits.length;i++){
 								Document doc = indexSearcher.doc(hits[i].doc);
 								if ( Long.valueOf(doc.get("subgraphid")) == getSubgraph().getSubgraphId().get() ){
@@ -627,7 +627,7 @@ implements ISubgraphWrapup{
 //									getSubgraph().getSubgraphValue().forwardLocalVertexList.add( new VertexMessageSteps(_vertexId,_message,0) );
 								}
 							}
-							LOG.info("Index Querying Processing Done");
+//							LOG.info("Index Querying Processing Done");
 						}
 						
 					}catch(Exception e){e.printStackTrace();}
@@ -1192,7 +1192,7 @@ implements ISubgraphWrapup{
 		if(_direction==true){
 			dir=1;
 		}
-		LOG.info("Storing Recursive:" + vertexMessageStep.queryId+","+vertexMessageStep.stepsTraversed+","+_direction+","+vertexMessageStep.vertexId);
+//		LOG.info("Storing Recursive:" + vertexMessageStep.queryId+","+vertexMessageStep.stepsTraversed+","+_direction+","+vertexMessageStep.vertexId);
 		if(!getSubgraph().getSubgraphValue().recursivePaths.containsKey(new RecursivePathKey(vertexMessageStep.queryId,vertexMessageStep.stepsTraversed,_direction,vertexMessageStep.vertexId))){
 			
 			ArrayList<RecursivePathMaintained> tempList = new ArrayList<RecursivePathMaintained>();
@@ -1388,25 +1388,33 @@ implements ISubgraphWrapup{
 	    queryEnd=true;
 	  LOG.info("Ending Query Execution");
 	  }
+	  long resultSetSize=0;
 		for(Map.Entry<Long, ResultSet> entry: getSubgraph().getSubgraphValue().resultsMap.entrySet()) {
 			if (!entry.getValue().revResultSet.isEmpty())
 				for(String partialRevPath: entry.getValue().revResultSet) {
 					if (!entry.getValue().forwardResultSet.isEmpty())
 						for(String partialForwardPath: entry.getValue().forwardResultSet) {
 							LOG.info("ResultSetBothNotEmpty:" +partialRevPath+partialForwardPath);
+							resultSetSize++;
 							//output(partition.getId(), subgraph.getId(), partialRevPath+partialForwardPath); 
 						}
 					else{
 						LOG.info("ResultSetForwardEmpty:" +partialRevPath);
+						resultSetSize++;
 						//output(partition.getId(), subgraph.getId(), partialRevPath);
 					}
 				}
 			else
 				for(String partialForwardPath: entry.getValue().forwardResultSet) {
 					LOG.info("ResultSetReverseEmpty:" +partialForwardPath);
+					resultSetSize++;
 					//output(partition.getId(), subgraph.getId(), partialForwardPath); 
 				}
 		}
+		
+		if(resultSetSize!=0){
+	          LOG.info(Arguments+"$ResultSetSize:" + resultSetSize);
+	          }
 	LOG.info("Cumulative Result Collection:" +  getSubgraph().getSubgraphValue().resultCollectionTime);	
 		clear();
 	}
