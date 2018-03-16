@@ -51,7 +51,17 @@ public class SuccinctArrayVertex12Implicit<V extends Writable, E extends Writabl
     public Tuple<List<Long>, List<Long>> getEdges()
     {
         Log.info("getEdges:" + vid);
-    	SuccinctIndexedFileBuffer ebuffer = ebufferList.get(0);
+        
+        int bufferno= (int) (((LongWritable)vid).get()/7000000l);
+        int newbufferno=bufferno<(ebufferList.size()-1)? bufferno:(ebufferList.size()-1);
+    	SuccinctIndexedFileBuffer ebuffer = ebufferList.get(newbufferno);
+    	int recordid = (int) (((LongWritable)vid).get() % 7000000l);
+//    	Log.info("Select Edge file number:" + newbufferno);
+    	if(newbufferno<bufferno) {
+    		recordid+=7000000l;
+    	}
+    	
+//    	Log.info("RecordId:" + recordid);
 //    	Long searchQuery=((LongWritable)vid).get();
 //    	LOG.info("GETEDGES search:" + searchQuery.toString().concat("@") );
 //    	LOG.info("EBUFFER size:" + ebufferList.size());
@@ -86,14 +96,14 @@ public class SuccinctArrayVertex12Implicit<V extends Writable, E extends Writabl
         
         	
             long start = System.nanoTime();
-            record = ebuffer.getRecordBytes(new Integer((int)((LongWritable)vid).get()));
+            record = ebuffer.getRecordBytes(recordid);
             LOG.info("Extract until(edge): " + (System.nanoTime() - start) + " ns" );
             LOG.info("# Extracted Bytes: " + record.length);
 //            LOG.info("EdgeRecord:"+new String(record));
             tokens = splitter.splitLong(record);
             int lCount = (int)tokens.getLong(0);
             for(int i=1; i < 1 + lCount ; i++) 
-                localSinks.add(tokens.getLong(i) - 1 );//TODO: Fix this hack
+                localSinks.add(tokens.getLong(i));
             for(int i=1 + lCount; i < tokens.size(); i++) 
                 remoteSinks.add(tokens.getLong(i));
         
@@ -187,7 +197,7 @@ public class SuccinctArrayVertex12Implicit<V extends Writable, E extends Writabl
         long start = System.nanoTime();
         String sRecord = propBuffer.getRecord(new Integer((int)((LongWritable)vid).get()));
         LOG.info("Extract until(property): " + (System.nanoTime() - start) + " ns");
-        LOG.info("# Extracted Bytes: " + sRecord.length());
+        LOG.info("# Extracted Bytes: " + sRecord.length()); //" Value:" + sRecord);
 //        LOG.info("PropertyRecord:" + sRecord);
         return sRecord.substring(1, sRecord.length()-1);
     }

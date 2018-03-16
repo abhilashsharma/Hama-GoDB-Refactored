@@ -591,7 +591,7 @@ String sCurrentLine=null;
     String vdirectory = vertexDataDir+"RGraphVertex"+pseudoPartId;
     File[] vfiles = new File(vdirectory).listFiles();
     Arrays.sort(vfiles);
-    String edirectory = edgeDataDir+"RGraphEdge"+pseudoPartId;
+    String edirectory = edgeDataDir+"RGraphOutEdge"+pseudoPartId;
     File[] efiles = new File(edirectory).listFiles();
     Arrays.sort(efiles);
     
@@ -611,7 +611,7 @@ String sCurrentLine=null;
 //    	String edgePath=efiles[i].getAbsolutePath();
 //    	LOG.info("Edge Succinct Path:" + edgePath);
     	SuccinctIndexedFileBuffer succinctIndexedVertexFileBuffer = new SuccinctIndexedFileBuffer(vertexPath, StorageMode.MEMORY_ONLY);
-    	String propName=vertexPath.split("_")[1];
+    	String propName=vertexPath.split("__")[1];
     	
     	if(propName.equals("vid")) {
     		vertexSuccinctFile=succinctIndexedVertexFileBuffer;

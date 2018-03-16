@@ -10,6 +10,7 @@ import in.dream_lab.goffish.api.IEdge;
 import in.dream_lab.goffish.api.IRemoteVertex;
 import in.dream_lab.goffish.api.ISubgraph;
 import in.dream_lab.goffish.api.IVertex;
+import in.dream_lab.goffish.godb.pathDistrSuccinctArrayStructure12Implicit;
 import it.unimi.dsi.fastutil.longs.LongArrayList;
 
 import org.apache.commons.logging.LogFactory;
@@ -22,6 +23,7 @@ public class SuccinctArraySubgraph12Implicit<S extends Writable, V extends Writa
     public K subgraphId;
     S _value;
     public static final org.apache.commons.logging.Log Log = LogFactory.getLog(SuccinctArraySubgraph12Implicit.class);
+    
     private SuccinctIndexedFileBuffer vertexSuccinctBuffer;
     List<SuccinctIndexedFileBuffer> edgeSuccinctBufferList;
     private HashMap<String, SuccinctIndexedFileBuffer> propertySuccinctBufferMap;
@@ -140,7 +142,7 @@ public class SuccinctArraySubgraph12Implicit<S extends Writable, V extends Writa
 //    		
 //    	}
     	
-    	Log.info("IndexLookup:" + recordID[0]);
+//    	Log.info("IndexLookup:" + recordID[0]);
     	Log.info("Querying Time:" + (System.nanoTime() - start));
     	return recordID;
     }

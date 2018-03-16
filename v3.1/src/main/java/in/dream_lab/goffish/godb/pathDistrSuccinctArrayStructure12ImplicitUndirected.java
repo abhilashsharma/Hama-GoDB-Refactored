@@ -80,16 +80,16 @@ import in.dream_lab.goffish.hama.succinctstructure.SuccinctVertex;
 
 
 
-public class pathDistrSuccinctArrayStructure12Implicit extends
-AbstractSubgraphComputation<pathDistrSubgraphSuccinctArrayStructureState12Implicit, MapValue, MapValue, Text, LongWritable, LongWritable, LongWritable> 
+public class pathDistrSuccinctArrayStructure12ImplicitUndirected extends
+AbstractSubgraphComputation<pathDistrSubgraphSuccinctArrayStructureState12ImplicitUndirected, MapValue, MapValue, Text, LongWritable, LongWritable, LongWritable> 
 implements ISubgraphWrapup{
 	
-	public pathDistrSuccinctArrayStructure12Implicit(String initMsg) {
+	public pathDistrSuccinctArrayStructure12ImplicitUndirected(String initMsg) {
 		// TODO Auto-generated constructor stub
 		Arguments=initMsg;
 	}
 	
-	public static final Log LOG = LogFactory.getLog(pathDistrSuccinctArrayStructure12Implicit.class);
+	public static final Log LOG = LogFactory.getLog(pathDistrSuccinctArrayStructure12ImplicitUndirected.class);
 	
 	String Arguments=null;
 	//Required for lucene 

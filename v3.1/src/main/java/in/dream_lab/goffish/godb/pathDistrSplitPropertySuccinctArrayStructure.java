@@ -257,11 +257,11 @@ implements ISubgraphWrapup{
 //		propToIndex.put("patid", 0);
 //    	propToIndex.put("country", 1);
 //    	propToIndex.put("nclass", 2);
-		propToIndex.put("vid", 0);
-		propToIndex.put("lang", 1);
-    	propToIndex.put("ind", 2);
-    	propToIndex.put("contr", 3);
-    	propToIndex.put("ispublic", 4);
+//		propToIndex.put("vid", 0);
+//		propToIndex.put("lang", 1);
+//    	propToIndex.put("ind", 2);
+//    	propToIndex.put("contr", 3);
+//    	propToIndex.put("ispublic", 4);
 		
 	    getSubgraph().getSubgraphValue().path = new ArrayList<Step>();
 		Type previousStepType = Type.EDGE;
@@ -617,7 +617,7 @@ implements ISubgraphWrapup{
 					
 						if(hitList.size()>0){
 							LOG.info("Index Querying Processing");
-							for (int i=0;i< hitList.size();i=i++){
+							for (int i=0;i< hitList.size();i++){
 
 								long vid= hitList.get(i);
 //								if ( getSubgraph().getSubgraphId().get() ==hitList.get(i)){

@@ -12,14 +12,14 @@ import java.util.List;
 import org.apache.commons.codec.binary.Base64;
 import org.apache.hadoop.io.Writable;
 
-import in.dream_lab.goffish.godb.pathDistrUndirected.OutputMessageSteps;
-import in.dream_lab.goffish.godb.pathDistrUndirected.OutputPathKey;
-import in.dream_lab.goffish.godb.pathDistrUndirected.Pair;
-import in.dream_lab.goffish.godb.pathDistrUndirected.RecursivePathKey;
-import in.dream_lab.goffish.godb.pathDistrUndirected.RecursivePathMaintained;
-import in.dream_lab.goffish.godb.pathDistrUndirected.VertexMessageSteps;
+import in.dream_lab.goffish.godb.pathDistrSuccinctArrayStructureSplitPropertyUndirected.OutputMessageSteps;
+import in.dream_lab.goffish.godb.pathDistrSuccinctArrayStructureSplitPropertyUndirected.OutputPathKey;
+import in.dream_lab.goffish.godb.pathDistrSuccinctArrayStructureSplitPropertyUndirected.Pair;
+import in.dream_lab.goffish.godb.pathDistrSuccinctArrayStructureSplitPropertyUndirected.RecursivePathKey;
+import in.dream_lab.goffish.godb.pathDistrSuccinctArrayStructureSplitPropertyUndirected.RecursivePathMaintained;
+import in.dream_lab.goffish.godb.pathDistrSuccinctArrayStructureSplitPropertyUndirected.VertexMessageSteps;
 
-public class pathDistrUndirectedSubgraphState implements Writable {
+public class pathDistrSubgraphSuccinctArrayStructureStateSplitPropertyUndirected implements Writable {
 
 	
 	// Variables and DataStructures
@@ -60,7 +60,7 @@ public class pathDistrUndirectedSubgraphState implements Writable {
 		int startPos  = 0;
 		
 		Double networkCoeff = new Double(0.116);
-		
+
 
 		//Data Structure for storing inedges 
 		HashMap<Long,HashMap<Long,EdgeAttr>>  InEdges = null;
