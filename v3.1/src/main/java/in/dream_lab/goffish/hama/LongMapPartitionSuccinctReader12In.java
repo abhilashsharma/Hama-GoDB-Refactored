@@ -381,26 +381,16 @@ long start=System.currentTimeMillis();
  start=System.currentTimeMillis();
  String rvsmFile= vertexDataDir + "RemoteVertex/rvsmFile" + pseudoPartId; 
 
+
  FileReader fr1 = new FileReader(rvsmFile);
  BufferedReader br1 = new BufferedReader(fr1);
 String sCurrentLine=null;
 
  while ((sCurrentLine = br1.readLine()) != null) {
-	 String pData = sCurrentLine.substring(sCurrentLine.indexOf(',')+2, sCurrentLine.length()-2);
-	 String[] data= pData.split(",\\s+");
+	 String[] data=sCurrentLine.trim().split(",");
 	 
+	 remoteVertexToSubgraphMap.put(Long.parseLong(data[0]), Long.parseLong(data[1]));
 
-		
-	
-	 for(String tuple:data) {
-		 try {
-		 String[] rtuple=tuple.substring(1, tuple.length()-1).split(",");
-		 remoteVertexToSubgraphMap.put(Long.parseLong(rtuple[1]), Long.parseLong(rtuple[0]));
-		 
-		 }catch(Exception e) {
-			 LOG.info("Exception in Line:"+sCurrentLine+"  Exception:" + e.getMessage());
-		 }
-	 }
 	
  }
  

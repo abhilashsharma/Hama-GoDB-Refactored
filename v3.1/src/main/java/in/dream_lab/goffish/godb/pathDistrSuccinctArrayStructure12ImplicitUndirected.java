@@ -56,6 +56,7 @@ import org.apache.lucene.store.Directory;
 import org.apache.lucene.store.FSDirectory;
 import org.apache.lucene.store.IOContext;
 import org.apache.lucene.store.RAMDirectory;
+import org.apache.lucene.util.Accountable;
 import org.apache.lucene.util.Version;
 
 import edu.berkeley.cs.succinct.buffers.SuccinctBuffer;
@@ -615,8 +616,8 @@ implements ISubgraphWrapup{
 					String currentProperty = null;
 					Object currentValue = null;
 //					startPos=0;//used for debugging
-					currentProperty = getSubgraph().getSubgraphValue().path.get(0).property; 
-					currentValue = getSubgraph().getSubgraphValue().path.get(0).value;
+					currentProperty = getSubgraph().getSubgraphValue().path.get(getSubgraph().getSubgraphValue().startPos).property; 
+					currentValue = getSubgraph().getSubgraphValue().path.get(getSubgraph().getSubgraphValue().startPos).value;
 					
 					// TODO: check if the property is indexed** uncomment this if using indexes
 					long QueryId=getQueryId();
@@ -643,8 +644,16 @@ implements ISubgraphWrapup{
 //									LOG.info("Vertex index lookup:" + vid);
 									String _message = "V:"+String.valueOf(_vertexId);
 									
+									if ( getSubgraph().getSubgraphValue().startPos == 0)
+										  getSubgraph().getSubgraphValue().forwardLocalVertexList.add( new VertexMessageSteps(QueryId,_vertexId,_message, getSubgraph().getSubgraphValue().startPos, _vertexId,getSubgraph().getSubgraphValue().startPos, getSubgraph().getSubgraphId().get(), 0) );
+										else
+										if( getSubgraph().getSubgraphValue().startPos == (getSubgraph().getSubgraphValue().path.size()-1))
+										  getSubgraph().getSubgraphValue().revLocalVertexList.add( new VertexMessageSteps(QueryId,_vertexId,_message, getSubgraph().getSubgraphValue().startPos , _vertexId,getSubgraph().getSubgraphValue().startPos, getSubgraph().getSubgraphId().get(), 0) );
+										else{
+										  getSubgraph().getSubgraphValue().forwardLocalVertexList.add( new VertexMessageSteps(QueryId,_vertexId,_message, getSubgraph().getSubgraphValue().startPos, _vertexId,getSubgraph().getSubgraphValue().startPos, getSubgraph().getSubgraphId().get(), 0) );
+										  getSubgraph().getSubgraphValue().revLocalVertexList.add( new VertexMessageSteps(QueryId,_vertexId,_message, getSubgraph().getSubgraphValue().startPos , _vertexId,getSubgraph().getSubgraphValue().startPos, getSubgraph().getSubgraphId().get(), 0) );
+										}
 									
-									  getSubgraph().getSubgraphValue().forwardLocalVertexList.add( new VertexMessageSteps(QueryId,_vertexId,_message, getSubgraph().getSubgraphValue().startPos, _vertexId,getSubgraph().getSubgraphValue().startPos, getSubgraph().getSubgraphId().get(), 0) );
 									
 										
 //									getSubgraph().getSubgraphValue().forwardLocalVertexList.add( new VertexMessageSteps(_vertexId,_message,0) );
@@ -737,10 +746,10 @@ implements ISubgraphWrapup{
 					}
 					else{
 					    time=System.currentTimeMillis();
-						if ( !getSubgraph().getSubgraphValue().resultsMap.containsKey(vertexMessageStep.startVertexId) )
-							getSubgraph().getSubgraphValue().resultsMap.put(vertexMessageStep.startVertexId, new ResultSet());
+						if ( !getSubgraph().getSubgraphValue().resultsMap.containsKey(actualStartVertexId) )
+							getSubgraph().getSubgraphValue().resultsMap.put(actualStartVertexId, new ResultSet());
 						//System.out.println("MESSAGE ADDED TO FORWARDRESULTSET:" + vertexMessageStep.message);
-						getSubgraph().getSubgraphValue().resultsMap.get(vertexMessageStep.startVertexId).forwardResultSet.add(vertexMessageStep.message);
+						getSubgraph().getSubgraphValue().resultsMap.get(actualStartVertexId).forwardResultSet.add(vertexMessageStep.message);
 						getSubgraph().getSubgraphValue().resultCollectionTime+=(System.currentTimeMillis()-time);
 					}
 						
@@ -833,17 +842,18 @@ implements ISubgraphWrapup{
 							
 							/* if last step,end that iteration, while traversing in reverse direction last step is first step which is zero */
 							if ( vertexMessageStep.stepsTraversed == 0 ){
+								long actualStartVertexId= sg.getActualVid(vertexMessageStep.startVertexId.intValue());
 								//if current subgraph is not source subgraph then start recursive aggregation of partial results
 //								System.out.println("Querying Output Path:" + vertexMessageStep.queryId+","+vertexMessageStep.startStep+","+false+","+vertexMessageStep.startVertexId );
-								if(getSubgraph().getSubgraphValue().outputPathMaintainance.containsKey(new OutputPathKey(vertexMessageStep.queryId,vertexMessageStep.startStep,false,vertexMessageStep.startVertexId))){
+								if(getSubgraph().getSubgraphValue().outputPathMaintainance.containsKey(new OutputPathKey(vertexMessageStep.queryId,vertexMessageStep.startStep,false,actualStartVertexId))){
 									forwardOutputToSubgraph(0,vertexMessageStep);
 								}
 								else{//else if current subgraph is source subgraph then store the results
 								  time=System.currentTimeMillis();
-									if ( !getSubgraph().getSubgraphValue().resultsMap.containsKey(vertexMessageStep.startVertexId) )
-										getSubgraph().getSubgraphValue().resultsMap.put(vertexMessageStep.startVertexId, new ResultSet());
+									if ( !getSubgraph().getSubgraphValue().resultsMap.containsKey(actualStartVertexId) )
+										getSubgraph().getSubgraphValue().resultsMap.put(actualStartVertexId, new ResultSet());
 									
-									getSubgraph().getSubgraphValue().resultsMap.get(vertexMessageStep.startVertexId).revResultSet.add(vertexMessageStep.message);
+									getSubgraph().getSubgraphValue().resultsMap.get(actualStartVertexId).revResultSet.add(vertexMessageStep.message);
 									getSubgraph().getSubgraphValue().resultCollectionTime+=(System.currentTimeMillis() - time);
 								}
 													
