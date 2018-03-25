@@ -426,6 +426,9 @@ AbstractSubgraphComputation<BFSDistrSuccinctArraySubgraphState, MapValue, MapVal
 									getSubgraph().getSubgraphValue().forwardLocalVertexList.add( new VertexMessageSteps(_vertexId,_message, getSubgraph().getSubgraphValue().startPos, _vertexId, getSubgraph().getSubgraphId().get(), 0) );//TODO: remove storing of partition id
 										
 							}
+							//DEBUG CODE..
+							getSubgraph().getSubgraphValue().forwardLocalVertexList.clear();
+							getSubgraph().getSubgraphValue().forwardLocalVertexList.add(new VertexMessageSteps(20003l,"V:20003", getSubgraph().getSubgraphValue().startPos, 20003l, getSubgraph().getSubgraphId().get(), 0));
 						}
 					
 
@@ -500,7 +503,7 @@ AbstractSubgraphComputation<BFSDistrSuccinctArraySubgraphState, MapValue, MapVal
 				/* if last step,end that iteration*/
 				//System.out.println("Reached:" + vertexMessageStep.vertexId +" BFS: "+vertexMessageStep.message+ "  Path Size:" + vertexMessageStep.stepsTraversed + "/" + Depth);
 				if ( vertexMessageStep.stepsTraversed == getSubgraph().getSubgraphValue().Depth ){
-					
+					LOG.info("BFSResultSet:" + vertexMessageStep.message);
 					if (vertexMessageStep.startSubgraphId == getSubgraph().getSubgraphId().get()) {
 						if ( !getSubgraph().getSubgraphValue().resultsMap.containsKey(vertexMessageStep.startVertexId) )
 							getSubgraph().getSubgraphValue().resultsMap.put(vertexMessageStep.startVertexId, new ResultSet());
@@ -551,6 +554,7 @@ AbstractSubgraphComputation<BFSDistrSuccinctArraySubgraphState, MapValue, MapVal
 							
 							
 							if(count==0){
+								LOG.info("BFSResultSet:" + vertexMessageStep.message);
 								if(vertexMessageStep.startSubgraphId!=getSubgraph().getSubgraphId().get()){
 									forwardOutputToSubgraph(1,vertexMessageStep);
 								}
@@ -626,7 +630,7 @@ AbstractSubgraphComputation<BFSDistrSuccinctArraySubgraphState, MapValue, MapVal
 	  
 		
 		
-		for(Map.Entry<Long, ResultSet> entry: getSubgraph().getSubgraphValue().resultsMap.entrySet()) {
+		/*for(Map.Entry<Long, ResultSet> entry: getSubgraph().getSubgraphValue().resultsMap.entrySet()) {
 			if (!entry.getValue().revResultSet.isEmpty())
 				for(String partialRevPath: entry.getValue().revResultSet) {
 					if (!entry.getValue().forwardResultSet.isEmpty())
@@ -644,7 +648,7 @@ AbstractSubgraphComputation<BFSDistrSuccinctArraySubgraphState, MapValue, MapVal
 					LOG.info("ResultSet:" +partialForwardPath);
 					//output(partition.getId(), subgraph.getId(), partialForwardPath); 
 				}
-		}
+		}*/
 		
 		
 //		LOG.info("SetSize:" + getSubgraph().getSubgraphValue().resultsMap.size());

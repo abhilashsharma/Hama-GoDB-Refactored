@@ -90,17 +90,20 @@ implements ISubgraphWrapup{
 	private static boolean queryStart=false;//later lock this when multithreaded
         private static boolean queryEnd=false;//later lock this when multithreaded
         private static boolean gcCalled=false;//later lock this when multithreaded
+        public HashMap<Long,HashSet<Long>> bfsVisited=new HashMap<>();
 	/**
 	 * Representative class to keep tab of next vertex to be processed,  this is different for 
 	 * path queries, hence defined separately
 	 */
 	 class VertexMessageSteps{
+	    public Long startVertexId;
 		public Long vertexId;
 		public String message;
 		public Integer stepsTraversed;
 		public Long subgraphId;
 		public Long startSubgraphId;
-		VertexMessageSteps(Long _vertexId,String _message,Integer _stepTraversed,Long _subgraphId,Long _startSubgraphId){
+		VertexMessageSteps(Long _startVertexId,Long _vertexId,String _message,Integer _stepTraversed,Long _subgraphId,Long _startSubgraphId){
+			this.startVertexId=_startVertexId;
 			this.vertexId = _vertexId;
 			this.message = _message;
 			this.stepsTraversed= _stepTraversed;
@@ -428,7 +431,7 @@ implements ISubgraphWrapup{
 					//partition.getId()
 					// TODO : else iteratively check for satisfying vertices
 					
-					System.out.println("START_POS:" + startPos +"Query Cost:" + getSubgraph().getSubgraphValue().queryCostHolder[startPos]);
+					LOG.info("START_POS:" + startPos +"Query Cost:" + getSubgraph().getSubgraphValue().queryCostHolder[startPos]);
 //					for(ITemplateVertex vertex: subgraph.vertices()) {
 //						if ( vertex.isRemote() ) continue;
 //						ISubgraphObjectProperties subgraphProperties = subgraphInstance.getPropertiesForVertex(vertex.getId());
@@ -444,7 +447,7 @@ implements ISubgraphWrapup{
 //						}
 //					}
 					
-					System.out.println("*******Querying done********:"+hitList.size());
+					LOG.info("*******Querying done********:"+hitList.size());
 					
 					try
 					{
@@ -457,10 +460,10 @@ implements ISubgraphWrapup{
 								String _message = "V:"+String.valueOf(_vertexId);
 								//System.out.println("STARTING VERTEX:" + _message);
 								if ( startPos == 0  )
-								getSubgraph().getSubgraphValue().forwardLocalVertexList.add( new VertexMessageSteps(_vertexId,_message,1, getSubgraph().getSubgraphId().get(),getSubgraph().getSubgraphId().get()) );
+								getSubgraph().getSubgraphValue().forwardLocalVertexList.add( new VertexMessageSteps(_vertexId,_vertexId,_message,1, getSubgraph().getSubgraphId().get(),getSubgraph().getSubgraphId().get()) );
 							if( startPos == 1 ){
 							        
-							        getSubgraph().getSubgraphValue().revLocalVertexList.add( new VertexMessageSteps(_vertexId,_message,1, getSubgraph().getSubgraphId().get(), getSubgraph().getSubgraphId().get()) );
+							        getSubgraph().getSubgraphValue().revLocalVertexList.add( new VertexMessageSteps(_vertexId,_vertexId,_message,1, getSubgraph().getSubgraphId().get(), getSubgraph().getSubgraphId().get()) );
 							}
 
 									
@@ -534,6 +537,17 @@ implements ISubgraphWrapup{
 				while(!getSubgraph().getSubgraphValue().forwardLocalVertexList.isEmpty()) {
 					VertexMessageSteps vertexMessageStep = getSubgraph().getSubgraphValue().forwardLocalVertexList.poll();
 					
+					HashSet<Long> visitedSet = bfsVisited.get(vertexMessageStep.startVertexId);
+					if(visitedSet==null) {
+						visitedSet=new HashSet<Long>();
+						visitedSet.add(vertexMessageStep.vertexId);
+						bfsVisited.put(vertexMessageStep.startVertexId, visitedSet);
+					}else {
+						if(visitedSet.contains(vertexMessageStep.vertexId)) {
+							continue;
+						}
+						visitedSet.add(vertexMessageStep.vertexId);
+					}
 
 					if( vertexMessageStep.stepsTraversed >= getSubgraph().getSubgraphValue().noOfSteps ){
 //						System.out.println("VERTEX STUCK:" + vertexMessageStep.vertexId + ":" + vertexMessageStep.stepsTraversed + ":" + noOfSteps);
@@ -559,7 +573,7 @@ implements ISubgraphWrapup{
 								if (vertexMessageStep.stepsTraversed<getSubgraph().getSubgraphValue().noOfSteps){
 //									System.out.println("FOR:2");
 //									System.out.println("Unmatched PATH:" + _modifiedMessage.toString());
-									getSubgraph().getSubgraphValue().forwardLocalVertexList.add(new VertexMessageSteps(otherVertex,_modifiedMessage.toString(),vertexMessageStep.stepsTraversed+1, vertexMessageStep.subgraphId, vertexMessageStep.startSubgraphId));
+									getSubgraph().getSubgraphValue().forwardLocalVertexList.add(new VertexMessageSteps(vertexMessageStep.startVertexId,otherVertex,_modifiedMessage.toString(),vertexMessageStep.stepsTraversed+1, vertexMessageStep.subgraphId, vertexMessageStep.startSubgraphId));
 								}
 							}
 							else{
@@ -574,7 +588,7 @@ implements ISubgraphWrapup{
 								      time = System.currentTimeMillis();
 									if (vertexMessageStep.stepsTraversed<=getSubgraph().getSubgraphValue().noOfSteps){
 
-										forwardOutputToSubgraph(1,new VertexMessageSteps(otherVertex,_modifiedMessage.toString(),vertexMessageStep.stepsTraversed+1, vertexMessageStep.startSubgraphId, vertexMessageStep.startSubgraphId));
+										forwardOutputToSubgraph(1,new VertexMessageSteps(vertexMessageStep.startVertexId,otherVertex,_modifiedMessage.toString(),vertexMessageStep.stepsTraversed+1, vertexMessageStep.startSubgraphId, vertexMessageStep.startSubgraphId));
 									}
 									getSubgraph().getSubgraphValue().noOfSteps = vertexMessageStep.stepsTraversed;
 									sendStopMessage(vertexMessageStep.stepsTraversed);
@@ -597,7 +611,7 @@ implements ISubgraphWrapup{
 						/* TODO :add vertex to forwardRemoteVertexList*/
 						if (vertexMessageStep.stepsTraversed<=getSubgraph().getSubgraphValue().noOfSteps-1){
 //							System.out.println("FOR:6");
-							getSubgraph().getSubgraphValue().forwardRemoteVertexList.add(new VertexMessageSteps(otherVertex,_modifiedMessage.toString(),vertexMessageStep.stepsTraversed+1, (Long) sg.getRemoteMap().get(otherVertex), vertexMessageStep.startSubgraphId));
+							getSubgraph().getSubgraphValue().forwardRemoteVertexList.add(new VertexMessageSteps(vertexMessageStep.startVertexId,otherVertex,_modifiedMessage.toString(),vertexMessageStep.stepsTraversed+1, (Long) sg.getRemoteMap().get(otherVertex), vertexMessageStep.startSubgraphId));
 						}
 						
 					}
@@ -610,6 +624,18 @@ implements ISubgraphWrapup{
 				while(!getSubgraph().getSubgraphValue().revLocalVertexList.isEmpty()) {
 				      
 					VertexMessageSteps vertexMessageStep = getSubgraph().getSubgraphValue().revLocalVertexList.poll();
+					
+					HashSet<Long> visitedSet = bfsVisited.get(vertexMessageStep.startVertexId);
+					if(visitedSet==null) {
+						visitedSet=new HashSet<Long>();
+						visitedSet.add(vertexMessageStep.vertexId);
+						bfsVisited.put(vertexMessageStep.startVertexId, visitedSet);
+					}else {
+						if(visitedSet.contains(vertexMessageStep.vertexId)) {
+							continue;
+						}
+						visitedSet.add(vertexMessageStep.vertexId);
+					}
 					
 					if( vertexMessageStep.stepsTraversed >= getSubgraph().getSubgraphValue().noOfSteps ){
 						//System.out.println("REV:1");
@@ -633,9 +659,7 @@ implements ISubgraphWrapup{
 							
 							if (!compareValuesUtil(otherVertex.getValue().get(getSubgraph().getSubgraphValue().startVertex.property).toString(), getSubgraph().getSubgraphValue().startVertex.value.toString()) ){
 								if (vertexMessageStep.stepsTraversed<getSubgraph().getSubgraphValue().noOfSteps){
-									//System.out.println("REV:2");
-									//System.out.println("ERROR!!!");
-									getSubgraph().getSubgraphValue().revLocalVertexList.add(new VertexMessageSteps(otherVertexId,_modifiedMessage.toString(),vertexMessageStep.stepsTraversed+1, vertexMessageStep.subgraphId, vertexMessageStep.startSubgraphId));
+									getSubgraph().getSubgraphValue().revLocalVertexList.add(new VertexMessageSteps(vertexMessageStep.startVertexId,otherVertexId,_modifiedMessage.toString(),vertexMessageStep.stepsTraversed+1, vertexMessageStep.subgraphId, vertexMessageStep.startSubgraphId));
 								}
 							}	
 							else{
@@ -651,7 +675,7 @@ implements ISubgraphWrapup{
 								        time=System.currentTimeMillis();
 									if (vertexMessageStep.stepsTraversed<=getSubgraph().getSubgraphValue().noOfSteps){
 										//System.out.println("REV:5");
-										forwardOutputToSubgraph(0,new VertexMessageSteps(otherVertexId,_modifiedMessage.toString(),vertexMessageStep.stepsTraversed+1, vertexMessageStep.startSubgraphId,vertexMessageStep.startSubgraphId));
+										forwardOutputToSubgraph(0,new VertexMessageSteps(vertexMessageStep.startVertexId,otherVertexId,_modifiedMessage.toString(),vertexMessageStep.stepsTraversed+1, vertexMessageStep.startSubgraphId,vertexMessageStep.startSubgraphId));
 									}
 									getSubgraph().getSubgraphValue().noOfSteps = vertexMessageStep.stepsTraversed;
 									sendStopMessage(vertexMessageStep.stepsTraversed);
@@ -669,7 +693,7 @@ implements ISubgraphWrapup{
 							/* TODO :add vertex to forwardRemoteVertexList*/
 							if (vertexMessageStep.stepsTraversed<=getSubgraph().getSubgraphValue().noOfSteps-1){
 								//System.out.println("REV:6");
-								getSubgraph().getSubgraphValue().revRemoteVertexList.add(new VertexMessageSteps(otherVertexId,_modifiedMessage.toString(),vertexMessageStep.stepsTraversed+1, (Long) sg.getRemoteMap().get(otherVertexId), vertexMessageStep.startSubgraphId));
+								getSubgraph().getSubgraphValue().revRemoteVertexList.add(new VertexMessageSteps(vertexMessageStep.startVertexId,otherVertexId,_modifiedMessage.toString(),vertexMessageStep.stepsTraversed+1, (Long) sg.getRemoteMap().get(otherVertexId), vertexMessageStep.startSubgraphId));
 							}
 						
 						
@@ -683,7 +707,7 @@ implements ISubgraphWrapup{
 				for(VertexMessageSteps stuff: getSubgraph().getSubgraphValue().forwardRemoteVertexList){
 					// send message to all the remote vertices
 					StringBuilder remoteMessage = new StringBuilder("for();");
-					remoteMessage.append(stuff.vertexId).append(";").append(stuff.message).append(";").append(stuff.stepsTraversed).append(";").append(stuff.subgraphId).append(";").append(stuff.startSubgraphId).append(";");
+					remoteMessage.append(stuff.vertexId).append(";").append(stuff.message).append(";").append(stuff.stepsTraversed).append(";").append(stuff.subgraphId).append(";").append(stuff.startSubgraphId).append(";").append(stuff.startVertexId);
 					Text remoteM = new Text(remoteMessage.toString());
 					//remoteM.setTargetSubgraph(remoteVertex.getRemoteSubgraphId());
 					sendMessage(new LongWritable((long) sg.getRemoteMap().get(stuff.vertexId)),remoteM);
@@ -695,11 +719,11 @@ implements ISubgraphWrapup{
 					// send message to all the remote vertices
 //					System.out.println("Remote Vertex:" + stuff.vertexId);
 					StringBuilder remoteMessage = new StringBuilder("rev();");
-					remoteMessage.append(stuff.vertexId).append(";").append(stuff.message).append(";").append(stuff.stepsTraversed).append(";").append(stuff.subgraphId).append(";").append(stuff.startSubgraphId).append(";");
+					remoteMessage.append(stuff.vertexId).append(";").append(stuff.message).append(";").append(stuff.stepsTraversed).append(";").append(stuff.subgraphId).append(";").append(stuff.startSubgraphId).append(";").append(stuff.startVertexId);
 					Text remoteM = new Text(remoteMessage.toString());
 					//remoteM.setTargetSubgraph(remoteVertex.getRemoteSubgraphId());
 					
-                                        //getSubgraph().getSubgraphValue().InEdges.get(stuff.vertexId).get(stuff.vertexId).sinkSubgraphId
+                    //getSubgraph().getSubgraphValue().InEdges.get(stuff.vertexId).get(stuff.vertexId).sinkSubgraphId
                     sendMessage(new LongWritable((long) sg.getRemoteMap().get(stuff.vertexId)),remoteM);
 					
 //					sendMessage(remoteVertex.getSubgraphId(),remoteM);
@@ -724,10 +748,10 @@ implements ISubgraphWrapup{
 		String[] split = message.split(Pattern.quote(";"));
 		if (getSubgraph().getSubgraphId().get() == Long.parseLong(split[4])){
 			if (split[0].equals("for()"))
-				getSubgraph().getSubgraphValue().forwardLocalVertexList.add( new VertexMessageSteps(Long.parseLong(split[1]), split[2] , Integer.parseInt(split[3]), Long.parseLong( split[4] ), Long.parseLong(split[5])) );
+				getSubgraph().getSubgraphValue().forwardLocalVertexList.add( new VertexMessageSteps(Long.parseLong(split[6]),Long.parseLong(split[1]), split[2] , Integer.parseInt(split[3]), Long.parseLong( split[4] ), Long.parseLong(split[5])) );
 			else{
 				//System.out.println("ERROR!!");
-				getSubgraph().getSubgraphValue().revLocalVertexList.add( new VertexMessageSteps(Long.parseLong(split[1]), split[2] , Integer.parseInt(split[3]), Long.parseLong( split[4] ), Long.parseLong(split[5])) );
+				getSubgraph().getSubgraphValue().revLocalVertexList.add( new VertexMessageSteps(Long.parseLong(split[6]),Long.parseLong(split[1]), split[2] , Integer.parseInt(split[3]), Long.parseLong( split[4] ), Long.parseLong(split[5])) );
 			}
 		}	
 	}
