@@ -136,7 +136,7 @@ AbstractSubgraphComputation<BFSDistrSuccinctArraySubgraphState, MapValue, MapVal
 			}
 		}
 
-		public HashMap<Long,HashSet<Long>> bfsVisited=new HashMap<>();//FIXME: Replace this with hashmap
+		public HashMap<Long,HashSet<Long>> bfsVisited=new HashMap<>();//FIXME: Replace this with BitSet
 		public  List<Long> hitList;
 		/**
 		 * Representative class to keep tab of next vertex to be processed 
@@ -352,7 +352,6 @@ AbstractSubgraphComputation<BFSDistrSuccinctArraySubgraphState, MapValue, MapVal
   @Override
   public void compute(Iterable<IMessage<LongWritable,Text>> messages) {
     
-	  
   	//System.out.println("**********SUPERSTEPS***********:" + getSuperstep() +"Message List Size:" + messages.size());
 	  SplitPropertySuccinctArraySubgraph sg=(SplitPropertySuccinctArraySubgraph)getSubgraph();
 		
@@ -628,7 +627,7 @@ AbstractSubgraphComputation<BFSDistrSuccinctArraySubgraphState, MapValue, MapVal
 	        LOG.info("Ending Query Execution");
 	    }
 	  
-		
+		long count=0;
 		
 		for(Map.Entry<Long, ResultSet> entry: getSubgraph().getSubgraphValue().resultsMap.entrySet()) {
 			if (!entry.getValue().revResultSet.isEmpty())
@@ -636,21 +635,26 @@ AbstractSubgraphComputation<BFSDistrSuccinctArraySubgraphState, MapValue, MapVal
 					if (!entry.getValue().forwardResultSet.isEmpty())
 						for(String partialForwardPath: entry.getValue().forwardResultSet) {
 							LOG.info("ResultSet:" +partialRevPath+partialForwardPath);
-							//output(partition.getId(), subgraph.getId(), partialRevPath+partialForwardPath); 
+							//output(partition.getId(), subgraph.getId(), partialRevPath+partialForwardPath);
+							count++;
 						}
 					else{
 						LOG.info("ResultSet:" +partialRevPath);
 						//output(partition.getId(), subgraph.getId(), partialRevPath);
+						count++;
 					}
 				}
 			else
 				for(String partialForwardPath: entry.getValue().forwardResultSet) {
 					LOG.info("ResultSet:" +partialForwardPath);
-					//output(partition.getId(), subgraph.getId(), partialForwardPath); 
+					//output(partition.getId(), subgraph.getId(), partialForwardPath);
+					count++;
 				}
 		}
 		
-		
+		if(count!=0){
+	          LOG.info(Arguments+"$ResultSetSize:" + count);
+	          }
 //		LOG.info("SetSize:" + getSubgraph().getSubgraphValue().resultsMap.size());
 		LOG.info("Cumulative Result Collection:" + getSubgraph().getSubgraphValue().resultCollectionTime);
 		

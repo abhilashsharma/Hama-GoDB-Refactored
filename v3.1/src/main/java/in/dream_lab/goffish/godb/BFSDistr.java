@@ -115,6 +115,8 @@ AbstractSubgraphComputation<BFSDistrSubgraphState, MapValue, MapValue, Text, Lon
 		enum Type{EDGE,VERTEX}
 		enum Direction{OUT,IN}
 
+		
+		public HashMap<Long,HashSet<Long>> bfsVisited=new HashMap<>();//FIXME: Replace this with BitSet
 		/**
 		 * Class for storing the traversal path V->E->V->E->E.....
 		 */
@@ -475,12 +477,17 @@ AbstractSubgraphComputation<BFSDistrSubgraphState, MapValue, MapValue, Text, Lon
 			while(!getSubgraph().getSubgraphValue().forwardLocalVertexList.isEmpty()) {
 				
 				VertexMessageSteps vertexMessageStep = getSubgraph().getSubgraphValue().forwardLocalVertexList.poll();
-//				if(!visitedVertices.contains(vertexMessageStep.vertexId)){
-//					visitedVertices.add(vertexMessageStep.vertexId);
-//				}
-//				else
-//					continue;
-				//output(partition.getId(), subgraph.getId(), "FORWARD-LIST");
+				HashSet<Long> visitedSet = bfsVisited.get(vertexMessageStep.startVertexId);
+				if(visitedSet==null) {
+					visitedSet=new HashSet<Long>();
+					visitedSet.add(vertexMessageStep.vertexId);
+					bfsVisited.put(vertexMessageStep.startVertexId, visitedSet);
+				}else {
+					if(visitedSet.contains(vertexMessageStep.vertexId)) {
+						continue;
+					}
+					visitedSet.add(vertexMessageStep.vertexId);
+				}
 				/* if last step,end that iteration*/
 				//System.out.println("Reached:" + vertexMessageStep.vertexId +" BFS: "+vertexMessageStep.message+ "  Path Size:" + vertexMessageStep.stepsTraversed + "/" + Depth);
 				if ( vertexMessageStep.stepsTraversed == getSubgraph().getSubgraphValue().Depth ){

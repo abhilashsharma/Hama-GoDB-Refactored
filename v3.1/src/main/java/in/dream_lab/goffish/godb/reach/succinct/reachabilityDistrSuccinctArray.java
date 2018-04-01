@@ -771,14 +771,21 @@ implements ISubgraphWrapup{
 	  LOG.info("Ending Query Execution");
 	  }
           {
+        	  long count=0;
                   for(String partialForwardPath: getSubgraph().getSubgraphValue().resultsSet.forwardResultSet) {
                     LOG.info("ResultSetFORWARD : " + partialForwardPath);
-                          //output(partition.getId(), subgraph.getId(), "FORWARD : " + partialForwardPath); 
+                          //output(partition.getId(), subgraph.getId(), "FORWARD : " + partialForwardPath);
+                    count++;
                   }
                   for(String partialRevPath: getSubgraph().getSubgraphValue().resultsSet.revResultSet){
                           //output(partition.getId(), subgraph.getId(), "REVERSE : " + partialRevPath);
                     LOG.info("ResultSetREVERSE  : " + partialRevPath);
+                    count++;
                   }
+                  
+                  if(count!=0){
+        	          LOG.info(Arguments+"$ResultSetSize:" + count);
+        	          }
           }
           LOG.info("Cumulative Result Collection:" + getSubgraph().getSubgraphValue().resultCollectionTime);
 		clear();

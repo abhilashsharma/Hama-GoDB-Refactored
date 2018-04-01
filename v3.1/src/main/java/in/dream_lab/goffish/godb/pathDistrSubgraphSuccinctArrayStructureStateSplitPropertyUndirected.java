@@ -59,8 +59,9 @@ public class pathDistrSubgraphSuccinctArrayStructureStateSplitPropertyUndirected
 		
 		int startPos  = 0;
 		
-		Double networkCoeff = new Double(0.116);
-
+		Double networkCoeff = new Double(49.57);
+		Double joinCoeff = new Double(1.678451);
+		Double indexCoeff = new Double(0.00808);
 
 		//Data Structure for storing inedges 
 		HashMap<Long,HashMap<Long,EdgeAttr>>  InEdges = null;
