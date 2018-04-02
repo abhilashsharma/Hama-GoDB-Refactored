@@ -594,7 +594,7 @@ implements ISubgraphWrapup{
 					}catch(Exception e){e.printStackTrace();}
 					
 					LOG.info("Starting loading of heuristics");
-					hueristics=HueristicsLoad.getInstance("/user/abhilash/gplus2PHeuristics.ser");//TODO:change heuristics path for new Graph
+					hueristics=HueristicsLoad.getInstance("/user/abhilash/gplus2PHeuSer/gplus2PHeuristics.ser");//TODO:change heuristics path for new Graph
 					LOG.info("Heuristic Loaded");
 					
 				}
