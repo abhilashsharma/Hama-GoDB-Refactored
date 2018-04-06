@@ -274,6 +274,7 @@ AbstractSubgraphComputation<CalcCoeffDistrSuccinctSubgraphState, MapValue, MapVa
   	if(getSuperstep()==3){
   		List<Long> hitList = sg.getVertexByProp("employer", "american");	
   	  int count=0;
+  	  LOG.info("Index Querying Started");
   	  for(long v: hitList){
   	    if(count<1000){
 //  	    	SplitPropertySuccinctArrayVertex<MapValue,MapValue,LongWritable,LongWritable> currentVertex = new SplitPropertySuccinctArrayVertex(new LongWritable(v),sg.getVertexBuffer(),sg.getEdgeBufferList(),sg.getPropertyBufferMap());	
@@ -288,10 +289,17 @@ AbstractSubgraphComputation<CalcCoeffDistrSuccinctSubgraphState, MapValue, MapVa
                 }
   	      count++;
   	    }
+  	    else
+  	    	{
+  	    		break;
+  	    	
+  	    	}
   	  }
+  	  LOG.info("Index Querying Completed");
   	}
-  	
+  
   	if(getSuperstep()==4){
+  		LOG.info("Dummy Superstep");
 //  	  int count=0;
 //  	  for(IVertex<MapValue,MapValue,LongWritable,LongWritable> v: getSubgraph().getLocalVertices()){
 //            String vertexValue=v.getValue().get("patid");
@@ -304,6 +312,7 @@ AbstractSubgraphComputation<CalcCoeffDistrSuccinctSubgraphState, MapValue, MapVa
 //  	  }
   	}
   	if(getSuperstep()==5){
+  		LOG.info("Joining Started");
   	getSubgraph().getSubgraphValue().resultsMap.put(dummyVertex, new ResultSet());
   	  for(String forwardPath:forwardPaths){
   	  getSubgraph().getSubgraphValue().resultsMap.get(dummyVertex).forwardResultSet.add(forwardPath);
@@ -311,6 +320,7 @@ AbstractSubgraphComputation<CalcCoeffDistrSuccinctSubgraphState, MapValue, MapVa
   	      getSubgraph().getSubgraphValue().resultsMap.get(dummyVertex).revResultSet.add(reversePath);
   	    }
   	  }
+  	  	LOG.info("Joining Completed");
   	}
   	if(getSuperstep()==6){
   	  
