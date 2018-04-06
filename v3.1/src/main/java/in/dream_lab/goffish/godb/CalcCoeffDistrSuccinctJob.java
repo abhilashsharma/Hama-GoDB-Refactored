@@ -18,18 +18,18 @@ import org.apache.hama.bsp.TextOutputFormat;
 import com.sun.tools.javac.util.List;
 
 import in.dream_lab.goffish.hama.GraphJob;
-
+import in.dream_lab.goffish.hama.LongMapPartitionSplitPropertySuccinctReader;
 import in.dream_lab.goffish.hama.LongMapPartitionSubsetGsonReader;
-import in.dream_lab.goffish.hama.LongMapPartitionSubsetGsonReaderSynthLongRemoteLong;
+
 import in.dream_lab.goffish.hama.NonSplitTextInputFormat;
 
-public class BFSDistrJob {
+public class CalcCoeffDistrSuccinctJob {
 
 	 public static void main(String args[]) throws IOException,InterruptedException, ClassNotFoundException, ParseException
 	  {
 		  HamaConfiguration conf = new HamaConfiguration();
-		  GraphJob job = new GraphJob(conf, BFSDistr.class);
-		  job.setJobName("BFS");
+		  GraphJob job = new GraphJob(conf, CalcCoeffDistrSuccinct.class);
+		  job.setJobName("Calculating Coefficients");
 		  job.setInputFormat(TextInputFormat.class);
 		  job.setInputKeyClass(LongWritable.class);
 		  job.setInputValueClass(LongWritable.class);
@@ -40,38 +40,37 @@ public class BFSDistrJob {
 		  job.setGraphMessageClass(Text.class);
 		  job.setInputPath(new Path(args[0]));
 		  job.setOutputPath(new Path(args[1]));
-		  job.setInitialInput(readArgsFromFile(args[2]));
-		  job.setSubgraphValueClass(BFSDistrSubgraphState.class);
+		  job.setInitialInput(args[2]);
+		  job.setSubgraphValueClass(CalcCoeffDistrSuccinctSubgraphState.class);
 		  /* Reader configuration */
 		    job.setInputFormat(NonSplitTextInputFormat.class);
-		    job.setInputReaderClass(LongMapPartitionSubsetGsonReaderSynthLongRemoteLong.class);
+		    job.setInputReaderClass(LongMapPartitionSplitPropertySuccinctReader.class);
 		  
 		  //job.setSubgraphComputeClass(SubgraphComputeReduce.class);
 		  job.waitForCompletion(true);
 	  }
 	 
 	 
-	 static String  readArgsFromFile(String fileName) throws IOException{
-		   String Args="";
-//		   String fileName="/home/abhilash/abhilash/multipleArguments.txt";
-		   FileReader fr = new FileReader(fileName);
-	           BufferedReader br = new BufferedReader(fr);
+	 static String  readArgsFromFile() throws IOException{
+	   String Args="";
+	   String fileName="/home/abhilash/abhilash/multipleArguments.txt";
+	   FileReader fr = new FileReader(fileName);
+           BufferedReader br = new BufferedReader(fr);
 
-	           String sCurrentLine;
+           String sCurrentLine;
 
-	           
+           
 
-	           while ((sCurrentLine = br.readLine()) != null) {
-	               if(Args.equals(""))
-	                   Args=sCurrentLine;
-	               else
-	                   Args=Args+";" + sCurrentLine;
-	               
-	           }
-	           
-	           br.close();
-		   return Args;
-		 }
-		
+           while ((sCurrentLine = br.readLine()) != null) {
+               if(Args.equals(""))
+                   Args=sCurrentLine;
+               else
+                   Args=Args+";" + sCurrentLine;
+               
+           }
+           
+           br.close();
+	   return Args;
+	 }
 	
 }
