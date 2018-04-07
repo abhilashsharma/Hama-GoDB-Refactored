@@ -555,7 +555,7 @@ AbstractSubgraphComputation<BFSDistrSubgraphState, MapValue, MapValue, Text, Lon
 				remoteMessage.append(String.valueOf(stuff.startVertexId)).append(";").append(String.valueOf(stuff.startSubgraphId)).append(";").append(stuff.startPartitionId).append(";").append(stuff.vertexId).append(";").append(stuff.message).append(";").append(stuff.stepsTraversed) ;
 				Text remoteM = new Text(remoteMessage.toString());
 				sendMessage(remoteVertex.getSubgraphId(),remoteM);
-				LOG.info("Sending Remote Message:"+ remoteMessage.toString());
+//				LOG.info("Sending Remote Message:"+ remoteMessage.toString());
 			}
 			getSubgraph().getSubgraphValue().forwardRemoteVertexList.clear();
 			
