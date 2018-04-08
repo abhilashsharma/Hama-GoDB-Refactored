@@ -111,9 +111,12 @@ implements ISubgraphWrapup{
 	private static final Object initLock = new Object();
 	private static final Object queryLock = new Object();
 	private static boolean queryStart=false;//later lock this when multithreaded
-        private static boolean queryEnd=false;//later lock this when multithreaded
-        private static boolean gcCalled=false;
-
+    private static boolean queryEnd=false;//later lock this when multithreaded
+    private static boolean gcCalled=false;
+    
+    long[] count;
+    
+    
 	static Hueristics hueristics = new Hueristics(); 
 	//for succinct
 //	HashMap<String,Integer> propToIndex= new HashMap<String,Integer>();
@@ -364,6 +367,8 @@ implements ISubgraphWrapup{
 		
 		SplitPropertySuccinctArraySubgraph sg=(SplitPropertySuccinctArraySubgraph)getSubgraph();
 		 
+		
+		count=new long[11];
 		
 	}
 
@@ -771,6 +776,7 @@ implements ISubgraphWrapup{
 				
 				
 				SplitPropertySuccinctArrayVertex<MapValue,MapValue,LongWritable,LongWritable> currentVertex = new SplitPropertySuccinctArrayVertex(new LongWritable(vertexMessageStep.vertexId),sg.getVertexBuffer(),sg.getEdgeBufferList(),sg.getPropertyBufferMap());
+				
 				
 				if( nextStep.type == Type.EDGE ) {
 					
