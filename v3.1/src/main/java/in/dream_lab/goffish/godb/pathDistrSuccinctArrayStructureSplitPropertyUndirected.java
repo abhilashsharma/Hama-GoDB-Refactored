@@ -1702,7 +1702,11 @@ implements ISubgraphWrapup{
                                                              currentStep = revIt.previous();
                                                      }
                                              }
-                                             joinCost *= getSubgraph().getSubgraphValue().joinCoeff*resultSetNumber;
+                                             joinCost +=  getSubgraph().getSubgraphValue().joinCoeff*(joinCost+resultSetNumber);
+                                             
+                                             if(pos==0 || pos == (getSubgraph().getSubgraphValue().path.size()-1)){
+                                                 joinCost=0.0;
+                                               }
                                              if ( getSubgraph().getSubgraphValue().queryCostHolder[pos] != -1 && totalCost != -1) {
                                             	 getSubgraph().getSubgraphValue().queryCostHolder[pos] += totalCost;
                                                      if (pos!=0 && pos!= getSubgraph().getSubgraphValue().path.size()-1)
