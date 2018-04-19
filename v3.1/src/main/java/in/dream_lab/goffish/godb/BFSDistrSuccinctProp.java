@@ -480,7 +480,7 @@ AbstractSubgraphComputation<BFSDistrPropSuccinctSubgraphState, MapValue, MapValu
 							//local edges
 							long count=0;
 							Tuple<List<Long>,List<Long>> edges= currentVertex.getEdges(); 
-							if((edges.getFirst().size() + edges.getSecond().size()) > 17) {
+							if((edges.getFirst().size() + edges.getSecond().size()) > 40) {
 								//skipping this vertex if out degree greater than 17
 								continue;
 							}
