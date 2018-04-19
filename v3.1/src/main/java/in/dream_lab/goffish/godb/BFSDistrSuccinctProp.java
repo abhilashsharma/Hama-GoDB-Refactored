@@ -473,7 +473,7 @@ AbstractSubgraphComputation<BFSDistrPropSuccinctSubgraphState, MapValue, MapValu
 				//Step nextStep = path.get(vertexMessageStep.stepsTraversed+1);
 				
 				SuccinctArrayVertex<MapValue,MapValue,LongWritable,LongWritable> currentVertex = new SuccinctArrayVertex(new LongWritable(vertexMessageStep.vertexId),sg.getVertexBufferList(),sg.getEdgeBufferList(),'|');
-				Iterable<IEdge<MapValue, LongWritable, LongWritable>> it=currentVertex.getOutEdges();
+				
 				StringBuilder _modifiedMsg = new StringBuilder("");
 				String[] str=currentVertex.getAllPropforVertex();
 				
