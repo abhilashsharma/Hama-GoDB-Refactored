@@ -213,11 +213,13 @@ AbstractSubgraphComputation<BFSDistrPropSuccinctSubgraphState, MapValue, MapValu
 			// read heuristics from memory
 			
 			//add properties and delimiter list
+			propArray.add("vid");//added for supporting vid
 			propArray.add("employer");
 			propArray.add("school");
 			propArray.add("major");
 			propArray.add("places_lived");
 			
+			delimArray.add("#");//added for supported vid
 			delimArray.add("@");
 			delimArray.add("$");
 			delimArray.add("*");
