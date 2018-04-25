@@ -59,8 +59,9 @@ public class pathDistrSubgraphSuccinctArrayStructureStateInEdges implements Writ
 		
 		int startPos  = 0;
 		
-		Double networkCoeff = new Double(0.116);
-
+		Double networkCoeff = new Double(0.01);
+		Double joinCoeff = new Double(0.0);
+		Double indexCoeff = new Double(0.000808);
 
 		//Data Structure for storing inedges 
 		HashMap<Long,HashMap<Long,EdgeAttr>>  InEdges = null;
