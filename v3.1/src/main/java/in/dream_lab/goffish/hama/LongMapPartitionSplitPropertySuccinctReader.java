@@ -384,6 +384,7 @@ long start=System.currentTimeMillis();
  BufferedReader br1 = new BufferedReader(fr1);
 String sCurrentLine=null;
 
+
 while ((sCurrentLine = br1.readLine()) != null) {
 	 String[] data=sCurrentLine.trim().split(",");
 	 
