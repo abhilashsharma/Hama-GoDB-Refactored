@@ -80,9 +80,14 @@ implements ISubgraphWrapup {
 		  System.out.println("Starting Inedges"+ getSubgraph().getSubgraphId());
 			//send messages along remote edges
 		  //populate this according to your graph.. needs to be changed for schemaless
-			vertexProperties.add("vid");
-			vertexProperties.add("Contributors");
+//			vertexProperties.add("vid");
+//			vertexProperties.add("Contributors");
 //			vertexProperties.add("country");
+		  vertexProperties.add("employer");
+		  vertexProperties.add("school");
+		  vertexProperties.add("major");
+		  vertexProperties.add("places_lived");
+		  
 		      if(getSubgraph().getSubgraphValue().InEdges==null){
                         //Logic to Accumulate inedges
                           getSubgraph().getSubgraphValue().InEdges=new HashMap<Long,HashMap<Long,EdgeAttr>>();  
