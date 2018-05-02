@@ -961,26 +961,18 @@ implements ISubgraphWrapup{
 			
 			for(VertexMessageSteps stuff: getSubgraph().getSubgraphValue().revRemoteVertexList){
 				// send message to all the remote vertices
-				IRemoteVertex<MapValue,MapValue,LongWritable,LongWritable,LongWritable> remoteVertex = (IRemoteVertex<MapValue, MapValue, LongWritable, LongWritable, LongWritable>)getSubgraph().getVertexById(new LongWritable(stuff.vertexId));
+//				IRemoteVertex<MapValue,MapValue,LongWritable,LongWritable,LongWritable> remoteVertex = (IRemoteVertex<MapValue, MapValue, LongWritable, LongWritable, LongWritable>)getSubgraph().getVertexById(new LongWritable(stuff.vertexId));
 				StringBuilder remoteMessage = new StringBuilder("rev();");
 				//remoteMessage.append(String.valueOf(stuff.vertexId.longValue())).append(";").append(stuff.message).append(";").append(stuff.stepsTraversed) ;
-				if(remoteVertex!=null){
-				remoteMessage.append(String.valueOf(stuff.startVertexId)).append(";").append(String.valueOf(stuff.previousSubgraphId)).append(";").append(stuff.previousPartitionId).append(";").append(stuff.vertexId).append(";").append(stuff.stepsTraversed).append(";").append(remoteVertex.getSubgraphId().get());
-				}
-				else{
-					remoteMessage.append(String.valueOf(stuff.startVertexId)).append(";").append(String.valueOf(stuff.previousSubgraphId)).append(";").append(stuff.previousPartitionId).append(";").append(stuff.vertexId).append(";").append(stuff.stepsTraversed).append(";").append(getSubgraph().getSubgraphValue().InEdges.get(stuff.startVertexId).get(stuff.vertexId).sinkSubgraphId);
-				}
+				remoteMessage.append(String.valueOf(stuff.startVertexId)).append(";").append(String.valueOf(stuff.previousSubgraphId)).append(";").append(stuff.previousPartitionId).append(";").append(stuff.vertexId).append(";").append(stuff.stepsTraversed).append(";").append(sg.getRemoteMap().get(stuff.vertexId).toString());
+//					remoteMessage.append(String.valueOf(stuff.startVertexId)).append(";").append(String.valueOf(stuff.previousSubgraphId)).append(";").append(stuff.previousPartitionId).append(";").append(stuff.vertexId).append(";").append(stuff.stepsTraversed).append(";").append(getSubgraph().getSubgraphValue().InEdges.get(stuff.startVertexId).get(stuff.vertexId).sinkSubgraphId);
+
 				remoteMessage.append(";").append(stuff.queryId);	
 				Text remoteM = new Text(remoteMessage.toString());
 				
-				if(remoteVertex!=null){
-					sendMessage(remoteVertex.getSubgraphId(),remoteM);
-				}
 					
-				else{
-					
-					sendMessage(new LongWritable(getSubgraph().getSubgraphValue().InEdges.get(stuff.startVertexId).get(stuff.vertexId).sinkSubgraphId),remoteM);
-				}
+//					sendMessage(new LongWritable(getSubgraph().getSubgraphValue().InEdges.get(stuff.startVertexId).get(stuff.vertexId).sinkSubgraphId),remoteM);
+				sendMessage(new LongWritable((long) sg.getRemoteMap().get(stuff.vertexId)),remoteM);
 			}
 			getSubgraph().getSubgraphValue().revRemoteVertexList.clear();
 			
