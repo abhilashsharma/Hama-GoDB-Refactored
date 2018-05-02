@@ -1093,7 +1093,7 @@ implements ISubgraphWrapup{
 					/* filtered vertex*/
 					else {
 //						ISubgraphObjectProperties subgraphProperties = subgraphInstance.getPropertiesForVertex(currentVertex.getId());
-						System.out.println("CurrentVertex:" + currentVertex);
+						System.out.println("CurrentVertex:" + currentVertex + " Value:" + currentVertex.getValue() + " nextStep:" + nextStep);
 						String val=currentVertex.getValue().get(nextStep.property);
 						
 						if(val==null) {
