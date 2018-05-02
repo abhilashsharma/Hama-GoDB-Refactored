@@ -547,7 +547,7 @@ implements ISubgraphWrapup{
 
 //						LOG.info("TIME ACCUMULATING INEDGES....Starting loading of heuristics");
 //						hueristics=HueristicsLoad.getInstance();
-						hueristics=HueristicsLoad.getInstance("/user/abhilash/gplusHeurSer/gplusHue_FULL.ser");
+						hueristics=HueristicsLoad.getInstance("/user/abhilash/gplusNew16PHeuristics/gplusNew16PHeuristics.ser");
 //						LOG.info("Heuristic Loaded");
 
 					
