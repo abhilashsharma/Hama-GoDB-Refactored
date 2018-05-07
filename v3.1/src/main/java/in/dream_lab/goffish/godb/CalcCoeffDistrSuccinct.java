@@ -259,10 +259,12 @@ AbstractSubgraphComputation<CalcCoeffDistrSuccinctSubgraphState, MapValue, MapVa
   	  for(long v :hitList){
   		  
   		  SplitPropertySuccinctArrayVertex<MapValue,MapValue,LongWritable,LongWritable> currentVertex = new SplitPropertySuccinctArrayVertex(new LongWritable(v),sg.getVertexBuffer(),sg.getEdgeBufferList(),sg.getPropertyBufferMap());
-  		  Tuple<List<Long>, List<Long>> edges = currentVertex.getIEdges();
+  		  Tuple<List<Long>, List<Long>> edges = currentVertex.getOEdges();
   		  List<Long> remoteList = edges.getSecond();
-  		  remoteVertexCount+=remoteList.size();
-  		  for(long rv:remoteList) {
+//  		  remoteVertexCount+=remoteList.size();
+  		  remoteVertexCount=10000;
+  		  long rv=remoteList.get(0);
+  		  for(int i=0;i<remoteVertexCount;i++) {
   			  sendMessage(new LongWritable((long) sg.getRemoteMap().get(rv)), txtMessage);
   		  }
   	  }

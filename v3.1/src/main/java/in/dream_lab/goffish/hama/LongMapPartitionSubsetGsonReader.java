@@ -67,7 +67,9 @@ import in.dream_lab.goffish.api.IRemoteVertex;
 /*
  * 
  * First Line contains PseudoPid
- * [srcid, srcvalue, [[sinkid1,edgeid1,edgevalue1], [sinkid2,edgeid2,edgevalue2] ... ]] 
+ * [srcid, srcvalue, [[sinkid1,edgeid1,edgevalue1], [sinkid2,edgeid2,edgevalue2] ... ]]
+ * 
+ *  format for values=== "key1:type1:value1$key2:type2:value2$....."
  * PseudoPid is considered for all vertices in file
  * 
  * This Reader only subset of the properties
