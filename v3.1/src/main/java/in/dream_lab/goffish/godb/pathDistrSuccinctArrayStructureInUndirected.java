@@ -629,7 +629,7 @@ implements ISubgraphWrapup{
 				
 				// LOAD START VERTICES
 				{
-				       Optimize();
+					computeNWFixedHeu();
 					
 					
 					String currentProperty = null;
