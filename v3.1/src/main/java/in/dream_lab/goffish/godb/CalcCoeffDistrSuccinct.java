@@ -261,10 +261,8 @@ AbstractSubgraphComputation<CalcCoeffDistrSuccinctSubgraphState, MapValue, MapVa
   		  SplitPropertySuccinctArrayVertex<MapValue,MapValue,LongWritable,LongWritable> currentVertex = new SplitPropertySuccinctArrayVertex(new LongWritable(v),sg.getVertexBuffer(),sg.getEdgeBufferList(),sg.getPropertyBufferMap());
   		  Tuple<List<Long>, List<Long>> edges = currentVertex.getOEdges();
   		  List<Long> remoteList = edges.getSecond();
-//  		  remoteVertexCount+=remoteList.size();
-  		  remoteVertexCount=10000;
-  		  long rv=remoteList.get(0);
-  		  for(int i=0;i<remoteVertexCount;i++) {
+  		  remoteVertexCount+=remoteList.size();
+  		  for(long rv:remoteList) {
   			  sendMessage(new LongWritable((long) sg.getRemoteMap().get(rv)), txtMessage);
   		  }
   	  }
@@ -283,7 +281,7 @@ AbstractSubgraphComputation<CalcCoeffDistrSuccinctSubgraphState, MapValue, MapVa
 //  	      String vertexValue=currentVertex.getPropforVertex("employer");
   	      try {
 //              makeQuery("employer", "american");
-  	    	  	sg.getVertexByProp("employer", "american");
+//  	    	  	sg.getVertexByProp("employer", "american");
   	    	  	
               } catch (Exception e) {
                 // TODO Auto-generated catch block
