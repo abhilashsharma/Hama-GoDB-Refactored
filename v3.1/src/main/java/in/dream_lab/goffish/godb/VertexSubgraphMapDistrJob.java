@@ -29,7 +29,7 @@ public class VertexSubgraphMapDistrJob {
 	  {
 		  HamaConfiguration conf = new HamaConfiguration();
 		  GraphJob job = new GraphJob(conf, VertexSubgraphMapDistr.class);
-		  job.setJobName("Calculating Coefficients");
+		  job.setJobName("Vertex Subgraph Map ");
 		  job.setInputFormat(TextInputFormat.class);
 		  job.setInputKeyClass(LongWritable.class);
 		  job.setInputValueClass(LongWritable.class);

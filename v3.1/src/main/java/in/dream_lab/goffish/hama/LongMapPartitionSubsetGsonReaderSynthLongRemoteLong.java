@@ -252,7 +252,7 @@ public class LongMapPartitionSubsetGsonReaderSynthLongRemoteLong<S extends Writa
     	BufferedReader reader;
 		try {
 			reader = new BufferedReader(new FileReader(
-					"/scratch/abhilash/gplusGraph/gplusNewSM8P.txt")); //+ pseudoPartId //TODO:Removing partition id for now
+					"/scratch/abhilash/gplusGraph/gplusNewSM24P.txt")); //+ pseudoPartId //TODO:Removing partition id for now
 			String line = reader.readLine();
 			while (line != null) {
 				String[] data=line.trim().split(",");
