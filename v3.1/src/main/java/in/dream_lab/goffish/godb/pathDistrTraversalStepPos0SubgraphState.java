@@ -35,6 +35,9 @@ public class pathDistrTraversalStepPos0SubgraphState implements Writable {
 		//logging result collection time
 		long resultCollectionTime=0;
 		
+		//logging vertex predicate computation counter
+		long vertexSelectivity=0;
+		
 		//storing query cost for each query plan
 		Double[] queryCostHolder=null;
 		

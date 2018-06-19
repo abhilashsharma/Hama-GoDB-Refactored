@@ -890,6 +890,7 @@ implements ISubgraphWrapup{
 				LinkedList<VertexMessageSteps> nextStepForwardLocalVertexList = new LinkedList<VertexMessageSteps>();
 			while(!getSubgraph().getSubgraphValue().forwardLocalVertexList.isEmpty()) {
 				VertexMessageSteps vertexMessageStep = getSubgraph().getSubgraphValue().forwardLocalVertexList.poll();
+				 getSubgraph().getSubgraphValue().vertexSelectivity++;
 				if(getSubgraph().getSubgraphValue().forwardLocalVertexList.isEmpty()) {
 //					count[vertexMessageStep.stepsTraversed]++;
 					getSubgraph().getSubgraphValue().forwardLocalVertexList=nextStepForwardLocalVertexList;
@@ -1119,7 +1120,7 @@ implements ISubgraphWrapup{
 			// PROCESS REVERSE LIST
 			while(!getSubgraph().getSubgraphValue().revLocalVertexList.isEmpty()) {
 				VertexMessageSteps vertexMessageStep = getSubgraph().getSubgraphValue().revLocalVertexList.poll();
-				
+				 getSubgraph().getSubgraphValue().vertexSelectivity++;
 				/* if last step,end that iteration, while traversing in reverse direction last step is first step which is zero */
 				if ( vertexMessageStep.stepsTraversed == 0 ){
 					//if current subgraph is not source subgraph then start recursive aggregation of partial results
@@ -1620,7 +1621,8 @@ implements ISubgraphWrapup{
 					//output(partition.getId(), subgraph.getId(), partialForwardPath); 
 				}
 		}
-	LOG.info("Cumulative Result Collection:" +  getSubgraph().getSubgraphValue().resultCollectionTime);	
+	LOG.info("Cumulative Result Collection:" +  getSubgraph().getSubgraphValue().resultCollectionTime);
+	LOG.info("Cumulative Vertex Selectivity:" +  getSubgraph().getSubgraphValue().vertexSelectivity);	
 		clear();
 	}
 
@@ -1640,6 +1642,7 @@ implements ISubgraphWrapup{
 	  getSubgraph().getSubgraphValue().path.clear();
 	  getSubgraph().getSubgraphValue().queryCostHolder=null;
 	  getSubgraph().getSubgraphValue().startPos=0;
+	  getSubgraph().getSubgraphValue().vertexSelectivity=0;
 	  queryMade=false;
 	  queryStart=false;
 	
