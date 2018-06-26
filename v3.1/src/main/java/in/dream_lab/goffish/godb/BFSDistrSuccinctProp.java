@@ -505,10 +505,9 @@ AbstractSubgraphComputation<BFSDistrPropSuccinctSubgraphState, MapValue, MapValu
 								long otherVertex = edge;
 								StringBuilder _modifiedMessage = new StringBuilder("");
 								_modifiedMessage.append(vertexMessageStep.message).append(str[1]+","+str[2]+","+str[3]+"," + str[4] + "," + str[5]).append("-->V:");
-							
-								/* TODO :add vertex to forwardRemoteVertexList*/
-//								getSubgraph().getSubgraphValue().forwardRemoteVertexList.add(new VertexMessageSteps(otherVertex,_modifiedMessage.toString(),vertexMessageStep.stepsTraversed+1,vertexMessageStep.startVertexId, vertexMessageStep.startSubgraphId,vertexMessageStep.startPartitionId));
-								getSubgraph().getSubgraphValue().forwardRemoteVertexList.add(new VertexMessageSteps(otherVertex,_modifiedMessage.toString(),vertexMessageStep.stepsTraversed+1, vertexMessageStep.startVertexId, vertexMessageStep.startSubgraphId, vertexMessageStep.startPartitionId));
+								LOG.info("MODIFIEDMSG:" + _modifiedMsg.toString());
+									
+								getSubgraph().getSubgraphValue().forwardLocalVertexList.add(new VertexMessageSteps(otherVertex,_modifiedMessage.toString(),vertexMessageStep.stepsTraversed+1, vertexMessageStep.startVertexId, vertexMessageStep.startSubgraphId, vertexMessageStep.startPartitionId));
 							}
 							
 							
