@@ -75,11 +75,16 @@
     
     </dependencies>
 
-	
+
+
 	<build>
 		<finalName>goffish-hama-3.1</finalName>
 		<pluginManagement>
 			<plugins>
+				<plugin>
+					<groupId>org.apache.maven.plugins</groupId>
+                                        <artifactId>maven-resources-plugin</artifactId>
+                                </plugin>
 				<plugin>
 					<artifactId>maven-surefire-plugin</artifactId>
 				</plugin>
