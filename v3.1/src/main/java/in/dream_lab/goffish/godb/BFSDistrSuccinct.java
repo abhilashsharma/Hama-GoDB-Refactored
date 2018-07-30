@@ -456,7 +456,7 @@ AbstractSubgraphComputation<BFSDistrSuccinctSubgraphState, MapValue, MapValue, T
 					SuccinctArrayVertex<MapValue,MapValue,LongWritable,LongWritable> currentVertex = new SuccinctArrayVertex(new LongWritable(vertexMessageStep.vertexId),sg.getVertexBufferList(),sg.getEdgeBufferList(),'|');
 					//String[] str=currentVertex.getAllPropforVertex();
 					
-                    //LOG.info("MODIFIEDMSG:" + _modifiedMsg.toString());
+                    LOG.info("MODIFIEDMSG:" + vertexMessageStep.message);
 					if (vertexMessageStep.startSubgraphId == getSubgraph().getSubgraphId().get()) {
 						if ( !getSubgraph().getSubgraphValue().resultsMap.containsKey(vertexMessageStep.startVertexId) )
 							getSubgraph().getSubgraphValue().resultsMap.put(vertexMessageStep.startVertexId, new ResultSet());
@@ -480,17 +480,19 @@ AbstractSubgraphComputation<BFSDistrSuccinctSubgraphState, MapValue, MapValue, T
 				
 							//local edges
 							long count=0;
-							Tuple<List<Long>,List<Long>> edges= currentVertex.getEdges(); 
-							if((edges.getFirst().size() + edges.getSecond().size()) > 30) {
+							Tuple<List<Long>,List<Long>> edges= currentVertex.getEdges();
+							
+							//skipping disabled
+//							if((edges.getFirst().size() + edges.getSecond().size()) > 30) {
 								//skipping this vertex if out degree greater than 17
-								continue;
-							}
+//								continue;
+//							}
 							for( long edge: edges.getFirst() ) {
 								count ++;
 								long otherVertex = edge;
 								StringBuilder _modifiedMessage = new StringBuilder("");
 								_modifiedMessage.append(vertexMessageStep.message).append("-->V:").append(otherVertex);//+ "," + str[6]
-								LOG.info("MODIFIEDMSG:" + _modifiedMsg.toString());
+								//LOG.info("MODIFIEDMSG:" + _modifiedMsg.toString());
 									
 								getSubgraph().getSubgraphValue().forwardLocalVertexList.add(new VertexMessageSteps(otherVertex,_modifiedMessage.toString(),vertexMessageStep.stepsTraversed+1, vertexMessageStep.startVertexId, vertexMessageStep.startSubgraphId, vertexMessageStep.startPartitionId));
 								
@@ -504,7 +506,7 @@ AbstractSubgraphComputation<BFSDistrSuccinctSubgraphState, MapValue, MapValue, T
 								long otherVertex = edge;
 								StringBuilder _modifiedMessage = new StringBuilder("");
 								_modifiedMessage.append(vertexMessageStep.message).append("-->V:").append(otherVertex);
-								LOG.info("MODIFIEDMSG:" + _modifiedMsg.toString());
+								//LOG.info("MODIFIEDMSG:" + _modifiedMsg.toString());
 									
 								getSubgraph().getSubgraphValue().forwardRemoteVertexList.add(new VertexMessageSteps(otherVertex,_modifiedMessage.toString(),vertexMessageStep.stepsTraversed+1, vertexMessageStep.startVertexId, vertexMessageStep.startSubgraphId, vertexMessageStep.startPartitionId));
 							}
@@ -513,7 +515,7 @@ AbstractSubgraphComputation<BFSDistrSuccinctSubgraphState, MapValue, MapValue, T
 							if(count==0){
 							 
 				                            
-				                 LOG.info("MODIFIEDMSG:" + _modifiedMsg.toString());
+				                 LOG.info("MODIFIEDMSG:" + vertexMessageStep.message);
 				                             
 				              
 								
