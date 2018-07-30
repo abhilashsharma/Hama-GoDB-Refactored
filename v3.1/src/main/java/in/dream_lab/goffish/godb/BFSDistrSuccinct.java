@@ -454,10 +454,9 @@ AbstractSubgraphComputation<BFSDistrSuccinctSubgraphState, MapValue, MapValue, T
 
 				if ( vertexMessageStep.stepsTraversed == getSubgraph().getSubgraphValue().Depth ){
 					SuccinctArrayVertex<MapValue,MapValue,LongWritable,LongWritable> currentVertex = new SuccinctArrayVertex(new LongWritable(vertexMessageStep.vertexId),sg.getVertexBufferList(),sg.getEdgeBufferList(),'|');
-					String[] str=currentVertex.getAllPropforVertex();
-					StringBuilder _modifiedMsg = new StringBuilder("");
-                    _modifiedMsg .append(vertexMessageStep.message).append(str[1]+","+str[2]+","+str[3]+"," + str[4] + "," + str[5] );//+ "," + str[6]
-                    LOG.info("MODIFIEDMSG:" + _modifiedMsg.toString());
+					//String[] str=currentVertex.getAllPropforVertex();
+					
+                    //LOG.info("MODIFIEDMSG:" + _modifiedMsg.toString());
 					if (vertexMessageStep.startSubgraphId == getSubgraph().getSubgraphId().get()) {
 						if ( !getSubgraph().getSubgraphValue().resultsMap.containsKey(vertexMessageStep.startVertexId) )
 							getSubgraph().getSubgraphValue().resultsMap.put(vertexMessageStep.startVertexId, new ResultSet());
@@ -477,7 +476,7 @@ AbstractSubgraphComputation<BFSDistrSuccinctSubgraphState, MapValue, MapValue, T
 				SuccinctArrayVertex<MapValue,MapValue,LongWritable,LongWritable> currentVertex = new SuccinctArrayVertex(new LongWritable(vertexMessageStep.vertexId),sg.getVertexBufferList(),sg.getEdgeBufferList(),'|');
 				
 				StringBuilder _modifiedMsg = new StringBuilder("");
-				String[] str=currentVertex.getAllPropforVertex();
+				//String[] str=currentVertex.getAllPropforVertex();
 				
 							//local edges
 							long count=0;
@@ -490,7 +489,7 @@ AbstractSubgraphComputation<BFSDistrSuccinctSubgraphState, MapValue, MapValue, T
 								count ++;
 								long otherVertex = edge;
 								StringBuilder _modifiedMessage = new StringBuilder("");
-								_modifiedMessage.append(vertexMessageStep.message).append(str[1]+","+str[2]+","+str[3]+"," + str[4] + "," + str[5] ).append("-->V:");//+ "," + str[6]
+								_modifiedMessage.append(vertexMessageStep.message).append("-->V:").append(otherVertex);//+ "," + str[6]
 								LOG.info("MODIFIEDMSG:" + _modifiedMsg.toString());
 									
 								getSubgraph().getSubgraphValue().forwardLocalVertexList.add(new VertexMessageSteps(otherVertex,_modifiedMessage.toString(),vertexMessageStep.stepsTraversed+1, vertexMessageStep.startVertexId, vertexMessageStep.startSubgraphId, vertexMessageStep.startPartitionId));
@@ -499,33 +498,25 @@ AbstractSubgraphComputation<BFSDistrSuccinctSubgraphState, MapValue, MapValue, T
 							}
 							
 							
-							//remote edges: changed for 1P to local queue
+							//remote edges: change it back
 							for( long edge: edges.getSecond() ) {
-								count ++;
+							
 								long otherVertex = edge;
 								StringBuilder _modifiedMessage = new StringBuilder("");
-								_modifiedMessage.append(vertexMessageStep.message).append(str[1]+","+str[2]+","+str[3]+"," + str[4] + "," + str[5]).append("-->V:");
+								_modifiedMessage.append(vertexMessageStep.message).append("-->V:").append(otherVertex);
 								LOG.info("MODIFIEDMSG:" + _modifiedMsg.toString());
 									
-								getSubgraph().getSubgraphValue().forwardLocalVertexList.add(new VertexMessageSteps(otherVertex,_modifiedMessage.toString(),vertexMessageStep.stepsTraversed+1, vertexMessageStep.startVertexId, vertexMessageStep.startSubgraphId, vertexMessageStep.startPartitionId));
+								getSubgraph().getSubgraphValue().forwardRemoteVertexList.add(new VertexMessageSteps(otherVertex,_modifiedMessage.toString(),vertexMessageStep.stepsTraversed+1, vertexMessageStep.startVertexId, vertexMessageStep.startSubgraphId, vertexMessageStep.startPartitionId));
 							}
 							
 							
 							if(count==0){
 							 
-				                                _modifiedMsg.append(vertexMessageStep.message).append(str[1]+","+str[2]+","+str[3]+"," + str[4] + "," + str[5]);
-				                                LOG.info("MODIFIEDMSG:" + _modifiedMsg.toString());
-				                                vertexMessageStep = new VertexMessageSteps(vertexMessageStep.vertexId, _modifiedMsg.toString(), vertexMessageStep.stepsTraversed, vertexMessageStep.startVertexId, vertexMessageStep.startSubgraphId, vertexMessageStep.startPartitionId);
-				                                
-//								if(vertexMessageStep.startSubgraphId!=getSubgraph().getSubgraphId().get()){
-//									forwardOutputToSubgraph(1,vertexMessageStep);
-//								}
-//								else
-//								{
-//									if ( !getSubgraph().getSubgraphValue().resultsMap.containsKey(vertexMessageStep.startVertexId))
-//										getSubgraph().getSubgraphValue().resultsMap.put(vertexMessageStep.startVertexId, new ResultSet());
-//									getSubgraph().getSubgraphValue().resultsMap.get(vertexMessageStep.startVertexId).forwardResultSet.add(vertexMessageStep.message);
-//								}
+				                            
+				                 LOG.info("MODIFIEDMSG:" + _modifiedMsg.toString());
+				                             
+				              
+								
 							}
 //							System.out.println("*************getOutEdges***********:" + count);
 								
