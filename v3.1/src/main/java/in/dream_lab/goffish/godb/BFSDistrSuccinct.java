@@ -81,6 +81,7 @@ import in.dream_lab.goffish.api.IMessage;
 import in.dream_lab.goffish.api.IRemoteVertex;
 import in.dream_lab.goffish.api.ISubgraphWrapup;
 import in.dream_lab.goffish.api.IVertex;
+import in.dream_lab.goffish.godb.BFSDistr.ResultSet;
 import in.dream_lab.goffish.hama.succinctstructure.SuccinctArraySubgraph;
 import in.dream_lab.goffish.hama.succinctstructure.SuccinctArrayVertex;
 
@@ -456,7 +457,7 @@ AbstractSubgraphComputation<BFSDistrSuccinctSubgraphState, MapValue, MapValue, T
 					SuccinctArrayVertex<MapValue,MapValue,LongWritable,LongWritable> currentVertex = new SuccinctArrayVertex(new LongWritable(vertexMessageStep.vertexId),sg.getVertexBufferList(),sg.getEdgeBufferList(),'|');
 					//String[] str=currentVertex.getAllPropforVertex();
 					
-                    LOG.info("MODIFIEDMSG:" + vertexMessageStep.message);
+                    
 					if (vertexMessageStep.startSubgraphId == getSubgraph().getSubgraphId().get()) {
 						if ( !getSubgraph().getSubgraphValue().resultsMap.containsKey(vertexMessageStep.startVertexId) )
 							getSubgraph().getSubgraphValue().resultsMap.put(vertexMessageStep.startVertexId, new ResultSet());
@@ -492,7 +493,7 @@ AbstractSubgraphComputation<BFSDistrSuccinctSubgraphState, MapValue, MapValue, T
 								long otherVertex = edge;
 								StringBuilder _modifiedMessage = new StringBuilder("");
 								_modifiedMessage.append(vertexMessageStep.message).append("-->V:").append(otherVertex);//+ "," + str[6]
-								//LOG.info("MODIFIEDMSG:" + _modifiedMsg.toString());
+								LOG.info("LOCALMODIFIEDMSG:" + _modifiedMsg.toString());
 									
 								getSubgraph().getSubgraphValue().forwardLocalVertexList.add(new VertexMessageSteps(otherVertex,_modifiedMessage.toString(),vertexMessageStep.stepsTraversed+1, vertexMessageStep.startVertexId, vertexMessageStep.startSubgraphId, vertexMessageStep.startPartitionId));
 								
@@ -502,22 +503,27 @@ AbstractSubgraphComputation<BFSDistrSuccinctSubgraphState, MapValue, MapValue, T
 							
 							//remote edges: change it back
 							for( long edge: edges.getSecond() ) {
-							
+								count++;
 								long otherVertex = edge;
 								StringBuilder _modifiedMessage = new StringBuilder("");
 								_modifiedMessage.append(vertexMessageStep.message).append("-->V:").append(otherVertex);
-								//LOG.info("MODIFIEDMSG:" + _modifiedMsg.toString());
+								LOG.info("REMOTEMODIFIEDMSG:" + _modifiedMsg.toString());
 									
 								getSubgraph().getSubgraphValue().forwardRemoteVertexList.add(new VertexMessageSteps(otherVertex,_modifiedMessage.toString(),vertexMessageStep.stepsTraversed+1, vertexMessageStep.startVertexId, vertexMessageStep.startSubgraphId, vertexMessageStep.startPartitionId));
 							}
 							
 							
 							if(count==0){
-							 
-				                            
-				                 LOG.info("MODIFIEDMSG:" + vertexMessageStep.message);
-				                             
-				              
+								
+								if(vertexMessageStep.startSubgraphId!=getSubgraph().getSubgraphId().get()){
+									forwardOutputToSubgraph(1,vertexMessageStep);
+								}
+								else
+								{
+									if ( !getSubgraph().getSubgraphValue().resultsMap.containsKey(vertexMessageStep.startVertexId))
+										getSubgraph().getSubgraphValue().resultsMap.put(vertexMessageStep.startVertexId, new ResultSet());
+									getSubgraph().getSubgraphValue().resultsMap.get(vertexMessageStep.startVertexId).forwardResultSet.add(vertexMessageStep.message);
+								}
 								
 							}
 //							System.out.println("*************getOutEdges***********:" + count);
@@ -581,7 +587,26 @@ AbstractSubgraphComputation<BFSDistrSuccinctSubgraphState, MapValue, MapValue, T
 	        queryEnd=true;
 	        LOG.info("Ending Query Execution");
 	    }
-	  					
+	  	
+		for(Map.Entry<Long, ResultSet> entry: getSubgraph().getSubgraphValue().resultsMap.entrySet()) {
+			if (!entry.getValue().revResultSet.isEmpty())
+				for(String partialRevPath: entry.getValue().revResultSet) {
+					if (!entry.getValue().forwardResultSet.isEmpty())
+						for(String partialForwardPath: entry.getValue().forwardResultSet) {
+							LOG.info("ResultSet:" +partialRevPath+partialForwardPath);
+							//output(partition.getId(), subgraph.getId(), partialRevPath+partialForwardPath); 
+						}
+					else{
+						LOG.info("ResultSet:" +partialRevPath);
+						//output(partition.getId(), subgraph.getId(), partialRevPath);
+					}
+				}
+			else
+				for(String partialForwardPath: entry.getValue().forwardResultSet) {
+					LOG.info("ResultSet:" +partialForwardPath);
+					//output(partition.getId(), subgraph.getId(), partialForwardPath); 
+				}
+		}
 		
 //		LOG.info("SetSize:" + getSubgraph().getSubgraphValue().resultsMap.size());
 		LOG.info("Cumulative Result Collection:" + getSubgraph().getSubgraphValue().resultCollectionTime);
