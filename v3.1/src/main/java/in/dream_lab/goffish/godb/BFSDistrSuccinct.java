@@ -29,6 +29,7 @@ import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.regex.Pattern;
 
 import org.apache.commons.cli.ParseException;
@@ -116,6 +117,8 @@ AbstractSubgraphComputation<BFSDistrSuccinctSubgraphState, MapValue, MapValue, T
 		private static boolean queryStart=false;//later lock this when multithreaded
 		private static boolean queryEnd=false;//later lock this when multithreaded
 
+		
+		
 		enum Type{EDGE,VERTEX}
 		enum Direction{OUT,IN}
 
@@ -313,7 +316,7 @@ AbstractSubgraphComputation<BFSDistrSuccinctSubgraphState, MapValue, MapValue, T
     
 	  SuccinctArraySubgraph sg=(SuccinctArraySubgraph)getSubgraph();
   	//System.out.println("**********SUPERSTEPS***********:" + getSuperstep() +"Message List Size:" + messages.size());
-		
+		Set<Long> visitedSet=getSubgraph().getSubgraphValue().visitedVertices;
 		
 		// STATIC ONE TIME PROCESSES
 		{
@@ -387,7 +390,7 @@ AbstractSubgraphComputation<BFSDistrSuccinctSubgraphState, MapValue, MapValue, T
 								long vid= hitList.get(i);
 //							
 									Long _vertexId = vid;
-									String _message = "V:";
+									String _message = "V:" + vid;
 									
 									getSubgraph().getSubgraphValue().forwardLocalVertexList.add( new VertexMessageSteps(_vertexId,_message, getSubgraph().getSubgraphValue().startPos, _vertexId, getSubgraph().getSubgraphId().get(), 0) );//TODO: remove storing of partition id
 										
@@ -452,7 +455,11 @@ AbstractSubgraphComputation<BFSDistrSuccinctSubgraphState, MapValue, MapValue, T
 			while(!getSubgraph().getSubgraphValue().forwardLocalVertexList.isEmpty()) {
 				
 				VertexMessageSteps vertexMessageStep = getSubgraph().getSubgraphValue().forwardLocalVertexList.poll();
-
+				if(!visitedSet.contains(vertexMessageStep.vertexId)) {
+					visitedSet.add(vertexMessageStep.vertexId);
+				}
+				else continue;
+				
 				if ( vertexMessageStep.stepsTraversed == getSubgraph().getSubgraphValue().Depth ){
 					SuccinctArrayVertex<MapValue,MapValue,LongWritable,LongWritable> currentVertex = new SuccinctArrayVertex(new LongWritable(vertexMessageStep.vertexId),sg.getVertexBufferList(),sg.getEdgeBufferList(),'|');
 					//String[] str=currentVertex.getAllPropforVertex();

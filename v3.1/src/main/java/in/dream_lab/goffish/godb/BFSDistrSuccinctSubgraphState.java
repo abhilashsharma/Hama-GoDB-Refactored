@@ -6,6 +6,7 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -50,7 +51,7 @@ public class BFSDistrSuccinctSubgraphState implements Writable  {
 	//for BFS
 	
 	int Depth;
-	List<Long> visitedVertices=new ArrayList<Long>();
+	HashSet<Long> visitedVertices=new HashSet<Long>();
 
 	
 	Long TotalTime=0l;
