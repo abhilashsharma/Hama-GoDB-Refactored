@@ -98,10 +98,12 @@ public class LongMapPartitionSubsetGsonReaderSynthLongRemoteLong<S extends Writa
     this.conf = peer.getConfiguration();
     this.vertexSubgraphMap = new HashMap<LongWritable, LongWritable>();
     
-    this.vertexPropertySet.add("employer");
-    this.vertexPropertySet.add("school");
-    this.vertexPropertySet.add("major");
-    this.vertexPropertySet.add("places_lived");
+    
+    //TODO: IMPORTANT.... uncomment properties to be loaded
+//    this.vertexPropertySet.add("employer");
+//    this.vertexPropertySet.add("school");
+//    this.vertexPropertySet.add("major");
+//    this.vertexPropertySet.add("places_lived");
 //    this.vertexPropertySet.add("vid");
 //    this.vertexPropertySet.add("Language");
 //    this.vertexPropertySet.add("Industry");
