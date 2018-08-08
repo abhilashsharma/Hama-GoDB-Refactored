@@ -419,6 +419,15 @@ AbstractSubgraphComputation<BFSDistrSubgraphState, MapValue, MapValue, Text, Lon
 							}
 						}
 					
+						
+						//dummy code for processing vid:
+						if(currentProperty.equals("vid")) {
+							Long _vertexId = Long.parseLong(currentValue.toString());
+							String _message = "V:"+String.valueOf(currentValue);
+//							System.out.println("Test Index:" + _message);
+							getSubgraph().getSubgraphValue().forwardLocalVertexList.add( new VertexMessageSteps(_vertexId,_message, getSubgraph().getSubgraphValue().startPos, _vertexId, getSubgraph().getSubgraphId().get(), 0) );//TODO: remove storing of partition id
+								
+						}
 
 					
 					
@@ -509,7 +518,10 @@ AbstractSubgraphComputation<BFSDistrSubgraphState, MapValue, MapValue, Text, Lon
 				//Step nextStep = path.get(vertexMessageStep.stepsTraversed+1);
 				
 				IVertex<MapValue,MapValue,LongWritable,LongWritable> currentVertex = getSubgraph().getVertexById(new LongWritable(vertexMessageStep.vertexId));
-				
+				if(currentVertex == null) {
+					System.out.println("Found null vertex");
+					continue;
+				}
 				
 							long count=0;
 							for( IEdge<MapValue,LongWritable,LongWritable> edge: currentVertex.getOutEdges() ) {
