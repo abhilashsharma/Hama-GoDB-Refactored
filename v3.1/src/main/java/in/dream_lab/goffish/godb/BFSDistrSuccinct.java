@@ -500,7 +500,7 @@ AbstractSubgraphComputation<BFSDistrSuccinctSubgraphState, MapValue, MapValue, T
 								long otherVertex = edge;
 								StringBuilder _modifiedMessage = new StringBuilder("");
 								_modifiedMessage.append(vertexMessageStep.message).append("-->V:").append(otherVertex);//+ "," + str[6]
-								LOG.info("LOCALMODIFIEDMSG:" + _modifiedMsg.toString());
+//								LOG.info("LOCALMODIFIEDMSG:" + _modifiedMsg.toString());
 									
 								getSubgraph().getSubgraphValue().forwardLocalVertexList.add(new VertexMessageSteps(otherVertex,_modifiedMessage.toString(),vertexMessageStep.stepsTraversed+1, vertexMessageStep.startVertexId, vertexMessageStep.startSubgraphId, vertexMessageStep.startPartitionId));
 								
@@ -514,7 +514,7 @@ AbstractSubgraphComputation<BFSDistrSuccinctSubgraphState, MapValue, MapValue, T
 								long otherVertex = edge;
 								StringBuilder _modifiedMessage = new StringBuilder("");
 								_modifiedMessage.append(vertexMessageStep.message).append("-->V:").append(otherVertex);
-								LOG.info("REMOTEMODIFIEDMSG:" + _modifiedMsg.toString());
+//								LOG.info("REMOTEMODIFIEDMSG:" + _modifiedMsg.toString());
 									
 								getSubgraph().getSubgraphValue().forwardRemoteVertexList.add(new VertexMessageSteps(otherVertex,_modifiedMessage.toString(),vertexMessageStep.stepsTraversed+1, vertexMessageStep.startVertexId, vertexMessageStep.startSubgraphId, vertexMessageStep.startPartitionId));
 							}
