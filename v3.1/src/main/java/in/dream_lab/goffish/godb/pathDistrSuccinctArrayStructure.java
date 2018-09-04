@@ -353,11 +353,13 @@ implements ISubgraphWrapup{
 		propArray.add("school");
 		propArray.add("major");
 		propArray.add("places_lived");
+		propArray.add("follow");//added for Rgraph...remove for gplus
 		
 		delimArray.add("@");
 		delimArray.add("$");
 		delimArray.add("*");
 		delimArray.add("^");
+		delimArray.add("%");
 		delimArray.add("|");
 		
 		

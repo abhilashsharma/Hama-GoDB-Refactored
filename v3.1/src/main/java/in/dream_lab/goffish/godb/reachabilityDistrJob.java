@@ -13,6 +13,7 @@ import org.apache.hama.bsp.TextInputFormat;
 import org.apache.hama.bsp.TextOutputFormat;
 import in.dream_lab.goffish.hama.GraphJob;
 import in.dream_lab.goffish.hama.LongMapPartitionSubsetGsonReader;
+import in.dream_lab.goffish.hama.LongMapPartitionSubsetGsonReaderSynthLongRemoteLong;
 import in.dream_lab.goffish.hama.NonSplitTextInputFormat;
 
 public class reachabilityDistrJob {
@@ -20,7 +21,7 @@ public class reachabilityDistrJob {
 	 public static void main(String args[]) throws IOException,InterruptedException, ClassNotFoundException, ParseException
 	  {
 		  HamaConfiguration conf = new HamaConfiguration();
-		  GraphJob job = new GraphJob(conf, reachabilityDistr.class);
+		  GraphJob job = new GraphJob(conf, reachabilityDistrIn.class);
 		  job.setJobName("Reachability");
 		  job.setInputFormat(TextInputFormat.class);
 		  job.setInputKeyClass(LongWritable.class);
@@ -36,7 +37,7 @@ public class reachabilityDistrJob {
 		  job.setSubgraphValueClass(reachabilityDistrSubgraphState.class);
 		  
 		  job.setInputFormat(NonSplitTextInputFormat.class);
-		    job.setInputReaderClass(LongMapPartitionSubsetGsonReader.class);
+		    job.setInputReaderClass(LongMapPartitionSubsetGsonReaderSynthLongRemoteLong.class);
 		  //job.setSubgraphComputeClass(SubgraphComputeReduce.class);
 		  job.waitForCompletion(true);
 	  }

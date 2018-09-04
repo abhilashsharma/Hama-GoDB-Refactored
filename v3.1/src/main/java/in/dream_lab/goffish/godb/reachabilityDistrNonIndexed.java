@@ -63,7 +63,7 @@ implements ISubgraphWrapup{
                 // TODO Auto-generated constructor stub
                 Arguments=initMsg;
         }
-        public static final Log LOG = LogFactory.getLog(reachabilityDistr.class);
+        public static final Log LOG = LogFactory.getLog(reachabilityDistrIn.class);
         long time;
         String Arguments=null;
         static File vertexIndexDir;
