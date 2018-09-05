@@ -272,6 +272,7 @@ implements ISubgraphWrapup{
     	propToIndex.put("school", 2);
     	propToIndex.put("major", 3);
     	propToIndex.put("places_lived", 4);
+    	propToIndex.put("follow", 5);
 		
 	    getSubgraph().getSubgraphValue().path = new ArrayList<Step>();
 		Type previousStepType = Type.EDGE;
@@ -825,6 +826,7 @@ implements ISubgraphWrapup{
 					}
 					/* filtered vertex*/
 					else {
+						System.out.println("CurrentVertex:" + currentVertex  + "," + propToIndex.get(nextStep.property));
 						if ( compareValuesUtil(String.valueOf(currentVertex.getPropforVertex(propToIndex.get(nextStep.property))), nextStep.value.toString()) ) {
 							/* add appropriate value later*/
 							getSubgraph().getSubgraphValue().forwardLocalVertexList.add(new VertexMessageSteps(vertexMessageStep.queryId,vertexMessageStep.vertexId,vertexMessageStep.message,vertexMessageStep.stepsTraversed+1, vertexMessageStep.startVertexId,vertexMessageStep.startStep, vertexMessageStep.previousSubgraphId, vertexMessageStep.previousPartitionId));
