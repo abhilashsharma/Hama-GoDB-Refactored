@@ -81,6 +81,7 @@ import in.dream_lab.goffish.api.IMessage;
 import in.dream_lab.goffish.api.IRemoteVertex;
 import in.dream_lab.goffish.api.ISubgraphWrapup;
 import in.dream_lab.goffish.api.IVertex;
+import in.dream_lab.goffish.godb.BFSDistrSuccinct.VertexMessageSteps;
 import in.dream_lab.goffish.hama.succinctstructure.SuccinctArraySubgraph;
 import in.dream_lab.goffish.hama.succinctstructure.SuccinctArrayVertex;
 
@@ -456,7 +457,7 @@ AbstractSubgraphComputation<BFSDistrPropSuccinctSubgraphState, MapValue, MapValu
 					SuccinctArrayVertex<MapValue,MapValue,LongWritable,LongWritable> currentVertex = new SuccinctArrayVertex(new LongWritable(vertexMessageStep.vertexId),sg.getVertexBufferList(),sg.getEdgeBufferList(),'|');
 					String[] str=currentVertex.getAllPropforVertex();
 					StringBuilder _modifiedMsg = new StringBuilder("");
-                    _modifiedMsg .append(vertexMessageStep.message).append(str[1]+","+str[2]+","+str[3]+"," + str[4] + "," + str[5] + "," + str[6]);
+                    _modifiedMsg .append(vertexMessageStep.message).append(str[1]+","+str[2]+","+str[3]+"," + str[4] + "," + str[5]);// + "," + str[6]);
                     LOG.info("MODIFIEDMSG:" + _modifiedMsg.toString());
 					if (vertexMessageStep.startSubgraphId == getSubgraph().getSubgraphId().get()) {
 						if ( !getSubgraph().getSubgraphValue().resultsMap.containsKey(vertexMessageStep.startVertexId) )
@@ -490,7 +491,7 @@ AbstractSubgraphComputation<BFSDistrPropSuccinctSubgraphState, MapValue, MapValu
 								count ++;
 								long otherVertex = edge;
 								StringBuilder _modifiedMessage = new StringBuilder("");
-								_modifiedMessage.append(vertexMessageStep.message).append(str[1]+","+str[2]+","+str[3]+"," + str[4] + "," + str[5] + "," + str[6]).append("-->V:");
+								_modifiedMessage.append(vertexMessageStep.message).append(str[1]+","+str[2]+","+str[3]+"," + str[4] + "," + str[5]);// + "," + str[6]).append("-->V:");
 								LOG.info("MODIFIEDMSG:" + _modifiedMsg.toString());
 									
 								getSubgraph().getSubgraphValue().forwardLocalVertexList.add(new VertexMessageSteps(otherVertex,_modifiedMessage.toString(),vertexMessageStep.stepsTraversed+1, vertexMessageStep.startVertexId, vertexMessageStep.startSubgraphId, vertexMessageStep.startPartitionId));
@@ -504,16 +505,16 @@ AbstractSubgraphComputation<BFSDistrPropSuccinctSubgraphState, MapValue, MapValu
 								count ++;
 								long otherVertex = edge;
 								StringBuilder _modifiedMessage = new StringBuilder("");
-								_modifiedMessage.append(vertexMessageStep.message).append(str[1]+","+str[2]+","+str[3]+"," + str[4] + "," + str[5] + "," + str[6]).append("-->V:");
+								_modifiedMessage.append(vertexMessageStep.message).append(str[1]+","+str[2]+","+str[3]+"," + str[4] + "," + str[5]);// + "," + str[6]).append("-->V:");
 								LOG.info("MODIFIEDMSG:" + _modifiedMsg.toString());
-									
-								getSubgraph().getSubgraphValue().forwardLocalVertexList.add(new VertexMessageSteps(otherVertex,_modifiedMessage.toString(),vertexMessageStep.stepsTraversed+1, vertexMessageStep.startVertexId, vertexMessageStep.startSubgraphId, vertexMessageStep.startPartitionId));
+								getSubgraph().getSubgraphValue().forwardRemoteVertexList.add(new VertexMessageSteps(otherVertex,_modifiedMessage.toString(),vertexMessageStep.stepsTraversed+1, vertexMessageStep.startVertexId, vertexMessageStep.startSubgraphId, vertexMessageStep.startPartitionId));	
+								//getSubgraph().getSubgraphValue().forwardLocalVertexList.add(new VertexMessageSteps(otherVertex,_modifiedMessage.toString(),vertexMessageStep.stepsTraversed+1, vertexMessageStep.startVertexId, vertexMessageStep.startSubgraphId, vertexMessageStep.startPartitionId));
 							}
 							
 							
 							if(count==0){
 							 
-				                                _modifiedMsg.append(vertexMessageStep.message).append(str[1]+","+str[2]+","+str[3]+"," + str[4] + "," + str[5] + "," + str[6]);
+				                                _modifiedMsg.append(vertexMessageStep.message).append(str[1]+","+str[2]+","+str[3]+"," + str[4] + "," + str[5]);// + "," + str[6]);
 				                                LOG.info("MODIFIEDMSG:" + _modifiedMsg.toString());
 				                                vertexMessageStep = new VertexMessageSteps(vertexMessageStep.vertexId, _modifiedMsg.toString(), vertexMessageStep.stepsTraversed, vertexMessageStep.startVertexId, vertexMessageStep.startSubgraphId, vertexMessageStep.startPartitionId);
 				                                
