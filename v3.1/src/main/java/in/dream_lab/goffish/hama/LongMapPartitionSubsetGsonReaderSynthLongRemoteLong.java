@@ -100,15 +100,15 @@ public class LongMapPartitionSubsetGsonReaderSynthLongRemoteLong<S extends Writa
     
     
     //TODO: IMPORTANT.... uncomment properties to be loaded
-//    this.vertexPropertySet.add("employer");
-//    this.vertexPropertySet.add("school");
-//    this.vertexPropertySet.add("major");
-//    this.vertexPropertySet.add("places_lived");
+    this.vertexPropertySet.add("employer");
+    this.vertexPropertySet.add("school");
+    this.vertexPropertySet.add("major");
+    this.vertexPropertySet.add("places_lived");
 //    this.vertexPropertySet.add("vid");
-    this.vertexPropertySet.add("Language");
-    this.vertexPropertySet.add("Industry");
-    this.vertexPropertySet.add("Contributors");
-    this.vertexPropertySet.add("IsPublic");
+//    this.vertexPropertySet.add("Language");
+//    this.vertexPropertySet.add("Industry");
+//    this.vertexPropertySet.add("Contributors");
+//    this.vertexPropertySet.add("IsPublic");
   }
   
   public static final Log LOG = LogFactory.getLog(LongMapPartitionSubsetGsonReaderSynthLongRemoteLong.class);

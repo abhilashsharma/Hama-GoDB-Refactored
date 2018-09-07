@@ -483,9 +483,9 @@ implements ISubgraphWrapup{
 								if ( startPos == 0  )
 								getSubgraph().getSubgraphValue().forwardLocalVertexList.add( new VertexMessageSteps(_vertexId,_message,1, getSubgraph().getSubgraphId().get(),getSubgraph().getSubgraphId().get()) );
 							if( startPos == 1 ){
-							        System.out
-                                                                    .println("Adding to ReverseList");
-//								System.out.println("ERROR!!");
+//							        System.out
+//                                                                    .println("Adding to ReverseList");
+////								System.out.println("ERROR!!");
 							        getSubgraph().getSubgraphValue().revLocalVertexList.add( new VertexMessageSteps(_vertexId,_message,1, getSubgraph().getSubgraphId().get(), getSubgraph().getSubgraphId().get()) );
 							}
 
