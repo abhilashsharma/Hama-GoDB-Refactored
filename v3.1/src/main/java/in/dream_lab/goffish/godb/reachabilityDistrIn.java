@@ -585,7 +585,7 @@ implements ISubgraphWrapup{
 						if ( !otherVertex.isRemote() ) {
 							//FIXME: check if toString returns correct value
 							
-//							System.out.println("COMPARING:" + getSubgraph().getSubgraphValue().endVertex.value.toString() + " To " + otherVertex.getValue().get(new Text(getSubgraph().getSubgraphValue().endVertex.property)).toString());
+							System.out.println("COMPARING:" + getSubgraph().getSubgraphValue().endVertex.value.toString() + " Vertex:" + otherVertex.getValue().get(getSubgraph().getSubgraphValue().endVertex.property));
 							if ( !(compareValuesUtil(otherVertex.getValue().get(getSubgraph().getSubgraphValue().endVertex.property).toString(), getSubgraph().getSubgraphValue().endVertex.value.toString())) ){
 								
 								if (vertexMessageStep.stepsTraversed<getSubgraph().getSubgraphValue().noOfSteps){
