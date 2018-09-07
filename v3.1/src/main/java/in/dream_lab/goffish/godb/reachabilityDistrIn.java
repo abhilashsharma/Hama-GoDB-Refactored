@@ -319,7 +319,7 @@ implements ISubgraphWrapup{
 	                        System.runFinalization();
 	                        }
 			LOG.info("Loading Heuristics");
-			getSubgraph().getSubgraphValue().hueristics=HueristicsLoad.getInstance();
+			getSubgraph().getSubgraphValue().hueristics=HueristicsLoad.getInstance("/user/abhilash/gplusNew16PHeuristics/gplusNew16PHeuristics.ser");
 			LOG.info("Loading Heuristics Complete");
 			if(!gcCalled){
 			        gcCalled=true;
