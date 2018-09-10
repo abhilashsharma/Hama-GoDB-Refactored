@@ -423,7 +423,7 @@ implements ISubgraphWrapup{
 							startPos = 0;
 						else
 							startPos = getSubgraph().getSubgraphValue().queryCostHolder[0]<getSubgraph().getSubgraphValue().queryCostHolder[1] ? 0 : 1;
-					startPos=0;//used for debugging
+//					startPos=0;//used for debugging
 					String currentProperty = null;
 					Object currentValue = null;
 					if (startPos == 0) {
@@ -451,7 +451,7 @@ implements ISubgraphWrapup{
 					//partition.getId()
 					// TODO : else iteratively check for satisfying vertices
 					
-					System.out.println("START_POS:" + startPos +"Query Cost:" + getSubgraph().getSubgraphValue().queryCostHolder[startPos]);
+					System.out.println("START_POS:" + startPos +":Query Cost:" + getSubgraph().getSubgraphValue().queryCostHolder[startPos] + ":" + Arguments);
 //					for(ITemplateVertex vertex: subgraph.vertices()) {
 //						if ( vertex.isRemote() ) continue;
 //						ISubgraphObjectProperties subgraphProperties = subgraphInstance.getPropertiesForVertex(vertex.getId());
