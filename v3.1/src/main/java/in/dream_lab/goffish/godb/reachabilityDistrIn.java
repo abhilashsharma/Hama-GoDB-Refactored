@@ -581,7 +581,7 @@ implements ISubgraphWrapup{
 						IVertex<MapValue, MapValue, LongWritable, LongWritable> otherVertex = getSubgraph().getVertexById(edge.getSinkVertexId());
 						StringBuilder _modifiedMessage = new StringBuilder("");
 						_modifiedMessage.append(vertexMessageStep.message).append("-->E:").append(String.valueOf(edge.getEdgeId())).append("-->V:").append(String.valueOf(otherVertex.getVertexId()));
-						System.out.println("PATH TRAVERSED:" + _modifiedMessage);
+//						System.out.println("PATH TRAVERSED:" + _modifiedMessage);
 						if ( !otherVertex.isRemote() ) {
 							//FIXME: check if toString returns correct value
 							
