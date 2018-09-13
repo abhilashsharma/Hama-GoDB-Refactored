@@ -260,19 +260,19 @@ implements ISubgraphWrapup{
 //    	propToIndex.put("nclass", 2);
 		
 		//RGraph schema
-//		propToIndex.put("vid", 0);
-//		propToIndex.put("lang", 1);
-//    	propToIndex.put("ind", 2);
-//    	propToIndex.put("contr", 3);
-//    	propToIndex.put("ispublic", 4);
-    	
+		propToIndex.put("vid", 0);
+		propToIndex.put("lang", 1);
+    	propToIndex.put("ind", 2);
+    	propToIndex.put("contr", 3);
+    	propToIndex.put("ispublic", 4);
+		propToIndex.put("follow", 5);
+		
     	//gplus Schema
-    	propToIndex.put("vid", 0);
-    	propToIndex.put("employer", 1);
-    	propToIndex.put("school", 2);
-    	propToIndex.put("major", 3);
-    	propToIndex.put("places_lived", 4);
-    	propToIndex.put("follow", 5);
+//    	propToIndex.put("vid", 0);
+//    	propToIndex.put("employer", 1);
+//    	propToIndex.put("school", 2);
+//    	propToIndex.put("major", 3);
+//    	propToIndex.put("places_lived", 4);
 		
 	    getSubgraph().getSubgraphValue().path = new ArrayList<Step>();
 		Type previousStepType = Type.EDGE;
@@ -350,10 +350,12 @@ implements ISubgraphWrapup{
 //		hueristics=HueristicsLoad.getInstance();//loading this at a different place
 		
 		//add properties and delimiter list
-		propArray.add("employer");
-		propArray.add("school");
-		propArray.add("major");
-		propArray.add("places_lived");
+		
+		//for RGraph
+		propArray.add("lang");
+		propArray.add("ind");
+		propArray.add("contr");
+		propArray.add("ispublic");
 		propArray.add("follow");//added for Rgraph...remove for gplus
 		
 		delimArray.add("@");
@@ -362,6 +364,19 @@ implements ISubgraphWrapup{
 		delimArray.add("^");
 		delimArray.add("%");
 		delimArray.add("|");
+		
+		
+		//for gplus
+//		propArray.add("employer");
+//		propArray.add("school");
+//		propArray.add("major");
+//		propArray.add("places_lived");
+//		
+//		delimArray.add("@");
+//		delimArray.add("$");
+//		delimArray.add("*");
+//		delimArray.add("^");
+//		delimArray.add("|");
 		
 		
 		 SuccinctArraySubgraph sg=(SuccinctArraySubgraph)getSubgraph();
