@@ -99,6 +99,8 @@ implements ISubgraphWrapup{
         private static boolean queryEnd=false;//later lock this when multithreaded
         private static boolean gcCalled=false;
 
+    	public ArrayList<String> delimArray= new ArrayList<>();
+    	public ArrayList<String> propArray= new ArrayList<>();
 	static Hueristics hueristics = new Hueristics(); 
 	//for succinct
 	HashMap<String,Integer> propToIndex= new HashMap<String,Integer>();
@@ -255,11 +257,14 @@ implements ISubgraphWrapup{
 //		propToIndex.put("patid", 0);
 //    	propToIndex.put("country", 1);
 //    	propToIndex.put("nclass", 2);
-		propToIndex.put("vid", 0);
-		propToIndex.put("lang", 1);
-    	propToIndex.put("ind", 2);
-    	propToIndex.put("contr", 3);
-    	propToIndex.put("ispublic", 4);
+		//RGraph schema
+				propToIndex.put("vid", 0);
+				propToIndex.put("lang", 1);
+		    	propToIndex.put("ind", 2);
+		    	propToIndex.put("contr", 3);
+		    	propToIndex.put("ispublic", 4);
+				propToIndex.put("follow", 5);
+		
 		
 	    getSubgraph().getSubgraphValue().path = new ArrayList<Step>();
 		Type previousStepType = Type.EDGE;
@@ -336,6 +341,39 @@ implements ISubgraphWrapup{
 //		remoteSubgraphMap = new HashMap<Long, Long>();
 //		hueristics=HueristicsLoad.getInstance();//loading this at a different place
 
+		
+		//for RGraph
+		propArray.add("lang");
+		propArray.add("ind");
+		propArray.add("contr");
+		propArray.add("ispublic");
+		propArray.add("follow");//added for Rgraph...remove for gplus
+		
+		delimArray.add("@");
+		delimArray.add("$");
+		delimArray.add("*");
+		delimArray.add("^");
+		delimArray.add("%");
+		delimArray.add("|");
+		
+		
+		//for gplus
+//		propArray.add("employer");
+//		propArray.add("school");
+//		propArray.add("major");
+//		propArray.add("places_lived");
+//		
+//		delimArray.add("@");
+//		delimArray.add("$");
+//		delimArray.add("*");
+//		delimArray.add("^");
+//		delimArray.add("|");
+		
+		
+		 SuccinctArraySubgraph sg=(SuccinctArraySubgraph)getSubgraph();
+		 
+		 sg.setDelimArray(delimArray);
+		 sg.setPropArray(propArray);
 		
 	}
 
