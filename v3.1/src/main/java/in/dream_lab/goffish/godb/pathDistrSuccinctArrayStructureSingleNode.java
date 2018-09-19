@@ -653,9 +653,9 @@ implements ISubgraphWrapup{
 					
 						if(hitList.size()>0){
 							LOG.info("Index Querying Processing");
-							for (int i=0;i< hitList.size();i=i+2){
+							for (int i=0;i< hitList.size();i++){
 
-								long vid= hitList.get(i+1);
+								long vid= hitList.get(i);
 //								if ( getSubgraph().getSubgraphId().get() ==hitList.get(i)){
 //									System.out.println("GOT:"+ vid);
 									Long _vertexId = vid;
