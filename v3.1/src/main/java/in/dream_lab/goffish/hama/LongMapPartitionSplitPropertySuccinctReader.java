@@ -119,6 +119,7 @@ public class LongMapPartitionSplitPropertySuccinctReader<S extends Writable, V e
   public static final Log LOG = LogFactory.getLog(LongMapPartitionSplitPropertySuccinctReader.class);
   Integer pseudoPartId=null;
   String dataDir=null;
+  String edgeDataDir=null;
   @Override
   public List<ISubgraph<S, V, E, LongWritable, LongWritable, LongWritable>> getSubgraphs()
       throws IOException, SyncException, InterruptedException {
@@ -133,6 +134,7 @@ public class LongMapPartitionSplitPropertySuccinctReader<S extends Writable, V e
     String[] temp=pair.getValue().toString().split(";");
     pseudoPartId=Integer.parseInt(temp[0]);
     dataDir=temp[1];
+    edgeDataDir=temp[2];
     
 //Json creation of vertices... not required for succinct reader    
 //    while ((pair = peer.readNext()) != null) {
@@ -583,7 +585,7 @@ while ((sCurrentLine = br1.readLine()) != null) {
     Arrays.sort(vfiles);
     
     //OutEdge Files
-    String outEdgeDirectory = dataDir+"RGraphOutEdge"+pseudoPartId;
+    String outEdgeDirectory = edgeDataDir+"RGraphOutEdge"+pseudoPartId;
     File[] outEdgeFiles = new File(outEdgeDirectory).listFiles();
     Arrays.sort(outEdgeFiles);
     
