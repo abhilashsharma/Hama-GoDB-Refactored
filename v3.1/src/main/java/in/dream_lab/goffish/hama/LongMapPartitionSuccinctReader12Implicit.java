@@ -379,7 +379,7 @@ long start=System.currentTimeMillis();
 //TODO:Read remoteVertexToSubgraph here and populate the object
  LOG.info("Populating remote Vertex to Subgraph Mapping");
  start=System.currentTimeMillis();
- String rvsmFile= vertexDataDir + "RemoteVertex/rvsmFile" + pseudoPartId; 
+ String rvsmFile= vertexDataDir + "RemoteVertex/rvsmFile0"; 
  FileReader fr1 = new FileReader(rvsmFile);
  BufferedReader br1 = new BufferedReader(fr1);
 String sCurrentLine=null;
