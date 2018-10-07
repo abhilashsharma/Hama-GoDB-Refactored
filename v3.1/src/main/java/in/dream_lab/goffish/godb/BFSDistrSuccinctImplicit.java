@@ -279,6 +279,7 @@ AbstractSubgraphComputation<BFSDistrSuccinctImplicitSubgraphState, MapValue, Map
 		}
 		
 		private VertexMessageSteps processMessage(IMessage<LongWritable,Text> _message){
+			SuccinctArraySubgraph12Implicit sg=(SuccinctArraySubgraph12Implicit)getSubgraph();
 			String message =  _message.getMessage().toString();
 			String[] split = message.split(Pattern.quote(";"));
 			Long _startVertexId = Long.parseLong( split[1] );
@@ -286,6 +287,7 @@ AbstractSubgraphComputation<BFSDistrSuccinctImplicitSubgraphState, MapValue, Map
 			Integer _startPartitionId = Integer.parseInt( split[3] );
 			Long _vertexId = Long.parseLong(split[4] );
 			Integer _steps = Integer.parseInt( split[6] );
+			_vertexId = sg.getDummyVid(_vertexId);
 			return new VertexMessageSteps(_vertexId, split[5] , _steps, _startVertexId , _startSubgraphId, _startPartitionId);
 		}
 		
