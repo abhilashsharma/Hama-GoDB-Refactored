@@ -357,6 +357,8 @@ implements ISubgraphWrapup{
 				LOG.info("Starting Query Execution");
 				 queryEnd=false;
 			  }
+			  
+			  if(false){
 				//###################################COMPUTE HUERISTIC BASED QUERY COST#################################
 //				{	 
 //					//###########################forward cost#######################################################
@@ -417,7 +419,7 @@ implements ISubgraphWrapup{
 //					//###########################reverse cost#######################################################
 //				}		
 //				//###################################COMPUTE HUERISTIC BASED QUERY COST#################################	
-				
+			  }
 				
 			
 				
@@ -434,7 +436,7 @@ implements ISubgraphWrapup{
 							startPos = 0;
 						else
 							startPos = getSubgraph().getSubgraphValue().queryCostHolder[0]<getSubgraph().getSubgraphValue().queryCostHolder[1] ? 0 : 1;
-//					startPos=0;//used for debugging
+					startPos=0;//used for debugging
 					String currentProperty = null;
 					Object currentValue = null;
 					if (startPos == 0) {
