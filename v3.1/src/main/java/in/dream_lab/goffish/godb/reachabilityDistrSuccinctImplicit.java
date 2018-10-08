@@ -480,7 +480,7 @@ implements ISubgraphWrapup{
 //						}
 //					}
 					
-					System.out.println("*******Querying done********:"+hits.length +" Current Prop:" + currentProperty + " Current Value:" + currentValue);
+					System.out.println("*******Querying done********:"+hitList.length+" Current Prop:" + currentProperty + " Current Value:" + currentValue);
 					
 					try
 					{
