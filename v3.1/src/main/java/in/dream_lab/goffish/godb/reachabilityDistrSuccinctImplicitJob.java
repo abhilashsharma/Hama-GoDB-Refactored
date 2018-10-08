@@ -35,7 +35,7 @@ public class reachabilityDistrSuccinctImplicitJob {
 		  job.setInputPath(new Path(args[0]));
 		  job.setOutputPath(new Path(args[1]));
 		  job.setInitialInput(args[2]);
-		  job.setSubgraphValueClass(reachabilityDistrSubgraphState.class);
+		  job.setSubgraphValueClass(reachabilityDistrSubgraphSuccinctImplicitState.class);
 		  
 		  job.setInputFormat(NonSplitTextInputFormat.class);
 		    job.setInputReaderClass(LongMapPartitionSuccinctReader12Implicit.class);
