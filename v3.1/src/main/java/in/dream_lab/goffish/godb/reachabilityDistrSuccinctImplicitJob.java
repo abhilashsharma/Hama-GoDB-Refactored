@@ -34,7 +34,7 @@ public class reachabilityDistrSuccinctImplicitJob {
 		  job.setGraphMessageClass(Text.class);
 		  job.setInputPath(new Path(args[0]));
 		  job.setOutputPath(new Path(args[1]));
-		  job.setInitialInput(args[2]);
+		  job.setInitialInput(readArgsFromFile(args[2]));
 		  job.setSubgraphValueClass(reachabilityDistrSubgraphSuccinctImplicitState.class);
 		  
 		  job.setInputFormat(NonSplitTextInputFormat.class);
@@ -43,26 +43,25 @@ public class reachabilityDistrSuccinctImplicitJob {
 		  job.waitForCompletion(true);
 	  }
 	 
-	 static String  readArgsFromFile() throws IOException{
-           String Args="";
-           String fileName="/home/abhilash/abhilash/ReachabilityQueriespatid.txt";
-           FileReader fr = new FileReader(fileName);
-           BufferedReader br = new BufferedReader(fr);
+	 static String  readArgsFromFile(String fileName) throws IOException{
+         String Args="";
+//         String fileName="/home/abhilash/abhilash/pathArguments.txt";
+         FileReader fr = new FileReader(fileName);
+         BufferedReader br = new BufferedReader(fr);
 
-           String sCurrentLine;
+         String sCurrentLine;
 
-           
+         
 
-           while ((sCurrentLine = br.readLine()) != null) {
-               if(Args.equals(""))
-                   Args=sCurrentLine;
-               else
-                   Args=Args+";" + sCurrentLine;
-               
-           }
-           
-           br.close();
-           return Args;
+         while ((sCurrentLine = br.readLine()) != null) {
+             if(Args.equals(""))
+                 Args=sCurrentLine;
+             else
+                 Args=Args+";" + sCurrentLine;
+             
          }
-	
+         
+         br.close();
+         return Args;
+       }	
 }
