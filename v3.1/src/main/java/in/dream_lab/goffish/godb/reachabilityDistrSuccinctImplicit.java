@@ -782,9 +782,12 @@ implements ISubgraphWrapup{
 	    queryEnd=true;
 	  LOG.info("Ending Query Execution");
 	  }
+	  int count=0;
           {
+        	  
                   for(String partialForwardPath: getSubgraph().getSubgraphValue().resultsSet.forwardResultSet) {
                     LOG.info("ResultSetFORWARD : " + partialForwardPath);
+                    count++;
                           //output(partition.getId(), subgraph.getId(), "FORWARD : " + partialForwardPath); 
                   }
                   for(String partialRevPath: getSubgraph().getSubgraphValue().resultsSet.revResultSet){
@@ -792,6 +795,7 @@ implements ISubgraphWrapup{
                     LOG.info("ResultSetREVERSE  : " + partialRevPath);
                   }
           }
+          LOG.info(getSubgraph().getSubgraphValue().Arguments+"$ResultSetSize:" + count);
           LOG.info("Cumulative Result Collection:" + getSubgraph().getSubgraphValue().resultCollectionTime);
 		clear();
 	}
