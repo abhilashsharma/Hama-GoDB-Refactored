@@ -593,7 +593,7 @@ implements ISubgraphWrapup{
 						long otherVertex = edge;
 						StringBuilder _modifiedMessage = new StringBuilder("");
 						_modifiedMessage.append(vertexMessageStep.message).append("-->E:").append("-->V:").append(String.valueOf(otherVertex));
-//						System.out.println("PATH TRAVERSED:" + _modifiedMessage);
+//						System.out.println("PATH TRAVERSED.getFirst():" + _modifiedMessage);
 							//FIXME: check if toString returns correct value
 						SuccinctArrayVertex12Implicit<MapValue,MapValue,LongWritable,LongWritable> otherVertexObject = new SuccinctArrayVertex12Implicit(new LongWritable(otherVertex),sg.getVertexSuccinctBuffer(),sg.getPropertySuccinctBufferMap(),sg.getEdgeBufferList());
 						
@@ -629,7 +629,7 @@ implements ISubgraphWrapup{
 					}
 					
 					
-					for( long edge: edges.getFirst() ) {
+					for( long edge: edges.getSecond() ) {
 						long otherVertex = edge;
 						StringBuilder _modifiedMessage = new StringBuilder("");
 						_modifiedMessage.append(vertexMessageStep.message).append("-->E:").append("-->V:").append(String.valueOf(otherVertex));
