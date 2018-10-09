@@ -491,7 +491,7 @@ implements ISubgraphWrapup{
 							long vid= hitList[i];
 //							
 									Long _vertexId = vid;
-									String _message = "V:";
+									String _message = "V:" + vid;
 							
 								if ( startPos == 0  ) {
 								getSubgraph().getSubgraphValue().forwardLocalVertexList.add( new VertexMessageSteps(_vertexId,_message,1, getSubgraph().getSubgraphId().get(),getSubgraph().getSubgraphId().get()) );
@@ -597,12 +597,12 @@ implements ISubgraphWrapup{
 							//FIXME: check if toString returns correct value
 						SuccinctArrayVertex12Implicit<MapValue,MapValue,LongWritable,LongWritable> otherVertexObject = new SuccinctArrayVertex12Implicit(new LongWritable(otherVertex),sg.getVertexSuccinctBuffer(),sg.getPropertySuccinctBufferMap(),sg.getEdgeBufferList());
 						
-						String prop=currentVertex.getPropforVertex(getSubgraph().getSubgraphValue().endVertex.property.toString());
+						String prop=otherVertexObject.getPropforVertex(getSubgraph().getSubgraphValue().endVertex.property.toString());
 							if ( !(compareValuesUtil(prop, getSubgraph().getSubgraphValue().endVertex.value.toString())) ){
 								
 								if (vertexMessageStep.stepsTraversed<getSubgraph().getSubgraphValue().noOfSteps){
 //									System.out.println("FOR:2");
-									System.out.println("Unmatched PATH:" + _modifiedMessage.toString());
+//									System.out.println("Unmatched PATH:" + _modifiedMessage.toString());
 									getSubgraph().getSubgraphValue().forwardLocalVertexList.add(new VertexMessageSteps(otherVertex,_modifiedMessage.toString(),vertexMessageStep.stepsTraversed+1, vertexMessageStep.subgraphId, vertexMessageStep.startSubgraphId));
 								}
 							}
