@@ -721,13 +721,11 @@ implements ISubgraphWrapup{
 				// TODO: send the messages in Remote vertex list
 				for(VertexMessageSteps stuff: getSubgraph().getSubgraphValue().forwardRemoteVertexList){
 					// send message to all the remote vertices
-//					ITemplateVertex remoteVertex = subgraph.getVertex(stuff.vertexId);
-					IRemoteVertex<MapValue,MapValue,LongWritable,LongWritable,LongWritable> remoteVertex = (IRemoteVertex<MapValue, MapValue, LongWritable, LongWritable, LongWritable>)getSubgraph().getVertexById(new LongWritable(stuff.vertexId));
 					StringBuilder remoteMessage = new StringBuilder("for();");
 					remoteMessage.append(stuff.vertexId).append(";").append(stuff.message).append(";").append(stuff.stepsTraversed).append(";").append(stuff.subgraphId).append(";").append(stuff.startSubgraphId).append(";");
 					Text remoteM = new Text(remoteMessage.toString());
 					//remoteM.setTargetSubgraph(remoteVertex.getRemoteSubgraphId());
-					sendMessage(remoteVertex.getSubgraphId(),remoteM);
+					sendMessage(new LongWritable((long) sg.remotevertexToSubgraph.get(stuff.vertexId)),remoteM);
 				}
 				getSubgraph().getSubgraphValue().forwardRemoteVertexList.clear();
 				for(VertexMessageSteps stuff: getSubgraph().getSubgraphValue().revRemoteVertexList){
@@ -737,7 +735,7 @@ implements ISubgraphWrapup{
 					remoteMessage.append(stuff.vertexId).append(";").append(stuff.message).append(";").append(stuff.stepsTraversed).append(";").append(stuff.subgraphId).append(";").append(stuff.startSubgraphId).append(";");
 					Text remoteM = new Text(remoteMessage.toString());
 					
-	                sendMessage(remoteVertex.getSubgraphId(),remoteM);
+	                sendMessage(new LongWritable((long) sg.remotevertexToSubgraph.get(stuff.vertexId)),remoteM);
 	                                
 					
 				}
