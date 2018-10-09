@@ -602,7 +602,7 @@ implements ISubgraphWrapup{
 								
 								if (vertexMessageStep.stepsTraversed<getSubgraph().getSubgraphValue().noOfSteps){
 //									System.out.println("FOR:2");
-//									System.out.println("Unmatched PATH:" + _modifiedMessage.toString());
+									System.out.println("Unmatched PATH:" + _modifiedMessage.toString());
 									getSubgraph().getSubgraphValue().forwardLocalVertexList.add(new VertexMessageSteps(otherVertex,_modifiedMessage.toString(),vertexMessageStep.stepsTraversed+1, vertexMessageStep.subgraphId, vertexMessageStep.startSubgraphId));
 								}
 							}
