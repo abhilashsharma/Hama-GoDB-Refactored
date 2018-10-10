@@ -346,67 +346,67 @@ implements ISubgraphWrapup{
 				LOG.info("Starting Query Execution");
 				 queryEnd=false;
 			  }
-				//###################################COMPUTE HUERISTIC BASED QUERY COST#################################
-//				{	 
-//					//###########################forward cost#######################################################
-					{	
-						Double totalCost = new Double(0);
-						Double prevScanCost = getSubgraph().getSubgraphValue().hueristics.numVertices;
-						{
-							
-							{
-								Double probability = null;
-								Step currentStep = getSubgraph().getSubgraphValue().startVertex;
-								if ( getSubgraph().getSubgraphValue().hueristics.vertexPredicateMap.get(currentStep.property).containsKey(currentStep.value.toString()) )
-										probability = getSubgraph().getSubgraphValue().hueristics.vertexPredicateMap.get(currentStep.property).get(currentStep.value.toString()).probability;
-								else {
-										totalCost = new Double(-1);
-								}
-								
-								Double avgDeg = null;
-								Double avgRemoteDeg = null;
-								avgDeg = getSubgraph().getSubgraphValue().hueristics.vertexPredicateMap.get(currentStep.property).get(currentStep.value.toString()).avgOutDegree; 
-								avgRemoteDeg = getSubgraph().getSubgraphValue().hueristics.vertexPredicateMap.get(currentStep.property).get(currentStep.value.toString()).avgRemoteOutDegree;	
-								if (totalCost!=-1)
-									totalCost = prevScanCost * probability *  ( avgDeg + (1+getSubgraph().getSubgraphValue().networkCoeff) * avgRemoteDeg);
-							}	
-											
-						}
-						getSubgraph().getSubgraphValue().queryCostHolder[0] = totalCost;
-					}
-//					//###########################forward cost#######################################################
-//					//###########################reverse cost#######################################################
-					{
-						Double totalCost = new Double(0);
-						Double prevScanCost = getSubgraph().getSubgraphValue().hueristics.numVertices;
-						{
-							
-							{
-								Double probability = null;
-								Step currentStep = getSubgraph().getSubgraphValue().endVertex;
-								if ( getSubgraph().getSubgraphValue().hueristics.vertexPredicateMap.get(currentStep.property).containsKey(currentStep.value.toString()) )
-										probability = getSubgraph().getSubgraphValue().hueristics.vertexPredicateMap.get(currentStep.property).get(currentStep.value.toString()).probability;
-								else {
-										totalCost = new Double(-1);
-								}
-								
-								Double avgDeg = null;
-								Double avgRemoteDeg = null;
-//								System.out.println("Property:" +currentStep.property);
-//								System.out.println("Value:" + currentStep.value);
-								avgDeg = getSubgraph().getSubgraphValue().hueristics.vertexPredicateMap.get(currentStep.property).get(currentStep.value.toString()).avgInDegree; 
-								avgRemoteDeg = getSubgraph().getSubgraphValue().hueristics.vertexPredicateMap.get(currentStep.property).get(currentStep.value.toString()).avgRemoteInDegree;	
-								if (totalCost!=-1)
-									totalCost = prevScanCost * probability *  ( avgDeg + (1+getSubgraph().getSubgraphValue().networkCoeff) * avgRemoteDeg);
-							}	
-											
-						}
-						getSubgraph().getSubgraphValue().queryCostHolder[1] = totalCost;
-					}
-//					//###########################reverse cost#######################################################
-//				}		
-//				//###################################COMPUTE HUERISTIC BASED QUERY COST#################################	
-				
+//				//###################################COMPUTE HUERISTIC BASED QUERY COST#################################
+////				{	 
+////					//###########################forward cost#######################################################
+//					{	
+//						Double totalCost = new Double(0);
+//						Double prevScanCost = getSubgraph().getSubgraphValue().hueristics.numVertices;
+//						{
+//							
+//							{
+//								Double probability = null;
+//								Step currentStep = getSubgraph().getSubgraphValue().startVertex;
+//								if ( getSubgraph().getSubgraphValue().hueristics.vertexPredicateMap.get(currentStep.property).containsKey(currentStep.value.toString()) )
+//										probability = getSubgraph().getSubgraphValue().hueristics.vertexPredicateMap.get(currentStep.property).get(currentStep.value.toString()).probability;
+//								else {
+//										totalCost = new Double(-1);
+//								}
+//								
+//								Double avgDeg = null;
+//								Double avgRemoteDeg = null;
+//								avgDeg = getSubgraph().getSubgraphValue().hueristics.vertexPredicateMap.get(currentStep.property).get(currentStep.value.toString()).avgOutDegree; 
+//								avgRemoteDeg = getSubgraph().getSubgraphValue().hueristics.vertexPredicateMap.get(currentStep.property).get(currentStep.value.toString()).avgRemoteOutDegree;	
+//								if (totalCost!=-1)
+//									totalCost = prevScanCost * probability *  ( avgDeg + (1+getSubgraph().getSubgraphValue().networkCoeff) * avgRemoteDeg);
+//							}	
+//											
+//						}
+//						getSubgraph().getSubgraphValue().queryCostHolder[0] = totalCost;
+//					}
+////					//###########################forward cost#######################################################
+////					//###########################reverse cost#######################################################
+//					{
+//						Double totalCost = new Double(0);
+//						Double prevScanCost = getSubgraph().getSubgraphValue().hueristics.numVertices;
+//						{
+//							
+//							{
+//								Double probability = null;
+//								Step currentStep = getSubgraph().getSubgraphValue().endVertex;
+//								if ( getSubgraph().getSubgraphValue().hueristics.vertexPredicateMap.get(currentStep.property).containsKey(currentStep.value.toString()) )
+//										probability = getSubgraph().getSubgraphValue().hueristics.vertexPredicateMap.get(currentStep.property).get(currentStep.value.toString()).probability;
+//								else {
+//										totalCost = new Double(-1);
+//								}
+//								
+//								Double avgDeg = null;
+//								Double avgRemoteDeg = null;
+////								System.out.println("Property:" +currentStep.property);
+////								System.out.println("Value:" + currentStep.value);
+//								avgDeg = getSubgraph().getSubgraphValue().hueristics.vertexPredicateMap.get(currentStep.property).get(currentStep.value.toString()).avgInDegree; 
+//								avgRemoteDeg = getSubgraph().getSubgraphValue().hueristics.vertexPredicateMap.get(currentStep.property).get(currentStep.value.toString()).avgRemoteInDegree;	
+//								if (totalCost!=-1)
+//									totalCost = prevScanCost * probability *  ( avgDeg + (1+getSubgraph().getSubgraphValue().networkCoeff) * avgRemoteDeg);
+//							}	
+//											
+//						}
+//						getSubgraph().getSubgraphValue().queryCostHolder[1] = totalCost;
+//					}
+////					//###########################reverse cost#######################################################
+////				}		
+////				//###################################COMPUTE HUERISTIC BASED QUERY COST#################################	
+//				
 				
 			
 				
@@ -423,7 +423,7 @@ implements ISubgraphWrapup{
 							startPos = 0;
 						else
 							startPos = getSubgraph().getSubgraphValue().queryCostHolder[0]<getSubgraph().getSubgraphValue().queryCostHolder[1] ? 0 : 1;
-//					startPos=0;//used for debugging
+					startPos=0;//used for debugging
 					String currentProperty = null;
 					Object currentValue = null;
 					if (startPos == 0) {
