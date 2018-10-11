@@ -663,40 +663,32 @@ implements ISubgraphWrapup{
 						continue;	
 					}
 
-					IVertex<MapValue, MapValue, LongWritable, LongWritable> currentVertex = getSubgraph().getVertexById(new LongWritable(vertexMessageStep.vertexId));
+					SuccinctArrayVertex12Implicit<MapValue,MapValue,LongWritable,LongWritable> currentVertex = new SuccinctArrayVertex12Implicit(new LongWritable(vertexMessageStep.vertexId),sg.getVertexSuccinctBuffer(),sg.getPropertySuccinctBufferMap(),sg.getEdgeBufferList());
 					
-					for(IEdge<MapValue, LongWritable, LongWritable> edge: currentVertex.getOutEdges()) {
-//					  System.out.println("Inside");
-						IVertex<MapValue, MapValue, LongWritable, LongWritable> otherVertex = getSubgraph().getVertexById(edge.getSinkVertexId());
-						long otherVertexId=edge.getSinkVertexId().get();
-						//System.out.println("OTHER:" + otherVertexId);
-						StringBuilder _modifiedMessage = new StringBuilder("");
-						_modifiedMessage.append("V:").append(otherVertexId).append("<--E:").append(edge.getEdgeId().get()).append("<--").append(vertexMessageStep.message);
+					Tuple<List<Long>, List<Long>> edges=currentVertex.getEdges();
+					for(long edge: edges.getFirst()) {
 						
-
-						if ( !otherVertex.isRemote()) {
+						long otherVertexId=edge;
+						StringBuilder _modifiedMessage = new StringBuilder("");
+						_modifiedMessage.append("V:").append(otherVertexId).append("<--E:").append("<--").append(vertexMessageStep.message);
+						
+						SuccinctArrayVertex12Implicit<MapValue,MapValue,LongWritable,LongWritable> otherVertex = new SuccinctArrayVertex12Implicit(new LongWritable(otherVertexId),sg.getVertexSuccinctBuffer(),sg.getPropertySuccinctBufferMap(),sg.getEdgeBufferList());
+						String prop=otherVertex.getPropforVertex(getSubgraph().getSubgraphValue().startVertex.property.toString());
 							/* add the correct value to list*/
-							
-							if (!compareValuesUtil(otherVertex.getValue().get(getSubgraph().getSubgraphValue().startVertex.property).toString(), getSubgraph().getSubgraphValue().startVertex.value.toString()) ){
+							if (!compareValuesUtil(prop, getSubgraph().getSubgraphValue().startVertex.value.toString()) ){
 								if (vertexMessageStep.stepsTraversed<getSubgraph().getSubgraphValue().noOfSteps){
-									//System.out.println("REV:2");
-									//System.out.println("ERROR!!!");
 									getSubgraph().getSubgraphValue().revLocalVertexList.add(new VertexMessageSteps(otherVertexId,_modifiedMessage.toString(),vertexMessageStep.stepsTraversed+1, vertexMessageStep.subgraphId, vertexMessageStep.startSubgraphId));
 								}
 							}	
 							else{
-								//System.out.println("REV:3");
 								if (vertexMessageStep.startSubgraphId == getSubgraph().getSubgraphId().get()) {
-								
 									getSubgraph().getSubgraphValue().resultsSet.revResultSet.add(_modifiedMessage.toString());
 									getSubgraph().getSubgraphValue().noOfSteps = vertexMessageStep.stepsTraversed;
 								    sendStopMessage(vertexMessageStep.stepsTraversed);
 								}
 								else{
-									//System.out.println("REV:4");
 								        time=System.currentTimeMillis();
 									if (vertexMessageStep.stepsTraversed<=getSubgraph().getSubgraphValue().noOfSteps){
-										//System.out.println("REV:5");
 										forwardOutputToSubgraph(0,new VertexMessageSteps(otherVertexId,_modifiedMessage.toString(),vertexMessageStep.stepsTraversed+1, vertexMessageStep.startSubgraphId,vertexMessageStep.startSubgraphId));
 									}
 									getSubgraph().getSubgraphValue().noOfSteps = vertexMessageStep.stepsTraversed;
@@ -704,18 +696,27 @@ implements ISubgraphWrapup{
 									getSubgraph().getSubgraphValue().resultCollectionTime+=(System.currentTimeMillis()-time);
 								}	
 							}
-						}
-						/* TODO : clarify with Ravi about InEdge having remote source( not possible?)*/
-						else {
-							/* TODO :add vertex to forwardRemoteVertexList*/
-							if (vertexMessageStep.stepsTraversed<=getSubgraph().getSubgraphValue().noOfSteps-1){
-								//System.out.println("REV:6");
-								IRemoteVertex<MapValue,MapValue,LongWritable,LongWritable,LongWritable> remoteVertex = (IRemoteVertex<MapValue, MapValue, LongWritable, LongWritable, LongWritable>)otherVertex;
-								getSubgraph().getSubgraphValue().revRemoteVertexList.add(new VertexMessageSteps(otherVertexId,_modifiedMessage.toString(),vertexMessageStep.stepsTraversed+1, remoteVertex.getSubgraphId().get(), vertexMessageStep.startSubgraphId));
-							}
-						}
+			
 					}
+					
+					
+					for(long edge: edges.getSecond()) {
+						
+						long otherVertexId=edge;
+						StringBuilder _modifiedMessage = new StringBuilder("");
+						_modifiedMessage.append("V:").append(otherVertexId).append("<--E:").append("<--").append(vertexMessageStep.message);
+						
+							if (vertexMessageStep.stepsTraversed<=getSubgraph().getSubgraphValue().noOfSteps-1){
+								getSubgraph().getSubgraphValue().revRemoteVertexList.add(new VertexMessageSteps(otherVertexId,_modifiedMessage.toString(),vertexMessageStep.stepsTraversed+1, (long)sg.remotevertexToSubgraph.get(otherVertexId), vertexMessageStep.startSubgraphId));
+							}
+						
+					}
+					
+					
+					
 				}
+				
+				
 				//###################################PROCESS REVERSE LIST###############################################
 
 				// TODO: send the messages in Remote vertex list
@@ -730,13 +731,10 @@ implements ISubgraphWrapup{
 				getSubgraph().getSubgraphValue().forwardRemoteVertexList.clear();
 				for(VertexMessageSteps stuff: getSubgraph().getSubgraphValue().revRemoteVertexList){
 					// send message to all the remote vertices
-					IRemoteVertex<MapValue,MapValue,LongWritable,LongWritable,LongWritable> remoteVertex = (IRemoteVertex<MapValue, MapValue, LongWritable, LongWritable, LongWritable>)getSubgraph().getVertexById(new LongWritable(stuff.vertexId));
 					StringBuilder remoteMessage = new StringBuilder("rev();");
 					remoteMessage.append(stuff.vertexId).append(";").append(stuff.message).append(";").append(stuff.stepsTraversed).append(";").append(stuff.subgraphId).append(";").append(stuff.startSubgraphId).append(";");
 					Text remoteM = new Text(remoteMessage.toString());
-					
 	                sendMessage(new LongWritable((long) sg.remotevertexToSubgraph.get(stuff.vertexId)),remoteM);
-	                                
 					
 				}
 				getSubgraph().getSubgraphValue().revRemoteVertexList.clear();
