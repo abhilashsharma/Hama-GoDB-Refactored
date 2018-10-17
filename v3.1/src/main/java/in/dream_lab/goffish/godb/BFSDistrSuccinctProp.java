@@ -214,17 +214,18 @@ AbstractSubgraphComputation<BFSDistrPropSuccinctSubgraphState, MapValue, MapValu
 			// read heuristics from memory
 			
 			//add properties and delimiter list
-			propArray.add("vid");//added for supporting vid
-			propArray.add("employer");
-			propArray.add("school");
-			propArray.add("major");
-			propArray.add("places_lived");
+			//for RGraph
+			propArray.add("language");
+			propArray.add("industry");
+			propArray.add("contr");
+			propArray.add("ispublic");
+			propArray.add("follow");//added for Rgraph...remove for gplus
 			
-			delimArray.add("#");//added for supported vid
 			delimArray.add("@");
 			delimArray.add("$");
 			delimArray.add("*");
 			delimArray.add("^");
+			delimArray.add("%");
 			delimArray.add("|");
 			
 			

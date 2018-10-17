@@ -589,13 +589,10 @@ implements ISubgraphWrapup{
 							if ( !(compareValuesUtil(otherVertex.getValue().get(getSubgraph().getSubgraphValue().endVertex.property).toString(), getSubgraph().getSubgraphValue().endVertex.value.toString())) ){
 								
 								if (vertexMessageStep.stepsTraversed<getSubgraph().getSubgraphValue().noOfSteps){
-//									System.out.println("FOR:2");
-//									System.out.println("Unmatched PATH:" + _modifiedMessage.toString());
 									getSubgraph().getSubgraphValue().forwardLocalVertexList.add(new VertexMessageSteps(otherVertex.getVertexId().get(),_modifiedMessage.toString(),vertexMessageStep.stepsTraversed+1, vertexMessageStep.subgraphId, vertexMessageStep.startSubgraphId));
 								}
 							}
 							else{
-//									System.out.println("Matched");
 								if (vertexMessageStep.startSubgraphId == getSubgraph().getSubgraphId().get()) {
 
 									getSubgraph().getSubgraphValue().resultsSet.forwardResultSet.add(_modifiedMessage.toString());
@@ -615,11 +612,8 @@ implements ISubgraphWrapup{
 							}
 						}
 						else {
-//							System.out.println("Remote Vertex found");
 							IRemoteVertex<MapValue,MapValue,LongWritable,LongWritable,LongWritable> remoteVertex = (IRemoteVertex<MapValue, MapValue, LongWritable, LongWritable, LongWritable>)otherVertex;
-							/* TODO :add vertex to forwardRemoteVertexList*/
 							if (vertexMessageStep.stepsTraversed<=getSubgraph().getSubgraphValue().noOfSteps-1){
-//								System.out.println("FOR:6");
 								getSubgraph().getSubgraphValue().forwardRemoteVertexList.add(new VertexMessageSteps(otherVertex.getVertexId().get(),_modifiedMessage.toString(),vertexMessageStep.stepsTraversed+1, remoteVertex.getSubgraphId().get(), vertexMessageStep.startSubgraphId));
 							}
 						}
