@@ -435,6 +435,7 @@ implements ISubgraphWrapup{
 		//Recently added line...Reminder
 		step=direction?step-1:step+1;
 //		 LOG.info("Joining:"+ queryId+","+step+","+direction+","+endVertexId+"," + getSubgraph().getSubgraphId().get());
+		System.out.println("JOIN LOGGING:"+getSubgraph().getSubgraphValue().recursivePaths.get(new RecursivePathKey(queryId, step, direction,endVertexId)));
 		for (RecursivePathMaintained stuff : getSubgraph().getSubgraphValue().recursivePaths.get(new RecursivePathKey(queryId, step, direction,endVertexId))){
 			StringBuilder result = new StringBuilder(split[4]);//partial result
 			//*****Adding partial Result to partialResultCache********

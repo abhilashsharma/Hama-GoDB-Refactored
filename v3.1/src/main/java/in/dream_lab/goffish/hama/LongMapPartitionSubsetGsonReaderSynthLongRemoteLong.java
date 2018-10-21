@@ -105,10 +105,10 @@ public class LongMapPartitionSubsetGsonReaderSynthLongRemoteLong<S extends Writa
 //    this.vertexPropertySet.add("major");
 //    this.vertexPropertySet.add("places_lived");
 //    this.vertexPropertySet.add("vid");
-    this.vertexPropertySet.add("language");
-    this.vertexPropertySet.add("industry");
+//    this.vertexPropertySet.add("language");
+//    this.vertexPropertySet.add("industry");
     this.vertexPropertySet.add("contr");
-    this.vertexPropertySet.add("ispublic");
+//    this.vertexPropertySet.add("ispublic");
     this.vertexPropertySet.add("follow");
   }
   
