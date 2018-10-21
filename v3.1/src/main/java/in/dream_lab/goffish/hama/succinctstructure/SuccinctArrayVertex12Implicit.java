@@ -52,10 +52,10 @@ public class SuccinctArrayVertex12Implicit<V extends Writable, E extends Writabl
     {
         Log.info("getEdges:" + vid);
         
-        int bufferno= (int) (((LongWritable)vid).get()/8000000l);
+        int bufferno= (int) (((LongWritable)vid).get()/14200000l);
         int newbufferno=bufferno<(ebufferList.size()-1)? bufferno:(ebufferList.size()-1);
     	SuccinctIndexedFileBuffer ebuffer = ebufferList.get(newbufferno);
-    	int recordid = (int) (((LongWritable)vid).get() % 8000000l);
+    	int recordid = (int) (((LongWritable)vid).get() % 14200000l);
 //    	Log.info("Select Edge file number:" + newbufferno);
     	if(newbufferno<bufferno) {
     		recordid+=8000000l;
