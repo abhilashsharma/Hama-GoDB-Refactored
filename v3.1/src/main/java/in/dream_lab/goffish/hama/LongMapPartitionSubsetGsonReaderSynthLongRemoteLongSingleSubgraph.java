@@ -255,7 +255,7 @@ public class LongMapPartitionSubsetGsonReaderSynthLongRemoteLongSingleSubgraph<S
     	BufferedReader reader;
 		try {
 			reader = new BufferedReader(new FileReader(
-					"/scratch/abhilash/DataSynth/RGraph/GITR20PGoDBVertexSubgraphMap.txt")); //+ pseudoPartId //TODO:Removing partition id for now
+					"/scratch/abhilash/DataSynth/RGraph/GITR20PGoDBVertexSubgraphMapSingle.txt")); //+ pseudoPartId //TODO:Removing partition id for now
 			String line = reader.readLine();
 			while (line != null) {
 				String[] data=line.trim().split(",");
