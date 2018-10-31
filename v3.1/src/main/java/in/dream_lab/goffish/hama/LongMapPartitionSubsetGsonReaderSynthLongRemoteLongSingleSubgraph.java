@@ -518,7 +518,7 @@ public class LongMapPartitionSubsetGsonReaderSynthLongRemoteLongSingleSubgraph<S
             rootVertex=vertex;
           }
           else {
-            ds.union(rootvertex, vertex);
+            ds.union(rootVertex, vertex);
           }
 
           count++;
