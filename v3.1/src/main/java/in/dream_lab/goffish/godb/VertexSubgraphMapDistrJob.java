@@ -20,7 +20,7 @@ import com.sun.tools.javac.util.List;
 import in.dream_lab.goffish.hama.GraphJob;
 
 import in.dream_lab.goffish.hama.LongMapPartitionSubsetGsonReader;
-import in.dream_lab.goffish.hama.LongMapPartitionSubsetGsonReaderSynthLongRemoteLong;
+import in.dream_lab.goffish.hama.LongMapPartitionSubsetGsonReaderSynthLongRemoteLongSingleSubgraph;
 import in.dream_lab.goffish.hama.NonSplitTextInputFormat;
 
 public class VertexSubgraphMapDistrJob {
@@ -44,7 +44,7 @@ public class VertexSubgraphMapDistrJob {
 		  job.setSubgraphValueClass(LongWritable.class);
 		  /* Reader configuration */
 		    job.setInputFormat(NonSplitTextInputFormat.class);
-		    job.setInputReaderClass(LongMapPartitionSubsetGsonReaderSynthLongRemoteLong.class);
+		    job.setInputReaderClass(LongMapPartitionSubsetGsonReaderSynthLongRemoteLongSingleSubgraph.class);
 		  
 		  //job.setSubgraphComputeClass(SubgraphComputeReduce.class);
 		  job.waitForCompletion(true);
