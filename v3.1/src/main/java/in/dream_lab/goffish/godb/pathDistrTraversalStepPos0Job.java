@@ -17,6 +17,7 @@ import in.dream_lab.goffish.hama.LongMapPartitionSubsetGsonReader;
 import in.dream_lab.goffish.hama.LongMapPartitionSubsetGsonReaderSynthLongRemoteLong;
 import in.dream_lab.goffish.hama.LongMapPartitionSubsetGsonReaderSynthlong;
 import in.dream_lab.goffish.hama.NonSplitTextInputFormat;
+import in.dream_lab.goffish.hama.LongMapPartitionSubsetGsonReaderSynthLongRemoteLongSingleSubgraph;
 
 public class pathDistrTraversalStepPos0Job {
 
