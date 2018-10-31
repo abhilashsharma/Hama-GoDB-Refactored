@@ -503,39 +503,39 @@ public class LongMapPartitionSubsetGsonReaderSynthLongRemoteLongSingleSubgraph<S
     controlInfo.addextraInfo(partitionBytes);
     
         // initialize disjoint set
-    DisjointSets<IVertex<V, E, LongWritable, LongWritable>> ds = new DisjointSets<IVertex<V, E, LongWritable, LongWritable>>(
-        vertices.size());
-    for (IVertex<V, E, LongWritable, LongWritable> vertex : vertices) {
-      ds.addSet(vertex);
-    }
+//    DisjointSets<IVertex<V, E, LongWritable, LongWritable>> ds = new DisjointSets<IVertex<V, E, LongWritable, LongWritable>>(
+//        vertices.size());
+//    for (IVertex<V, E, LongWritable, LongWritable> vertex : vertices) {
+//      ds.addSet(vertex);
+//    }
+//
+//    IVertex<V, E, LongWritable, LongWritable> rootVertex=null;
+//    long count=0;
+//    // union edge pairs
+//    for (IVertex<V, E, LongWritable, LongWritable> vertex : vertices) {
+//      if (!vertex.isRemote()) {
+//          if(count==0){
+//            rootVertex=vertex;
+//          }
+//          else {
+//            ds.union(rootVertex, vertex);
+//          }
+//
+//          count++;
+//      }
+//    }
 
-    IVertex<V, E, LongWritable, LongWritable> rootVertex=null;
-    long count=0;
-    // union edge pairs
-    for (IVertex<V, E, LongWritable, LongWritable> vertex : vertices) {
-      if (!vertex.isRemote()) {
-          if(count==0){
-            rootVertex=vertex;
-          }
-          else {
-            ds.union(rootVertex, vertex);
-          }
+//    Collection<? extends Collection<IVertex<V, E, LongWritable, LongWritable>>> components = ds
+//        .retrieveSets();
 
-          count++;
-      }
-    }
 
-    Collection<? extends Collection<IVertex<V, E, LongWritable, LongWritable>>> components = ds
-        .retrieveSets();
-
-    for (Collection<IVertex<V, E, LongWritable, LongWritable>> component : components) {
       LongWritable subgraphID = new LongWritable(
           subgraphCount++ | (((long) pseudoPartId) << 32));
       Subgraph<S, V, E, LongWritable, LongWritable, LongWritable> subgraph = new Subgraph<S, V, E, LongWritable, LongWritable, LongWritable>(
           peer.getPeerIndex(), subgraphID);
       
 
-      for (IVertex<V, E, LongWritable, LongWritable> vertex : component) {
+      for (IVertex<V, E, LongWritable, LongWritable> vertex : vertices) {
         subgraph.addVertex(vertex);
         
         // Dont add remote vertices to the VertexSubgraphMap as remote vertex subgraphID is unknown
@@ -549,7 +549,7 @@ public class LongMapPartitionSubsetGsonReaderSynthLongRemoteLongSingleSubgraph<S
       byte subgraphIDbytes[] = Longs.toByteArray(subgraphID.get());
       controlInfo.addextraInfo(subgraphIDbytes); 
      
-    }
+
     sendToAllPartitions(subgraphLocationBroadcast);
   }
 }
