@@ -14,7 +14,7 @@ import org.apache.hama.bsp.TextOutputFormat;
 
 import in.dream_lab.goffish.hama.GraphJob;
 import in.dream_lab.goffish.hama.LongMapPartitionSubsetGsonReader;
-import in.dream_lab.goffish.hama.LongMapPartitionSubsetGsonReaderSynthLongRemoteLong;
+import in.dream_lab.goffish.hama.LongMapPartitionSubsetGsonReaderSynthLongRemoteLongSingleSubgraph;
 import in.dream_lab.goffish.hama.LongMapPartitionSubsetGsonReaderSynthlong;
 import in.dream_lab.goffish.hama.NonSplitTextInputFormat;
 
@@ -38,7 +38,7 @@ public class pathDistrUndirectedCostModelJob {
 		  job.setInitialInput(readArgsFromFile(args[2]));
 		  job.setSubgraphValueClass(pathDistrUndirectedSubgraphState.class);
 		  job.setInputFormat(NonSplitTextInputFormat.class);
-		  job.setInputReaderClass(LongMapPartitionSubsetGsonReaderSynthLongRemoteLong.class);
+		  job.setInputReaderClass(LongMapPartitionSubsetGsonReaderSynthLongRemoteLongSingleSubgraph.class);
 		  
 		  //job.setSubgraphComputeClass(SubgraphComputeReduce.class);
 		  job.waitForCompletion(true);
