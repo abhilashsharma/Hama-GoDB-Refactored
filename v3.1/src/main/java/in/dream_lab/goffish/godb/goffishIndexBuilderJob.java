@@ -11,9 +11,8 @@ import org.apache.hama.bsp.TextInputFormat;
 import org.apache.hama.bsp.TextOutputFormat;
 
 import in.dream_lab.goffish.hama.GraphJob;
-import in.dream_lab.goffish.hama.LongMapPartitionSubsetGsonReader;
-import in.dream_lab.goffish.hama.LongMapPartitionSubsetGsonReaderSynthLongRemoteLong;
-import in.dream_lab.goffish.hama.LongMapPartitionSubsetGsonReaderSynthlong;
+
+import in.dream_lab.goffish.hama.LongMapPartitionSubsetGsonReaderSynthLongRemoteLongSingleSubgraph;
 import in.dream_lab.goffish.hama.NonSplitTextInputFormat;
 
 public class goffishIndexBuilderJob {
@@ -35,7 +34,7 @@ public class goffishIndexBuilderJob {
           job.setInitialInput(args[2]);
           job.setSubgraphValueClass(pathDistrSubgraphState.class);
           job.setInputFormat(NonSplitTextInputFormat.class);
-          job.setInputReaderClass(LongMapPartitionSubsetGsonReaderSynthLongRemoteLong.class);//LongMapPartitionSubsetGsonReader
+          job.setInputReaderClass(LongMapPartitionSubsetGsonReaderSynthLongRemoteLongSingleSubgraph.class);//LongMapPartitionSubsetGsonReader
           
           //job.setSubgraphComputeClass(SubgraphComputeReduce.class);
           job.waitForCompletion(true);
