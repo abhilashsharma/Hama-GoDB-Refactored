@@ -841,7 +841,7 @@ implements ISubgraphWrapup{
 					}
 					/* filtered vertex*/
 					else {
-						System.out.println("CurrentVertex:" + currentVertex  + "," + propToIndex.get(nextStep.property));
+//						System.out.println("CurrentVertex:" + currentVertex  + "," + propToIndex.get(nextStep.property));
 						if ( compareValuesUtil(String.valueOf(currentVertex.getPropforVertex(propToIndex.get(nextStep.property))), nextStep.value.toString()) ) {
 							/* add appropriate value later*/
 							getSubgraph().getSubgraphValue().forwardLocalVertexList.add(new VertexMessageSteps(vertexMessageStep.queryId,vertexMessageStep.vertexId,vertexMessageStep.message,vertexMessageStep.stepsTraversed+1, vertexMessageStep.startVertexId,vertexMessageStep.startStep, vertexMessageStep.previousSubgraphId, vertexMessageStep.previousPartitionId));
