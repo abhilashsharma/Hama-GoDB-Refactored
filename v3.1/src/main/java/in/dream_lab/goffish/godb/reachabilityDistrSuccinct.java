@@ -4,7 +4,7 @@ import in.dream_lab.goffish.api.AbstractSubgraphComputation;
 import in.dream_lab.goffish.api.IMessage;
 import in.dream_lab.goffish.api.ISubgraphWrapup;
 import in.dream_lab.goffish.hama.succinctstructure.SuccinctArraySubgraph;
-import in.dream_lab.goffish.hama.succinctstructure.SuccinctArraySubgraph12Implicit;
+//import in.dream_lab.goffish.hama.succinctstructure.SuccinctArraySubgraph12Implicit;
 import in.dream_lab.goffish.hama.succinctstructure.SuccinctArrayVertex;
 import in.dream_lab.goffish.hama.succinctstructure.SuccinctArrayVertex12Implicit;
 import org.apache.commons.logging.Log;
@@ -754,15 +754,15 @@ implements ISubgraphWrapup{
 
 	
 	private void processMessage(IMessage<LongWritable,Text> _message){
-		SuccinctArraySubgraph12Implicit sg=(SuccinctArraySubgraph12Implicit)getSubgraph();
+		SuccinctArraySubgraph sg=(SuccinctArraySubgraph)getSubgraph();
 		String message = _message.getMessage().toString();
 		String[] split = message.split(Pattern.quote(";"));
 		if (getSubgraph().getSubgraphId().get() == Long.parseLong(split[4])){
 			if (split[0].equals("for()"))
-				getSubgraph().getSubgraphValue().forwardLocalVertexList.add( new VertexMessageSteps(sg.getDummyVid(Long.parseLong(split[1])), split[2] , Integer.parseInt(split[3]), Long.parseLong( split[4] ), Long.parseLong(split[5])) );
+				getSubgraph().getSubgraphValue().forwardLocalVertexList.add( new VertexMessageSteps(Long.parseLong(split[1]), split[2] , Integer.parseInt(split[3]), Long.parseLong( split[4] ), Long.parseLong(split[5])) );
 			else{
 				//System.out.println("ERROR!!");
-				getSubgraph().getSubgraphValue().revLocalVertexList.add( new VertexMessageSteps(sg.getDummyVid(Long.parseLong(split[1])), split[2] , Integer.parseInt(split[3]), Long.parseLong( split[4] ), Long.parseLong(split[5])) );
+				getSubgraph().getSubgraphValue().revLocalVertexList.add( new VertexMessageSteps(Long.parseLong(split[1]), split[2] , Integer.parseInt(split[3]), Long.parseLong( split[4] ), Long.parseLong(split[5])) );
 			}
 		}	
 	}
