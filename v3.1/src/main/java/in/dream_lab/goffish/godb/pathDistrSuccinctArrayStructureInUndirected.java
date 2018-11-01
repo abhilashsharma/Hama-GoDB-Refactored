@@ -276,11 +276,20 @@ implements ISubgraphWrapup{
     	
     	
     	//gplus Schema
-    	propToIndex.put("vid", 0);
-    	propToIndex.put("employer", 1);
-    	propToIndex.put("school", 2);
-    	propToIndex.put("major", 3);
-    	propToIndex.put("places_lived", 4);
+//    	propToIndex.put("vid", 0);
+//    	propToIndex.put("employer", 1);
+//    	propToIndex.put("school", 2);
+//    	propToIndex.put("major", 3);
+//    	propToIndex.put("places_lived", 4);
+
+		//RGraph Schema
+		//RGraph schema
+		propToIndex.put("vid", 0);
+		propToIndex.put("lang", 1);
+		propToIndex.put("ind", 2);
+		propToIndex.put("contr", 3);
+		propToIndex.put("ispublic", 4);
+		propToIndex.put("follow", 5);
 		
 	    getSubgraph().getSubgraphValue().path = new ArrayList<Step>();
 		Type previousStepType = Type.EDGE;
@@ -357,22 +366,38 @@ implements ISubgraphWrapup{
 //		remoteSubgraphMap = new HashMap<Long, Long>();
 //		hueristics=HueristicsLoad.getInstance();//loading this at a different place
 		//add properties and delimiter list
-		propArray.add("employer");
-		propArray.add("school");
-		propArray.add("major");
-		propArray.add("places_lived");
-		
+		//for RGraph
+		propArray.add("lang");
+		propArray.add("ind");
+		propArray.add("contr");
+		propArray.add("ispublic");
+		propArray.add("follow");//added for Rgraph...remove for gplus
+
 		delimArray.add("@");
 		delimArray.add("$");
 		delimArray.add("*");
 		delimArray.add("^");
+		delimArray.add("%");
 		delimArray.add("|");
-		
-		
+
+
+		//for gplus
+//		propArray.add("employer");
+//		propArray.add("school");
+//		propArray.add("major");
+//		propArray.add("places_lived");
+//
+//		delimArray.add("@");
+//		delimArray.add("$");
+//		delimArray.add("*");
+//		delimArray.add("^");
+//		delimArray.add("|");
+
+
 		SuccinctArraySubgraph sg=(SuccinctArraySubgraph)getSubgraph();
-		 
-		 sg.setDelimArray(delimArray);
-		 sg.setPropArray(propArray);
+
+		sg.setDelimArray(delimArray);
+		sg.setPropArray(propArray);
 		
 	}
 
@@ -603,7 +628,7 @@ implements ISubgraphWrapup{
 					}catch(Exception e){e.printStackTrace();}
 					
 					LOG.info("Starting loading of heuristics");
-					hueristics=HueristicsLoad.getInstance("/user/abhilash/gplusNew2PHeuristics/gplusNew2PHeuristics.ser");//TODO:change heuristics path for new Graph
+					hueristics=HueristicsLoad.getInstance("/user/abhilash/RGraph4PHeuristics/RGraph4PHeu.ser");//TODO:change heuristics path for new Graph
 					LOG.info("Heuristic Loaded");
 					
 				}

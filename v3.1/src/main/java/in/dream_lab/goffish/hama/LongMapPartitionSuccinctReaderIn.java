@@ -458,7 +458,7 @@ String sCurrentLine=null;
 //    //type could be Long or String or Double
 //    String jsonMap=JSONInput.get(1).toString();
 //    jsonMap=jsonMap.substring(1, jsonMap.length()-1);
-////    LOG.info("JSONMAP:" + jsonMap);
+////    LOG.info("JSONMAP:" + jsonMap);LongMapPartitionSuccinctReaderIn
 //    String[] vprop=jsonMap.split(Pattern.quote("$"));
 //    //key,value property pairs for a vertex
 //    MapValue vertexValueMap=new MapValue();
