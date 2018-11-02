@@ -7,6 +7,7 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 
+import in.dream_lab.goffish.hama.*;
 import org.apache.commons.cli.ParseException;
 import org.apache.hadoop.fs.Path;
 import org.apache.hadoop.io.LongWritable;
@@ -16,12 +17,6 @@ import org.apache.hama.bsp.TextInputFormat;
 import org.apache.hama.bsp.TextOutputFormat;
 
 import com.sun.tools.javac.util.List;
-
-import in.dream_lab.goffish.hama.GraphJob;
-
-import in.dream_lab.goffish.hama.LongMapPartitionSubsetGsonReader;
-import in.dream_lab.goffish.hama.LongMapPartitionSubsetGsonReaderSynthLongRemoteLong;
-import in.dream_lab.goffish.hama.NonSplitTextInputFormat;
 
 public class BFSDistrJob {
 
@@ -44,7 +39,7 @@ public class BFSDistrJob {
 		  job.setSubgraphValueClass(BFSDistrSubgraphState.class);
 		  /* Reader configuration */
 		    job.setInputFormat(NonSplitTextInputFormat.class);
-		    job.setInputReaderClass(LongMapPartitionSubsetGsonReaderSynthLongRemoteLong.class);
+		    job.setInputReaderClass(LongMapPartitionSubsetGsonReaderSynthLongRemoteLongSingleSubgraph.class);
 		  
 		  //job.setSubgraphComputeClass(SubgraphComputeReduce.class);
 		  job.waitForCompletion(true);
