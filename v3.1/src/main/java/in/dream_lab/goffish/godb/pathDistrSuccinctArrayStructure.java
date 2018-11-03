@@ -82,7 +82,7 @@ implements ISubgraphWrapup{
 	
 	public static final Log LOG = LogFactory.getLog(pathDistrSuccinctArrayStructure.class);
 	
-	
+	long selectivity=0;
 	public ArrayList<String> delimArray= new ArrayList<>();
 	public ArrayList<String> propArray= new ArrayList<>();
 	String Arguments=null;
@@ -101,6 +101,7 @@ implements ISubgraphWrapup{
 	private static boolean queryStart=false;//later lock this when multithreaded
         private static boolean queryEnd=false;//later lock this when multithreaded
         private static boolean gcCalled=false;
+
 
 	static Hueristics hueristics = new Hueristics(); 
 	//for succinct
@@ -755,6 +756,7 @@ implements ISubgraphWrapup{
 			//System.out.println("FORWARD LIST:"+forwardLocalVertexList.isEmpty() +" REV LIST:"+revLocalVertexList.isEmpty() + "SGID:" + subgraph.getId() + " PID:" + partition.getId());
 			while(!getSubgraph().getSubgraphValue().forwardLocalVertexList.isEmpty()) {
 				VertexMessageSteps vertexMessageStep = getSubgraph().getSubgraphValue().forwardLocalVertexList.poll();
+				selectivity++;
 				//output(partition.getId(), subgraph.getId(), "FORWARD-LIST");
 				/* if last step,end that iteration*/
 				//System.out.println("Reached:" + vertexMessageStep.startVertexId + " Path Size:" + vertexMessageStep.stepsTraversed + "/" + (path.size()-1));
@@ -1151,6 +1153,10 @@ implements ISubgraphWrapup{
 		 if(resultSetSize!=0){
 	          LOG.info(Arguments+"$ResultSetSize:" + resultSetSize);
 	          }
+
+	          if(selectivity>0){
+	          	LOG.info("SELECTIVITY:" + selectivity);
+			  }
 	LOG.info("Cumulative Result Collection:" +  getSubgraph().getSubgraphValue().resultCollectionTime);	
 		clear();
 	}

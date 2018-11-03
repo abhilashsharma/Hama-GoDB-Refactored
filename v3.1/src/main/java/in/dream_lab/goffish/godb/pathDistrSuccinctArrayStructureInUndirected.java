@@ -91,7 +91,8 @@ implements ISubgraphWrapup{
 		// TODO Auto-generated constructor stub
 		Arguments=initMsg;
 	}
-	
+
+	long selectivity=0;
 	public static final Log LOG = LogFactory.getLog(pathDistrSuccinctArrayStructureInUndirected.class);
 	public ArrayList<String> delimArray= new ArrayList<>();
 	public ArrayList<String> propArray= new ArrayList<>();
@@ -781,6 +782,7 @@ implements ISubgraphWrapup{
 			//System.out.println("FORWARD LIST:"+forwardLocalVertexList.isEmpty() +" REV LIST:"+revLocalVertexList.isEmpty() + "SGID:" + subgraph.getId() + " PID:" + partition.getId());
 			while(!getSubgraph().getSubgraphValue().forwardLocalVertexList.isEmpty()) {
 				VertexMessageSteps vertexMessageStep = getSubgraph().getSubgraphValue().forwardLocalVertexList.poll();
+				selectivity++;
 				//output(partition.getId(), subgraph.getId(), "FORWARD-LIST");
 				/* if last step,end that iteration*/
 				//System.out.println("Reached:" + vertexMessageStep.startVertexId + " Path Size:" + vertexMessageStep.stepsTraversed + "/" + (path.size()-1));
@@ -883,7 +885,7 @@ implements ISubgraphWrapup{
 			// PROCESS REVERSE LIST
 			while(!getSubgraph().getSubgraphValue().revLocalVertexList.isEmpty()) {
 				VertexMessageSteps vertexMessageStep = getSubgraph().getSubgraphValue().revLocalVertexList.poll();
-				
+				selectivity++;
 				/* if last step,end that iteration, while traversing in reverse direction last step is first step which is zero */
 				if ( vertexMessageStep.stepsTraversed == 0 ){
 					//if current subgraph is not source subgraph then start recursive aggregation of partial results
@@ -1270,6 +1272,10 @@ implements ISubgraphWrapup{
 		 if(resultSetSize!=0){
 	          LOG.info(Arguments+"$ResultSetSize:" + resultSetSize);
 	          }
+
+		if(selectivity>0){
+			LOG.info("SELECTIVITY:" + selectivity);
+		}
 	LOG.info("Cumulative Result Collection:" +  getSubgraph().getSubgraphValue().resultCollectionTime);	
 		clear();
 	}
