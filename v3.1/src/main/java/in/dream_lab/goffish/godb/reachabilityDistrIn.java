@@ -68,6 +68,7 @@ implements ISubgraphWrapup{
 	public static final Log LOG = LogFactory.getLog(reachabilityDistrIn.class);
 	long time;
 	String Arguments=null;
+	long selectivity=0;
 	static File vertexIndexDir;
 	static Directory vertexDirectory;
 	static Analyzer analyzer;
@@ -559,6 +560,7 @@ implements ISubgraphWrapup{
 				//###################################PROCESS FORWARD LIST###############################################
 				while(!getSubgraph().getSubgraphValue().forwardLocalVertexList.isEmpty()) {
 					VertexMessageSteps vertexMessageStep = getSubgraph().getSubgraphValue().forwardLocalVertexList.poll();
+					selectivity++;
 					Long vertex=vertexMessageStep.vertexId;
 					
 					if(visitedSet.contains(vertex)) {
@@ -628,6 +630,7 @@ implements ISubgraphWrapup{
 				while(!getSubgraph().getSubgraphValue().revLocalVertexList.isEmpty()) {
 				      
 					VertexMessageSteps vertexMessageStep = getSubgraph().getSubgraphValue().revLocalVertexList.poll();
+					selectivity++;
 					Long vertex=vertexMessageStep.vertexId;
 					
 					if(visitedSet.contains(vertex)) {
@@ -773,6 +776,10 @@ implements ISubgraphWrapup{
                     LOG.info("ResultSetREVERSE  : " + partialRevPath);
                   }
           }
+
+		if(selectivity>0){
+			LOG.info(Arguments+"#SELECTIVITY:" + selectivity);
+		}
           LOG.info("Cumulative Result Collection:" + getSubgraph().getSubgraphValue().resultCollectionTime);
 		clear();
 	}
