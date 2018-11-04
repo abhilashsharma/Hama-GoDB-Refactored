@@ -78,6 +78,7 @@ implements ISubgraphWrapup{
 	
 	int fixedPos;
 	String Arguments=null;
+	long selectivity=0;
 	//Required for lucene 
 	static File vertexIndexDir;
 	static Directory vertexDirectory;
@@ -1620,6 +1621,9 @@ implements ISubgraphWrapup{
 					LOG.info("ResultSetReverseEmpty:" +partialForwardPath);
 					//output(partition.getId(), subgraph.getId(), partialForwardPath); 
 				}
+		}
+		if(getSubgraph().getSubgraphValue().vertexSelectivity>0){
+			LOG.info(Arguments+"#SELECTIVITY:" + getSubgraph().getSubgraphValue().vertexSelectivity);
 		}
 //	LOG.info("Cumulative Result Collection:" +  getSubgraph().getSubgraphValue().resultCollectionTime);
 //	LOG.info("Cumulative Vertex Selectivity:" +  getSubgraph().getSubgraphValue().vertexSelectivity);
