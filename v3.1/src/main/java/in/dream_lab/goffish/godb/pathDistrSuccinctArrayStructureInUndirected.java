@@ -1274,7 +1274,7 @@ implements ISubgraphWrapup{
 	          }
 
 		if(selectivity>0){
-			LOG.info("SELECTIVITY:" + selectivity);
+			LOG.info(Arguments+"#SELECTIVITY:" + selectivity);
 		}
 	LOG.info("Cumulative Result Collection:" +  getSubgraph().getSubgraphValue().resultCollectionTime);	
 		clear();
