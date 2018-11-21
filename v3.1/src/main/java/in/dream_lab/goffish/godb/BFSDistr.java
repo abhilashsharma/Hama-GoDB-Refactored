@@ -112,6 +112,9 @@ AbstractSubgraphComputation<BFSDistrSubgraphState, MapValue, MapValue, Text, Lon
 		private static boolean queryStart=false;//later lock this when multithreaded
 		private static boolean queryEnd=false;//later lock this when multithreaded
 
+
+		private static long vertexSelectivity=0;
+		private static long edgeSelectivity=0;
 		enum Type{EDGE,VERTEX}
 		enum Direction{OUT,IN}
 
@@ -525,10 +528,12 @@ AbstractSubgraphComputation<BFSDistrSubgraphState, MapValue, MapValue, Text, Lon
 					System.out.println("Found null vertex");
 					continue;
 				}
-				
+
+							long time=System.currentTimeMillis();
 							long count=0;
 							for( IEdge<MapValue,LongWritable,LongWritable> edge: currentVertex.getOutEdges() ) {
 								count ++;
+								edgeSelectivity++;
 								IVertex<MapValue,MapValue,LongWritable,LongWritable> otherVertex = getSubgraph().getVertexById(edge.getSinkVertexId());
 								StringBuilder _modifiedMessage = new StringBuilder("");
 								_modifiedMessage.append(vertexMessageStep.message).append("-->E:").append(String.valueOf(edge.getEdgeId())).append("-->V:").append(String.valueOf(otherVertex.getVertexId()));
@@ -543,6 +548,8 @@ AbstractSubgraphComputation<BFSDistrSubgraphState, MapValue, MapValue, Text, Lon
 								}
 									
 							}
+							System.out.println("Edge traversal Time:" + (System.currentTimeMillis()-time));
+
 							if(count==0){
 								if(vertexMessageStep.startSubgraphId!=getSubgraph().getSubgraphId().get()){
 									forwardOutputToSubgraph(1,vertexMessageStep);
@@ -637,7 +644,10 @@ AbstractSubgraphComputation<BFSDistrSubgraphState, MapValue, MapValue, Text, Lon
 				}
 		}
 		
-		
+		if(edgeSelectivity>0){
+			System.out.println("EdgeSelectivity:"+ edgeSelectivity);
+		}
+
 //		LOG.info("SetSize:" + getSubgraph().getSubgraphValue().resultsMap.size());
 		LOG.info("Cumulative Result Collection:" + getSubgraph().getSubgraphValue().resultCollectionTime);
 		
