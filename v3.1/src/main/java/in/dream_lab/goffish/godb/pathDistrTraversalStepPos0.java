@@ -79,6 +79,7 @@ implements ISubgraphWrapup{
 	int fixedPos;
 	String Arguments=null;
 	long selectivity=0;
+	private  long edgeSelectivity=0;
 	//Required for lucene 
 	static File vertexIndexDir;
 	static Directory vertexDirectory;
@@ -951,14 +952,17 @@ implements ISubgraphWrapup{
 				IVertex<MapValue, MapValue, LongWritable, LongWritable> currentVertex = getSubgraph().getVertexById(new LongWritable(vertexMessageStep.vertexId));
 				
 				if( nextStep.type == Type.EDGE ) {
-					
+					long time=System.currentTimeMillis();
 					if ( nextStep.direction == Direction.OUT ) {
 						/* null predicate handling*/
 						//int count=0;
 						boolean flag=false;
 						boolean addFlag=false;
 						if ( nextStep.property == null && nextStep.value == null ) {
+
+
 							for( IEdge<MapValue, LongWritable, LongWritable> edge: currentVertex.getOutEdges()) {
+								edgeSelectivity++;
 								//count++;
 //								System.out.println("Traversing edges");
 								IVertex<MapValue, MapValue, LongWritable, LongWritable> otherVertex = getSubgraph().getVertexById(edge.getSinkVertexId());
@@ -1082,10 +1086,13 @@ implements ISubgraphWrapup{
 							}
 						}
 					}
+
+					System.out.println("Edge traversal Time:" + (System.currentTimeMillis()-time));
 					
 				}
 				else if ( nextStep.type == Type.VERTEX ) {
-					
+
+					long time=System.currentTimeMillis();
 					/* null predicate*/
 					if( nextStep.property == null && nextStep.value == null ) {
 						/* add appropriate value later*/
@@ -1109,7 +1116,9 @@ implements ISubgraphWrapup{
 							//forwardLocalVertexList.add(vertexMessageStep);
 						}
 					}
-					
+
+
+					System.out.println("Vertex traversal Time:" + (System.currentTimeMillis()-time));
 				}
 				long endTime=System.nanoTime();
 //				hopTime[vertexMessageStep.stepsTraversed]+=(endTime-startTime);

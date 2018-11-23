@@ -747,8 +747,10 @@ implements ISubgraphWrapup{
 				SuccinctArrayVertex12Implicit<MapValue,MapValue,LongWritable,LongWritable> currentVertex = new SuccinctArrayVertex12Implicit(new LongWritable(vertexMessageStep.vertexId),sg.getVertexSuccinctBuffer(),sg.getPropertySuccinctBufferMap(),sg.getEdgeBufferList());
 				
 				if( nextStep.type == Type.EDGE ) {
-					
+
+					long time=System.currentTimeMillis();
 					if ( nextStep.direction == Direction.OUT ) {
+
 						/* null predicate handling*/
 						//int count=0;
 						boolean flag=false;
@@ -797,10 +799,11 @@ implements ISubgraphWrapup{
 					
 					}
 
+					System.out.println("Edge traversal Time:" + (System.currentTimeMillis()-time));
 					
 				}
 				else if ( nextStep.type == Type.VERTEX ) {
-					
+					long time=System.currentTimeMillis();
 					/* null predicate*/
 					if( nextStep.property == null && nextStep.value == null ) {
 						/* add appropriate value later*/
@@ -815,6 +818,8 @@ implements ISubgraphWrapup{
 							//forwardLocalVertexList.add(vertexMessageStep);
 						}
 					}
+
+					System.out.println("Vertex traversal Time:" + (System.currentTimeMillis()-time));
 					
 				}
 				
