@@ -750,7 +750,7 @@ implements ISubgraphWrapup{
 				
 				if( nextStep.type == Type.EDGE ) {
 
-					long time=System.currentTimeMillis();
+					long time=System.nanoTime();
 					if ( nextStep.direction == Direction.OUT ) {
 
 						/* null predicate handling*/
@@ -802,11 +802,11 @@ implements ISubgraphWrapup{
 					
 					}
 
-					System.out.println("Edge traversal Time:" + (System.currentTimeMillis()-time));
+					System.out.println("Edge traversal Time:" + (System.nanoTime()-time));
 					
 				}
 				else if ( nextStep.type == Type.VERTEX ) {
-					long time=System.currentTimeMillis();
+					long time=System.nanoTime();
 					/* null predicate*/
 					if( nextStep.property == null && nextStep.value == null ) {
 						/* add appropriate value later*/
@@ -822,7 +822,7 @@ implements ISubgraphWrapup{
 						}
 					}
 
-					System.out.println("Vertex traversal Time:" + (System.currentTimeMillis()-time));
+					System.out.println("Vertex traversal Time:" + (System.nanoTime()-time));
 					
 				}
 				
