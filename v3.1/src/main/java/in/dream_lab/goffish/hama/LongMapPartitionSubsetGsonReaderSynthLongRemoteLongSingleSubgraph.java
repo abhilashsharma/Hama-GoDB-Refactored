@@ -97,8 +97,7 @@ public class LongMapPartitionSubsetGsonReaderSynthLongRemoteLongSingleSubgraph<S
     this.subgraphPartitionMap = subgraphPartitionMap;
     this.conf = peer.getConfiguration();
     this.vertexSubgraphMap = new HashMap<LongWritable, LongWritable>();
-    
-    
+
     //TODO: IMPORTANT.... uncomment properties to be loaded
 //    this.vertexPropertySet.add("employer");
 //    this.vertexPropertySet.add("school");
