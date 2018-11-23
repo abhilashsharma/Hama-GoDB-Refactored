@@ -107,7 +107,7 @@ public class LongMapPartitionSubsetGsonReaderSynthLongRemoteLongSingleSubgraph<S
 //    this.vertexPropertySet.add("vid");
 //    this.vertexPropertySet.add("language");
 //    this.vertexPropertySet.add("industry");
-    this.vertexPropertySet.add("contr");
+//    this.vertexPropertySet.add("contr");
 //    this.vertexPropertySet.add("ispublic");
     this.vertexPropertySet.add("follow");
   }
