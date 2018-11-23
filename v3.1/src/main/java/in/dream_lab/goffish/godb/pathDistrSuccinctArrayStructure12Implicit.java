@@ -90,7 +90,8 @@ implements ISubgraphWrapup{
 	}
 	
 	public static final Log LOG = LogFactory.getLog(pathDistrSuccinctArrayStructure12Implicit.class);
-	
+	long edgeSelectivity=0;
+	long vertexSelectivity=0;
 	String Arguments=null;
 	//Required for lucene 
 	static File vertexIndexDir;
@@ -721,6 +722,7 @@ implements ISubgraphWrapup{
 			//System.out.println("FORWARD LIST:"+forwardLocalVertexList.isEmpty() +" REV LIST:"+revLocalVertexList.isEmpty() + "SGID:" + subgraph.getId() + " PID:" + partition.getId());
 			while(!getSubgraph().getSubgraphValue().forwardLocalVertexList.isEmpty()) {
 				VertexMessageSteps vertexMessageStep = getSubgraph().getSubgraphValue().forwardLocalVertexList.poll();
+				vertexSelectivity++;
 				//output(partition.getId(), subgraph.getId(), "FORWARD-LIST");
 				/* if last step,end that iteration*/
 				//System.out.println("Reached:" + vertexMessageStep.startVertexId + " Path Size:" + vertexMessageStep.stepsTraversed + "/" + (path.size()-1));
@@ -760,6 +762,7 @@ implements ISubgraphWrapup{
 							
 							//iterating over local sinks
 							for( long edge: edges.getFirst()) {
+								edgeSelectivity++;
 								//count++;
 //								System.out.println("Traversing edges");
 								Long otherVertex = edge;
@@ -776,7 +779,7 @@ implements ISubgraphWrapup{
 							
 							//iterating over remote sinks
 							for( long edge: edges.getSecond()) {
-								
+								edgeSelectivity++;
 //								LOG.info("ERROR 1P should not traverse remote");
 								Long otherVertex = edge;
 								StringBuilder _modifiedMessage = new StringBuilder("");
@@ -1128,6 +1131,15 @@ implements ISubgraphWrapup{
 		 if(resultSetSize!=0){
 	          LOG.info(Arguments+"$ResultSetSize:" + resultSetSize);
 	          }
+
+		if(vertexSelectivity>0){
+			LOG.info(Arguments+"#SELECTIVITY:" + vertexSelectivity);
+		}
+
+
+		if(edgeSelectivity>0){
+			LOG.info(Arguments+"#EDGESELECTIVITY:" + edgeSelectivity);
+		}
 	LOG.info("Cumulative Result Collection:" +  getSubgraph().getSubgraphValue().resultCollectionTime);	
 		clear();
 	}

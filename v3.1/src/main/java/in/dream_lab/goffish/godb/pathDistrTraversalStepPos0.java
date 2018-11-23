@@ -1634,6 +1634,11 @@ implements ISubgraphWrapup{
 		if(getSubgraph().getSubgraphValue().vertexSelectivity>0){
 			LOG.info(Arguments+"#SELECTIVITY:" + getSubgraph().getSubgraphValue().vertexSelectivity);
 		}
+
+
+		if(edgeSelectivity>0){
+			LOG.info(Arguments+"#EDGESELECTIVITY:" + edgeSelectivity);
+		}
 //	LOG.info("Cumulative Result Collection:" +  getSubgraph().getSubgraphValue().resultCollectionTime);
 //	LOG.info("Cumulative Vertex Selectivity:" +  getSubgraph().getSubgraphValue().vertexSelectivity);
 		clear();
