@@ -621,7 +621,9 @@ implements ISubgraphWrapup{
 							
 								queryMade=true;
 //								LOG.info("Querying start");
+							long start=System.nanoTime();
 								hitList=sg.getVertexByProp(currentProperty, (String)currentValue);
+							LOG.info("Index Lookup Time:" + (System.nanoTime() - start));
 //								LOG.info("Querying end");
 							
 						}

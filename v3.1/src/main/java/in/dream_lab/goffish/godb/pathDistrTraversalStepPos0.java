@@ -780,9 +780,9 @@ implements ISubgraphWrapup{
 					try{
 						synchronized(queryLock){
 							if(!queryMade){
-//								LOG.info("Querying Lucene Index");
+								long start=System.nanoTime();
 								makeQuery(currentProperty,currentValue);
-//								LOG.info("Querying Lucene Done");
+								LOG.info("Index Lookup Time:" + (System.nanoTime() - start));
 							}
 						}
 						
