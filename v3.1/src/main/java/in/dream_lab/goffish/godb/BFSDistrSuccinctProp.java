@@ -371,7 +371,11 @@ AbstractSubgraphComputation<BFSDistrPropSuccinctSubgraphState, MapValue, MapValu
 									
 									queryMade=true;
 //									LOG.info("Querying start");
-									 hitList = sg.getVertexByProp(currentProperty, (String)currentValue, '@');
+
+									//TODO:uncomment this out for non Vid queries..IMPORTANT
+//									 hitList = sg.getVertexByProp(currentProperty, (String)currentValue, '@');
+									hitList=new ArrayList<>();
+									hitList.add(Long.parseLong(currentValue.toString()));
 //									LOG.info("Querying end");
 								
 							}
