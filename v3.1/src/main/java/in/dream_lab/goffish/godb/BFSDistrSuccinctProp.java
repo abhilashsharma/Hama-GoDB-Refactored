@@ -518,7 +518,7 @@ AbstractSubgraphComputation<BFSDistrPropSuccinctSubgraphState, MapValue, MapValu
 							
 							
 							if(count==0){
-												LOG.info("Properties:"+ str[1]+ ", vertexMsgStep:" + vertexMessageStep);
+												LOG.info("Properties:"+ str);
 				                                _modifiedMsg.append(vertexMessageStep.message).append(str[1]+","+str[2]+","+str[3]+"," + str[4]);
 				                                LOG.info("MODIFIEDMSG:" + _modifiedMsg.toString());
 				                                vertexMessageStep = new VertexMessageSteps(vertexMessageStep.vertexId, _modifiedMsg.toString(), vertexMessageStep.stepsTraversed, vertexMessageStep.startVertexId, vertexMessageStep.startSubgraphId, vertexMessageStep.startPartitionId);
