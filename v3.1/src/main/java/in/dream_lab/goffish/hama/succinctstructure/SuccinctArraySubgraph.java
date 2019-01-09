@@ -122,12 +122,20 @@ public class SuccinctArraySubgraph<S extends Writable, V extends Writable, E ext
     }
     
     Tuple<String, String>  getPropDelim(String propName){
-    	
-    	int index = propList.indexOf(propName);
-    	String startDelim= delimArray.get(index);
-    	String endDelim =delimArray.get(index+1);
+
+        String startDelim=null,endDelim=null;
+        if(propName.equals("vid")){
+            startDelim="#";
+            endDelim="@";
+        }
+        else {
+            int index = propList.indexOf(propName);
+            startDelim = delimArray.get(index);
+            endDelim = delimArray.get(index + 1);
+        }
+
+
     	Tuple<String,String> t= new Tuple<String, String>(startDelim, endDelim);
-    	
     	return t;
     }
     
