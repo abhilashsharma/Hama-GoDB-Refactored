@@ -461,7 +461,6 @@ AbstractSubgraphComputation<BFSDistrPropSuccinctSubgraphState, MapValue, MapValu
 				if ( vertexMessageStep.stepsTraversed == getSubgraph().getSubgraphValue().Depth ){
 					SuccinctArrayVertex<MapValue,MapValue,LongWritable,LongWritable> currentVertex = new SuccinctArrayVertex(new LongWritable(vertexMessageStep.vertexId),sg.getVertexBufferList(),sg.getEdgeBufferList(),'|');
 					String[] str=currentVertex.getAllPropforVertex();
-					LOG.info("Properties:"+ str[1]);
 					StringBuilder _modifiedMsg = new StringBuilder("");
                     _modifiedMsg .append(vertexMessageStep.message).append(str[1]+","+str[2]+","+str[3]+"," + str[4]);
                     LOG.info("MODIFIEDMSG:" + _modifiedMsg.toString());
@@ -519,7 +518,7 @@ AbstractSubgraphComputation<BFSDistrPropSuccinctSubgraphState, MapValue, MapValu
 							
 							
 							if(count==0){
-
+												LOG.info("Properties:"+ str[1]);
 				                                _modifiedMsg.append(vertexMessageStep.message).append(str[1]+","+str[2]+","+str[3]+"," + str[4]);
 				                                LOG.info("MODIFIEDMSG:" + _modifiedMsg.toString());
 				                                vertexMessageStep = new VertexMessageSteps(vertexMessageStep.vertexId, _modifiedMsg.toString(), vertexMessageStep.stepsTraversed, vertexMessageStep.startVertexId, vertexMessageStep.startSubgraphId, vertexMessageStep.startPartitionId);
