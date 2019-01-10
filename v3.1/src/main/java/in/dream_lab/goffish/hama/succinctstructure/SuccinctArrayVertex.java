@@ -231,7 +231,7 @@ public class SuccinctArrayVertex<V extends Writable, E extends Writable, I exten
         Integer[] recordID=vbuffer.recordSearchIds(wholeQuery.getBytes());
         offset = vbuffer.getRecordOffset(recordID[0]);
         record = vbuffer.extractUntil(offset, '|');
-        LOG.info("AllPropVertex:" + record);
+//        LOG.info("AllPropVertex:" + record);
         tokens=record.split("\\W");
         return tokens;
     }
