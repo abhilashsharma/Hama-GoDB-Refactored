@@ -539,7 +539,7 @@ AbstractSubgraphComputation<BFSDistrPropSuccinctSubgraphState, MapValue, MapValu
 			
 			
 
-			
+			LOG.info("Remote Messages:" + getSubgraph().getSubgraphValue().forwardRemoteVertexList.size());
 			for(VertexMessageSteps stuff: getSubgraph().getSubgraphValue().forwardRemoteVertexList){
 				// send message to all the remote vertices
 				//FIXME:Verify the typecasting by talking to hama team
