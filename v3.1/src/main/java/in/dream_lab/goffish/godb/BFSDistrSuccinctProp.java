@@ -484,6 +484,9 @@ AbstractSubgraphComputation<BFSDistrPropSuccinctSubgraphState, MapValue, MapValu
 				
 				StringBuilder _modifiedMsg = new StringBuilder("");
 				String[] str=currentVertex.getAllPropforVertex();
+				if(str==null){
+					LOG.info("NULL Properties for vertex:"+ vertexMessageStep.vertexId);
+				}
 				
 							//local edges
 							long count=0;
